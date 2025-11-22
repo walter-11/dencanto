@@ -13,7 +13,7 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -22,18 +22,22 @@ public class UsuarioService {
     }
 
     public Usuario guardar(Usuario usuario) {
-        // Encriptar contraseña si es nuevo usuario
+
         if (usuario.getId() == null) {
-            String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasenaHash());
-            usuario.setContrasenaHash(contrasenaEncriptada);
+            // Nuevo usuario → encriptar
+            usuario.setContrasenaHash(passwordEncoder.encode(usuario.getContrasenaHash()));
+
         } else {
-            // Si está editando, mantener la contraseña actual a menos que se cambie
             Usuario usuarioExistente = obtenerPorId(usuario.getId());
-            if (!usuario.getContrasenaHash().equals(usuarioExistente.getContrasenaHash())) {
-                String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasenaHash());
-                usuario.setContrasenaHash(contrasenaEncriptada);
+
+            // Si contrasenaHash viene vacío → mantener la anterior
+            if (usuario.getContrasenaHash() == null || usuario.getContrasenaHash().isBlank()) {
+                usuario.setContrasenaHash(usuarioExistente.getContrasenaHash());
+            } else {
+                usuario.setContrasenaHash(passwordEncoder.encode(usuario.getContrasenaHash()));
             }
         }
+
         return usuarioRepository.save(usuario);
     }
 
@@ -51,9 +55,9 @@ public class UsuarioService {
 
     private boolean esUltimoAdmin(Integer idUsuarioAEliminar) {
         List<Usuario> admins = usuarioRepository.findAll().stream()
-            .filter(u -> "ADMIN".equals(u.getRol().getNombre()))
-            .collect(Collectors.toList());
-            
+                .filter(u -> "ADMIN".equals(u.getRol().getNombre()))
+                .collect(Collectors.toList());
+
         return admins.size() == 1 && admins.get(0).getId().equals(idUsuarioAEliminar);
     }
 

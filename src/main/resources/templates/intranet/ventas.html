@@ -9,418 +9,510 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/intranet.css" />
   <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .product-item {
+      border: 1px solid #e0e0e0;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      transition: box-shadow 0.3s;
+    }
+    .product-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .cart-item {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-total {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2c3e50;
+      padding: 15px;
+      background: #e8f4f8;
+      border-radius: 5px;
+      text-align: right;
+    }
+    .ventasTabla {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 
 <body>
   <div class="wrapper">
     <!-- MENÚ LATERAL -->
     <aside id="sidebar">
-        <div class="d-flex justify-content-between p-4">
-          <div class="sidebar-logo">
-            <a href="#">Colchones D'<br />Encanto</a>
-          </div>
-          <button class="toggle-btn border-0" type="button">
-            <i id="icon" class="bx bxs-chevrons-right"></i>
-          </button>
+      <div class="d-flex justify-content-between p-4">
+        <div class="sidebar-logo">
+          <a href="#">Colchones D'<br />Encanto</a>
         </div>
-        <ul class="sidebar-nav">
-          <!-- PERFIL (ADMIN/USUARIO)-->
-          <li class="sidebar-item">
-            <a href="/intranet/dashboard" class="sidebar-link">
-              <i class="bx bx-history"></i>
-              <span>Historial</span>
-            </a>
-          </li>
-          <!-- MENU PARA ADMIN -->
-           <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-            <a href="/intranet/reportes" class="sidebar-link">
-              <i class="bx bxs-report"></i>
-              <span>Generar Reportes</span>
-            </a>
-          </li>
-          <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-            <a href="/intranet/productos" class="sidebar-link">
-              <i class="bx bxs-box"></i>
-              <span>Gestión de Productos</span>
-            </a>
-          </li>
-          <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-            <a href="/intranet/usuarios" class="sidebar-link">
-              <i class="bx bxs-user-account"></i>
-              <span>Gestión de Usuarios</span>
-            </a>
-          </li>
-          <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-            <a href="/intranet/cotizaciones" class="sidebar-link">
-              <i class="bx bxs-food-menu"></i>
-              <span>Visualizar Cotizaciones</span>
-            </a>
-          </li>
-          <!-- MENU PARA VENDEDORES -->
-          <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-            <a href="/intranet/revisarCotizaciones" class="sidebar-link">
-              <i class="bx bxs-file"></i>
-              <span>Revisar Cotizaciones</span>
-            </a>
-          </li>
-          <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-            <a href="/intranet/ventas" class="sidebar-link">
-              <i class="bx bxs-cart"></i>
-              <span>Registrar Ventas</span>
-            </a>
-          </li>
-          <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-            <a href="/intranet/historialVentas" class="sidebar-link">
-              <i class="bx bx-search-alt-2"></i>
-              <span>Historial de Ventas</span>
-            </a>
-          </li>
-        </ul>
-        <div class="sidebar-footer">
-          <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
-            <i class="bx bx-log-out"></i>
-            <span>Cerrar Sesión</span>
+        <button class="toggle-btn border-0" type="button">
+          <i id="icon" class="bx bxs-chevrons-right"></i>
+        </button>
+      </div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item">
+          <a href="/intranet/dashboard" class="sidebar-link">
+            <i class="bx bx-history"></i>
+            <span>Historial</span>
           </a>
-        </div>
-      </aside>
+        </li>
+        <li id="vendMenu" class="sidebar-item">
+          <a href="/intranet/revisarCotizaciones" class="sidebar-link">
+            <i class="bx bxs-file"></i>
+            <span>Revisar Cotizaciones</span>
+          </a>
+        </li>
+        <li id="vendMenu2" class="sidebar-item">
+          <a href="/intranet/ventas" class="sidebar-link">
+            <i class="bx bxs-cart"></i>
+            <span>Registrar Ventas</span>
+          </a>
+        </li>
+        <li id="vendMenu3" class="sidebar-item">
+          <a href="/intranet/historialVentas" class="sidebar-link">
+            <i class="bx bx-search-alt-2"></i>
+            <span>Historial de Ventas</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="#" class="sidebar-link" onclick="confirmLogout()">
+          <i class="bx bx-log-out"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </div>
+    </aside>
 
     <!-- CONTENIDO -->
     <div class="main">
-      <!-- ROL -->
+      <!-- NAV -->
       <nav class="navbar navbar-expand px-4 py-3">
         <div class="navbar-collapse collapse">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <span class="nav-link">
-                <b></b>
-                <span th:text="${rol}"></span>
+                <b>Rol:</b> <span id="rolDisplay">Cargando...</span>
               </span>
-            </li>
-            <li class="nav-item-dropdown">
-              <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                <img src="/img/account.png" class="avatar img-fluid" alt="" />
-              </a>
             </li>
           </ul>
         </div>
       </nav>
 
       <main class="content px-3 py-4">
-        <div class="container py-4">
+        <div class="container-fluid">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Registrar Venta</h2>
+            <h2 class="fw-bold">📊 Registrar Venta</h2>
           </div>
 
-          <!-- Indicador de pasos -->
-          <div class="step-indicator">
-            <div class="step active" id="step1">
-              <div class="step-number">1</div>
-              <div class="step-label">Productos</div>
-            </div>
-            <div class="step" id="step2">
-              <div class="step-number">2</div>
-              <div class="step-label">Cliente</div>
-            </div>
-            <div class="step" id="step3">
-              <div class="step-number">3</div>
-              <div class="step-label">Pago</div>
-            </div>
-          </div>
-
-          <!-- Paso 1: Selección de Productos -->
-          <div class="card mb-4" id="step1-content">
-            <div class="card-body">
-              <h5 class="card-title mb-4">🛒 Productos</h5>
-              <div class="row">
-                <div class="col-md-8">
+          <div class="row">
+            <!-- PRODUCTOS DISPONIBLES -->
+            <div class="col-lg-7">
+              <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0">🛒 Productos Disponibles</h5>
+                </div>
+                <div class="card-body">
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Buscar productos..." id="productSearch">
+                    <input type="text" class="form-control" placeholder="🔍 Buscar productos..." id="productSearch">
                   </div>
-
-                  <!-- Lista de productos disponibles -->
                   <div id="products-list">
-                    <!-- Producto 1 -->
-                    <div class="product-item">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h6 class="fw-bold mb-1">Colchón Queen Size Memory Foam</h6>
-                          
-                          <div>
-                            <span class="badge bg-success">Stock: 15</span>
-                            <span class="badge bg-primary">S/ 1,250.00</span>
-                          </div>
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="addProductToSale(1)">
-                          <i class="bx bx-plus"></i> Agregar
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Producto 2 -->
-                    <div class="product-item">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h6 class="fw-bold mb-1">Base Cama Ajustable King Size</h6>
-                          
-                          <div>
-                            <span class="badge bg-warning">Stock: 8</span>
-                            <span class="badge bg-primary">S/ 890.00</span>
-                          </div>
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="addProductToSale(2)">
-                          <i class="bx bx-plus"></i> Agregar
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Producto 3 -->
-                    <div class="product-item">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h6 class="fw-bold mb-1">Almohada Viscoelástica Premium</h6>
-                          
-                          <div>
-                            <span class="badge bg-danger">Stock: 0</span>
-                            <span class="badge bg-primary">S/ 120.00</span>
-                          </div>
-                        </div>
-                        <button class="btn btn-secondary btn-sm" disabled>
-                          <i class="bx bx-x"></i> Sin Stock
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Producto 4 -->
-                    <div class="product-item">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h6 class="fw-bold mb-1">Protector Impermeable Queen Size</h6>
-                          
-                          <div>
-                            <span class="badge bg-success">Stock: 22</span>
-                            <span class="badge bg-primary">S/ 85.00</span>
-                          </div>
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="addProductToSale(4)">
-                          <i class="bx bx-plus"></i> Agregar
-                        </button>
-                      </div>
+                    <div class="text-center text-muted py-4">
+                      <p>Cargando productos...</p>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                <div class="col-md-4">
-                  <div class="card summary-card">
-                    <div class="card-body">
-                      <h6 class="card-title text-white fw-bold">Resumen de Venta</h6>
-
-                      <div id="selected-products">
-                        <div class="text-center text-white-50 py-3">
-                          <i class="bx bx-cart display-4 mb-2"></i>
-                          <p>No hay productos agregados</p>
-                        </div>
-                      </div>
-
-                      <div class="border-top border-white-50 pt-3 mt-3">
-                        <div class="d-flex justify-content-between text-white mb-2">
-                          <span>Subtotal:</span>
-                          <span id="subtotal">S/ 0.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between text-white mb-2">
-                          <span>IGV (18%):</span>
-                          <span id="igv">S/ 0.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between text-white fw-bold fs-5">
-                          <span>Total:</span>
-                          <span id="total">S/ 0.00</span>
-                        </div>
-                      </div>
-                    </div>
+            <!-- CARRITO DE VENTA -->
+            <div class="col-lg-5">
+              <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                  <h5 class="mb-0">🧾 Carrito de Venta</h5>
+                </div>
+                <div class="card-body">
+                  <div id="cart-items" class="mb-3">
+                    <p class="text-muted text-center">El carrito está vacío</p>
+                  </div>
+                  
+                  <hr>
+                  
+                  <div class="cart-total">
+                    Total: S/ <span id="cart-total">0.00</span>
                   </div>
 
-                  <div class="mt-3">
-                    <button class="btn btn-success w-100" onclick="nextStep(2)">
-                      Siguiente <i class="bx bx-chevron-right"></i>
+                  <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-success btn-lg" id="btnRegistrarVenta" onclick="registrarVenta()">
+                      <i class="bx bx-check"></i> Registrar Venta
+                    </button>
+                    <button class="btn btn-outline-danger" id="btnLimpiarCarrito" onclick="limpiarCarrito()">
+                      <i class="bx bx-trash"></i> Limpiar Carrito
                     </button>
                   </div>
                 </div>
               </div>
+
+              <!-- ALERTAS -->
+              <div id="alertSuccess" class="alert alert-success mt-3" style="display: none;">
+                <i class="bx bx-check-circle"></i> <span id="alertSuccessMsg"></span>
+              </div>
+              <div id="alertError" class="alert alert-danger mt-3" style="display: none;">
+                <i class="bx bx-x-circle"></i> <span id="alertErrorMsg"></span>
+              </div>
             </div>
           </div>
 
-          <!-- Paso 2: Información del Cliente -->
-          <div class="card mb-4" id="step2-content" style="display: none;">
+          <!-- HISTORIAL DE VENTAS -->
+          <div class="card shadow mt-4">
+            <div class="card-header bg-info text-white">
+              <h5 class="mb-0">📋 Mis Últimas Ventas</h5>
+            </div>
             <div class="card-body">
-              <h5 class="card-title mb-4">👤 Cliente</h5>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label class="form-label">Buscar Cliente</label>
-                    <input type="text" class="form-control" placeholder="Nombre, email o teléfono">
-                  </div>
-
-                  <div class="mb-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="clientType" id="existingClient" checked>
-                      <label class="form-check-label" for="existingClient">
-                        Cliente existente
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="clientType" id="newClient">
-                      <label class="form-check-label" for="newClient">
-                        Nuevo cliente
-                      </label>
-                    </div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">Usuario</label>
-                    <select class="form-select">
-                      <option selected>Seleccionar Usuario...</option>
-                      <option>Fabrizio Bustamante - alessandro.bustamante@colchonesencanto.com</option>
-                      <option>Shayuri García - shayuri.garcia@colchonesencanto.com</option>
-                      <option>Walter Mantari - walter.mantari@colchonesencanto.com</option>
-                      <option>Juan Ore - juan.ore@colchonesencanto.com</option>
-                      <option>Marcela Rodriguez - marcela.rodriguez@colchonesencanto.com</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label class="form-label">Notas</label>
-                    <textarea class="form-control" rows="4" placeholder="Observaciones adicionales..."></textarea>
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-end mt-4">
-                <button class="btn btn-outline-secondary me-2" onclick="previousStep(1)">
-                  <i class="bx bx-chevron-left"></i> Anterior
-                </button>
-                <button class="btn btn-success" onclick="nextStep(3)">
-                  Siguiente <i class="bx bx-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Paso 3: Información de Pago -->
-          <div class="card mb-4" id="step3-content" style="display: none;">
-            <div class="card-body">
-              <h5 class="card-title mb-4">💳 Pago</h5>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label class="form-label">Método de Pago</label>
-                    <select class="form-select" id="paymentMethod" onchange="togglePaymentFields()">
-                      <option value="cash" selected>Efectivo</option>
-                      <option value="card">Tarjeta</option>
-                      <option value="transfer">Transferencia</option>
-                      <option value="yape">Yape/Plin</option>
-                    </select>
-                  </div>
-
-                  <div id="cash-payment">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <label class="form-label">Monto Recibido</label>
-                        <input type="number" class="form-control" placeholder="0.00" id="amountReceived"
-                          oninput="calculateChange()">
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label">Vuelto</label>
-                        <input type="text" class="form-control" id="changeAmount" readonly value="S/ 0.00">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div id="card-payment" style="display: none;">
-                    <div class="mb-3">
-                      <label class="form-label">Número de Tarjeta</label>
-                      <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label class="form-label">Tipo de Comprobante</label>
-                    <select class="form-select">
-                      <option selected>Boleta de Venta</option>
-                      <option>Factura</option>
-                    </select>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">Fecha de Entrega</label>
-                    <input type="date" class="form-control" id="deliveryDate">
-                  </div>
-                </div>
-              </div>
-
-              <div class="text-end mt-4">
-                <button class="btn btn-outline-secondary me-2" onclick="previousStep(2)">
-                  <i class="bx bx-chevron-left"></i> Anterior
-                </button>
-                <button class="btn btn-success" onclick="processSale()">
-                  <i class="bx bx-check"></i> Finalizar Venta
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Modal de confirmación -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="successModalLabel">¡Venta Registrada!</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
-              </div>
-              <div class="modal-body text-center">
-                <i class="bx bx-check-circle display-1 text-success mb-3"></i>
-                <h5 class="fw-bold">Venta #V-2024-00125</h5>
-                <p class="mb-3">La venta ha sido registrada correctamente.</p>
-
-                <div class="bg-light rounded p-3 mb-3">
-                  <div class="d-flex justify-content-between">
-                    <span class="fw-bold">Total:</span>
-                    <span class="text-success fw-bold" id="modalTotal">S/ 0.00</span>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">
-                  <i class="bx bx-printer"></i> Imprimir
-                </button>
+              <div class="ventasTabla">
+                <table class="table table-hover table-sm">
+                  <thead class="table-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Fecha</th>
+                      <th>Productos</th>
+                      <th>Total</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaMisVentas">
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">Cargando ventas...</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </main>
-      <!-- FOOTER -->
-      <footer class="footer">
-        <div class="container-fluid">
-          <div class="row text-body-secondary">
-            <div class="col-6 text-start">
-              <a href="#" class="text-body-secondary">
-                <strong>Colchones D'Encanto</strong>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/scriptVentas.js"></script>
+  <script src="/js/authUtils.js"></script>
+  <script src="/js/script.js"></script>
+  
+  <script>
+    // ============ GESTIÓN DE CARRITO ============
+    let carrito = [];
+    let productosDisponibles = [];
+
+    // Validar autenticación
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuthentication();
+      const userInfo = getUserInfo();
+      if (userInfo) {
+        document.getElementById('rolDisplay').textContent = userInfo.rol;
+      }
+      cargarProductos();
+      cargarMisVentas();
+    });
+
+    /**
+     * Cargar lista de productos desde API
+     */
+    function cargarProductos() {
+      fetch('/intranet/api/ventas/productos', {
+        headers: {
+          'Authorization': 'Bearer ' + getToken()
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        productosDisponibles = data;
+        mostrarProductos(data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('products-list').innerHTML = 
+          '<div class="alert alert-danger">Error al cargar productos</div>';
+      });
+    }
+
+    /**
+     * Mostrar productos en la lista
+     */
+    function mostrarProductos(productos) {
+      const lista = document.getElementById('products-list');
+      
+      if (productos.length === 0) {
+        lista.innerHTML = '<p class="text-muted">No hay productos disponibles</p>';
+        return;
+      }
+
+      lista.innerHTML = productos.map(p => `
+        <div class="product-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <h6 class="fw-bold mb-2">${p.nombre}</h6>
+              <p class="text-muted small mb-2">${p.descripcion || 'Sin descripción'}</p>
+              <span class="badge bg-primary">S/ ${parseFloat(p.precio).toFixed(2)}</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="abrirModalProducto(${p.id}, '${p.nombre}', ${p.precio})">
+              <i class="bx bx-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /**
+     * Modal para agregar cantidad de producto
+     */
+    function abrirModalProducto(id, nombre, precio) {
+      const cantidad = prompt(`¿Cuántos '${nombre}' deseas agregar?\n(Precio: S/ ${parseFloat(precio).toFixed(2)})`);
+      
+      if (cantidad && cantidad > 0) {
+        agregarAlCarrito(id, nombre, parseFloat(precio), parseInt(cantidad));
+      }
+    }
+
+    /**
+     * Agregar producto al carrito
+     */
+    function agregarAlCarrito(productoId, nombre, precio, cantidad) {
+      const existe = carrito.find(item => item.productoId === productoId);
+      
+      if (existe) {
+        existe.cantidad += cantidad;
+      } else {
+        carrito.push({
+          productoId,
+          nombre,
+          precio,
+          cantidad
+        });
+      }
+
+      actualizarCarrito();
+      mostrarAlerta('success', `✅ ${nombre} agregado al carrito`);
+    }
+
+    /**
+     * Actualizar visualización del carrito
+     */
+    function actualizarCarrito() {
+      const cartItems = document.getElementById('cart-items');
+      let total = 0;
+
+      if (carrito.length === 0) {
+        cartItems.innerHTML = '<p class="text-muted text-center">El carrito está vacío</p>';
+        document.getElementById('cart-total').textContent = '0.00';
+        return;
+      }
+
+      cartItems.innerHTML = carrito.map((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        
+        return `
+          <div class="cart-item">
+            <div class="flex-grow-1">
+              <strong>${item.nombre}</strong><br>
+              <small class="text-muted">${item.cantidad} x S/ ${item.precio.toFixed(2)}</small>
+            </div>
+            <div class="text-end">
+              <strong>S/ ${subtotal.toFixed(2)}</strong>
+              <button class="btn btn-sm btn-outline-danger" onclick="removeDelCarrito(${index})" style="margin-left: 10px;">
+                <i class="bx bx-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('cart-total').textContent = total.toFixed(2);
+    }
+
+    /**
+     * Remover producto del carrito
+     */
+    function removeDelCarrito(index) {
+      carrito.splice(index, 1);
+      actualizarCarrito();
+    }
+
+    /**
+     * Limpiar carrito
+     */
+    function limpiarCarrito() {
+      if (confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
+        carrito = [];
+        actualizarCarrito();
+        mostrarAlerta('info', 'Carrito vaciado');
+      }
+    }
+
+    /**
+     * Registrar venta
+     */
+    function registrarVenta() {
+      if (carrito.length === 0) {
+        mostrarAlerta('error', 'El carrito está vacío');
+        return;
+      }
+
+      const btnRegistrar = document.getElementById('btnRegistrarVenta');
+      btnRegistrar.disabled = true;
+      btnRegistrar.innerHTML = '<i class="bx bx-loader bx-spin"></i> Registrando...';
+
+      const payload = {
+        detalles: carrito
+      };
+
+      fetch('/intranet/api/ventas/crear', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getToken()
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          mostrarAlerta('success', `✅ ${data.message}\nVenta ID: ${data.ventaId}`);
+          carrito = [];
+          actualizarCarrito();
+          cargarMisVentas(); // Recargar tabla de ventas
+        } else {
+          mostrarAlerta('error', data.error || 'Error al registrar venta');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        mostrarAlerta('error', 'Error al conectar con el servidor');
+      })
+      .finally(() => {
+        btnRegistrar.disabled = false;
+        btnRegistrar.innerHTML = '<i class="bx bx-check"></i> Registrar Venta';
+      });
+    }
+
+    /**
+     * Cargar mis ventas
+     */
+    function cargarMisVentas() {
+      fetch('/intranet/api/ventas/lista', {
+        headers: {
+          'Authorization': 'Bearer ' + getToken()
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const tabla = document.getElementById('tablaMisVentas');
+        
+        if (Array.isArray(data) && data.length > 0) {
+          tabla.innerHTML = data.map((venta, index) => `
+            <tr>
+              <td>${venta.id}</td>
+              <td>${new Date(venta.fechaCreacion).toLocaleDateString('es-PE')}</td>
+              <td><span class="badge bg-info">${venta.cantidadProductos} productos</span></td>
+              <td><strong>S/ ${parseFloat(venta.total).toFixed(2)}</strong></td>
+              <td><span class="badge bg-success">${venta.estado}</span></td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger" onclick="eliminarVenta(${venta.id})">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          tabla.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No tienes ventas registradas</td></tr>';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    /**
+     * Eliminar venta
+     */
+    function eliminarVenta(ventaId) {
+      if (confirm('¿Estás seguro de que deseas eliminar esta venta?')) {
+        fetch(`/intranet/api/ventas/eliminar/${ventaId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer ' + getToken()
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            mostrarAlerta('success', '✅ Venta eliminada exitosamente');
+            cargarMisVentas();
+          } else {
+            mostrarAlerta('error', data.error || 'Error al eliminar venta');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          mostrarAlerta('error', 'Error al conectar con el servidor');
+        });
+      }
+    }
+
+    /**
+     * Mostrar alertas
+     */
+    function mostrarAlerta(tipo, mensaje) {
+      if (tipo === 'success') {
+        document.getElementById('alertSuccess').style.display = 'block';
+        document.getElementById('alertSuccessMsg').textContent = mensaje;
+        document.getElementById('alertError').style.display = 'none';
+        setTimeout(() => {
+          document.getElementById('alertSuccess').style.display = 'none';
+        }, 4000);
+      } else if (tipo === 'error') {
+        document.getElementById('alertError').style.display = 'block';
+        document.getElementById('alertErrorMsg').textContent = mensaje;
+        document.getElementById('alertSuccess').style.display = 'none';
+      } else {
+        document.getElementById('alertSuccess').style.display = 'block';
+        document.getElementById('alertSuccessMsg').textContent = mensaje;
+        document.getElementById('alertError').style.display = 'none';
+      }
+    }
+
+    /**
+     * Confirmar logout
+     */
+    function confirmLogout() {
+      if (confirm('¿Deseas cerrar sesión?')) {
+        logout();
+      }
+    }
+
+    // Búsqueda de productos
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('productSearch');
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const texto = e.target.value.toLowerCase();
+          const filtrados = productosDisponibles.filter(p =>
+            p.nombre.toLowerCase().includes(texto) ||
+            (p.descripcion && p.descripcion.toLowerCase().includes(texto))
+          );
+          mostrarProductos(filtrados);
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

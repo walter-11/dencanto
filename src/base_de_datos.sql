@@ -22,7 +22,7 @@ CREATE TABLE roles (
 INSERT INTO roles (nombre) VALUES 
 ('ADMIN'),
 ('VENDEDOR'),
-('CLIENTE');
+
 
 -- ====================================================
 -- TABLA: usuarios
@@ -40,13 +40,15 @@ CREATE TABLE usuarios (
   FOREIGN KEY (rol_id) REFERENCES roles(id)
 );
 
--- Usuario administrador inicial (contraseña: admin123)
+-- Usuario administrador inicial (contraseña: admin)
+-- Hash BCrypt generado para "admin"
 INSERT INTO usuarios (nombre_usuario, contrasena_hash, nombre_completo, correo, telefono, rol_id)
-VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Administrador General', 'admin@dencanto.com', '999999999', 1);
+VALUES ('admin', '$2a$10$R9h7cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jKMUe', 'Administrador General', 'admin@dencanto.com', '999999999', 1);
 
--- Usuario vendedor (contraseña: vendedor123)
+-- Usuario vendedor (contraseña: vendedor)
+-- Hash BCrypt generado para "vendedor"
 INSERT INTO usuarios (nombre_usuario, contrasena_hash, nombre_completo, correo, telefono, rol_id)
-VALUES ('vendedor', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Vendedor Principal', 'vendedor@dencanto.com', '988888888', 2);
+VALUES ('vendedor', '$2a$10$VTbY2qhJdQkY6kXKhwB1oOO1i7lLXZ1fOPO4d7LvEu3PxMjEqLRWa', 'Vendedor Principal', 'vendedor@dencanto.com', '988888888', 2);
 
 -- ====================================================
 -- TABLA: productos (ESTRUCTURA CORREGIDA)

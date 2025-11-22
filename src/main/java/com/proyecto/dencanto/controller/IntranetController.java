@@ -1,107 +1,99 @@
 package com.proyecto.dencanto.controller;
 
-
-import jakarta.servlet.http.HttpSession;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto.dencanto.Repository.VentaRepository;
-
-
+import com.proyecto.dencanto.security.UserDetailsImpl;
 
 @Controller
 @RequestMapping("/intranet")
 public class IntranetController {
 
-    // Modificaciones avance 3:
-    // Muestre todas las ventas registradas en la tabla ventas.
-    // Liste sus detalles (productos, cantidades, precios) desde detalle_venta.
-    // Permita ver el detalle de cada venta en el modal.
     private final VentaRepository ventaRepository;
+
     public IntranetController(VentaRepository ventaRepository) {
         this.ventaRepository = ventaRepository;
     }
-    @GetMapping("/intranet/historialVentas")
-    public String mostrarHistorialVentas(Model model) {
-        model.addAttribute("ventas", ventaRepository.findAll());
-        return "intranet/historialVentas";
-    }
 
-
-
-    // Página del login
-    @GetMapping("/login")
-    public String login() {
-        return "intranet/login"; // templates/intranet/login.html
-    }
-
-    // Procesar login
-    @PostMapping("/login")
-    public String procesarLogin(
-            @RequestParam String username,
-            @RequestParam String password,
-            Model model,
-            HttpSession session) {
-
-        if ("admin".equals(username) && "1234".equals(password)) {
-            session.setAttribute("usuario", "Administrador");
-            session.setAttribute("rol", "ADMIN");
-            model.addAttribute("success", true);
-            return "redirect:/intranet/dashboard";
-        } else if ("vendedor".equals(username) && "1234".equals(password)) {
-            session.setAttribute("usuario", "Vendedor");
-            session.setAttribute("rol", "VENDEDOR");
-            model.addAttribute("success", true);
-            return "redirect:/intranet/dashboard";
-        } else {
-            model.addAttribute("error", "Usuario y/o contraseña incorrectos");
-            return "intranet/login";
+    /**
+     * Obtiene la información del usuario autenticado y la añade al modelo
+     */
+    private void addUserInfoToModel(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+            String rol = userDetails.getAuthorities().stream()
+                    .map(a -> a.getAuthority().replace("ROLE_", ""))
+                    .findFirst()
+                    .orElse("USUARIO");
+            model.addAttribute("usuario", userDetails.getUsername());
+            model.addAttribute("rol", rol);
         }
     }
 
-    
-    @GetMapping("/dashboard")
-    public String dashboard() {
-        return "intranet/dashboard"; // templates/intranet/dashboard.html
+    // Página del login (pública)
+    @GetMapping("/login")
+    public String login() {
+        return "intranet/login";
     }
 
-   
+    // Dashboard - accesible para ADMIN y VENDEDOR
+    @GetMapping("/dashboard")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
+    public String dashboard(Model model) {
+        addUserInfoToModel(model);
+        return "intranet/dashboard";
+    }
 
-  
+    // =============== RUTAS SOLO PARA ADMIN ===============
+
+    // Gestión de Cotizaciones (ADMIN)
     @GetMapping("/cotizaciones")
-    public String gestionCotizaciones() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String gestionCotizaciones(Model model) {
+        addUserInfoToModel(model);
         return "intranet/cotizaciones";
     }
 
-    
-
+    // Gestión de Reportes (ADMIN)
     @GetMapping("/reportes")
-    public String gestionReportes() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String gestionReportes(Model model) {
+        addUserInfoToModel(model);
         return "intranet/reportes";
     }
 
-    // Vendedor
+    // =============== RUTAS SOLO PARA VENDEDOR ===============
+
+    // Revisar Cotizaciones (VENDEDOR)
     @GetMapping("/revisarCotizaciones")
-    public String revisarCotizaciones() {
+    @PreAuthorize("hasRole('VENDEDOR')")
+    public String revisarCotizaciones(Model model) {
+        addUserInfoToModel(model);
         return "intranet/cotizaciones";
     }
 
-   
-
-    @GetMapping("/historialVentas")
-    public String gestionHistorialVentas() {
-        return "intranet/historialVentas";
-    }
-
-     @GetMapping("/ventas")
-    public String gestionVentas() {
+    // Gestión de Ventas (VENDEDOR)
+    @GetMapping("/ventas")
+    @PreAuthorize("hasRole('VENDEDOR')")
+    public String gestionVentas(Model model) {
+        addUserInfoToModel(model);
         return "intranet/ventas";
     }
 
-
-    
+    // Historial de Ventas (VENDEDOR)
+    @GetMapping("/historialVentas")
+    @PreAuthorize("hasRole('VENDEDOR')")
+    public String mostrarHistorialVentas(Model model) {
+        addUserInfoToModel(model);
+        model.addAttribute("ventas", ventaRepository.findAll());
+        return "intranet/historialVentas";
+    }
 }
+

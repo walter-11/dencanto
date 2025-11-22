@@ -39,44 +39,44 @@
             </a>
           </li>
           <!-- MENU PARA ADMIN -->
-           <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+           <li id="adminMenu" class="sidebar-item" style="display: none;">
             <a href="/intranet/reportes" class="sidebar-link">
               <i class="bx bxs-report"></i>
               <span>Generar Reportes</span>
             </a>
           </li>
-          <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <li id="adminMenu2" class="sidebar-item" style="display: none;">
             <a href="/intranet/productos" class="sidebar-link">
               <i class="bx bxs-box"></i>
               <span>Gestión de Productos</span>
             </a>
           </li>
-          <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <li id="adminMenu3" class="sidebar-item" style="display: none;">
             <a href="/intranet/usuarios" class="sidebar-link">
               <i class="bx bxs-user-account"></i>
               <span>Gestión de Usuarios</span>
             </a>
           </li>
-          <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <li id="adminMenu4" class="sidebar-item" style="display: none;">
             <a href="/intranet/cotizaciones" class="sidebar-link">
               <i class="bx bxs-food-menu"></i>
               <span>Visualizar Cotizaciones</span>
             </a>
           </li>
           <!-- MENU PARA VENDEDORES -->
-          <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+          <li id="vendMenu" class="sidebar-item" style="display: none;">
             <a href="/intranet/revisarCotizaciones" class="sidebar-link">
               <i class="bx bxs-file"></i>
               <span>Revisar Cotizaciones</span>
             </a>
           </li>
-          <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+          <li id="vendMenu2" class="sidebar-item" style="display: none;">
             <a href="/intranet/ventas" class="sidebar-link">
               <i class="bx bxs-cart"></i>
               <span>Registrar Ventas</span>
             </a>
           </li>
-          <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+          <li id="vendMenu3" class="sidebar-item" style="display: none;">
             <a href="/intranet/historialVentas" class="sidebar-link">
               <i class="bx bx-search-alt-2"></i>
               <span>Historial de Ventas</span>
@@ -84,7 +84,7 @@
           </li>
         </ul>
         <div class="sidebar-footer">
-          <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
+          <a href="#" class="sidebar-link" onclick="confirmLogout()">
             <i class="bx bx-log-out"></i>
             <span>Cerrar Sesión</span>
           </a>
@@ -100,7 +100,7 @@
               <li class="nav-item">
                 <span class="nav-link">
                   <b></b>
-                  <span th:text="${rol}"></span>
+                  <span id="rolDisplay">Cargando...</span>
                 </span>
               </li>
               <li class="nav-item-dropdown">
@@ -118,7 +118,7 @@
               <h3 class="fw-bold fs-4 mb-3">Historial</h3>
               <div class="row">
                 <!-- CARD SOLO PARA ADMIN 1-->
-                <div th:if="${rol} == 'ADMIN'" class="col-12 col-md-4">
+                <div id="cardAdmin1" class="col-12 col-md-4" style="display: none;">
                   <div class="card shadow">
                     <div class="card-body py-4">
                       <h6 class="mb-2 fw-bold">Ventas Totales</h6>
@@ -130,7 +130,7 @@
                   </div>    
                 </div>
                 <!-- CARD SOLO PARA ADMIN 2-->
-                <div th:if="${rol} == 'ADMIN'" class="col-12 col-md-4">
+                <div id="cardAdmin2" class="col-12 col-md-4" style="display: none;">
                   <div class="card shadow">
                     <div class="card-body py-4">
                       <h6 class="mb-2 fw-bold">Total de Usuarios</h6>
@@ -142,7 +142,7 @@
                   </div>    
                 </div>
                 <!-- CARD SOLO PARA ADMIN 3-->
-                <div th:if="${rol} == 'ADMIN'" class="col-12 col-md-4">
+                <div id="cardAdmin3" class="col-12 col-md-4" style="display: none;">
                   <div class="card shadow">
                     <div class="card-body py-4">
                       <h6 class="mb-2 fw-bold">Cotizaciones</h6>
@@ -155,7 +155,7 @@
                 </div>
 
                 <!-- CARD SOLO PARA VENDEDOR -->
-                <div th:if="${rol} == 'VENDEDOR'" class="col-12 col-md-4">
+                <div id="cardVend" class="col-12 col-md-4" style="display: none;">
                   <div class="card shadow">
                     <div class="card-body py-4">
                       <h6 class="mb-2 fw-bold">Ventas del Mes</h6>
@@ -172,9 +172,7 @@
               <!-- TABLA Y REPORTES -->
               <div class="row">
                 <div class="col-12 col-md-7">
-                  <h3 th:text="${rol} == 'ADMIN' ? 'Usuarios del Sistema' : 'Usuarios del Sistema'"
-                      class="fw-bold fs-4 my-3">Personal
-                    </h3>
+                  <h3 id="tableTitle" class="fw-bold fs-4 my-3">Personal</h3>
                     
                   <table class="table table-striped">
                     <thead>
@@ -221,10 +219,7 @@
                 </div>
                 <!-- GRAFICO DE BARRAS -->
                 <div class="col-12 col-md-5">
-                  <h3
-                    class="fw-bold fs-4 my-3"
-                    th:text="${rol} == 'ADMIN' ? 'Reporte General de Ventas' : 'Mi Rendimiento de Ventas'"
-                  ></h3>
+                  <h3 id="chartTitle" class="fw-bold fs-4 my-3">Reporte General de Ventas</h3>
                   <canvas
                     id="bar-chart-grouped"
                     width="800"
@@ -258,6 +253,79 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
+    <script src="/js/authUtils.js"></script>
     <script src="/js/script.js"></script>
+    <script>
+      // Validar autenticación antes de mostrar el dashboard
+      document.addEventListener('DOMContentLoaded', function() {
+        const userInfo = getUserInfo();
+        if (!userInfo || !getToken()) {
+          // Si no hay token o info del usuario, redirigir al login
+          console.warn('No autenticado, redirigiendo al login...');
+          window.location.href = '/intranet/login';
+          return;
+        }
+        
+        renderMenuByRole();
+      });
+
+      // Función para mostrar/ocultar menú según el rol
+      function renderMenuByRole() {
+        const userInfo = getUserInfo();
+        if (!userInfo) {
+          console.error('No user info available');
+          return;
+        }
+
+        const rol = userInfo.rol;
+        document.getElementById('rolDisplay').textContent = rol;
+
+        if (rol === 'ADMIN') {
+          // Mostrar menú de admin
+          document.getElementById('adminMenu').style.display = 'list-item';
+          document.getElementById('adminMenu2').style.display = 'list-item';
+          document.getElementById('adminMenu3').style.display = 'list-item';
+          document.getElementById('adminMenu4').style.display = 'list-item';
+
+          // Mostrar cards de admin
+          document.getElementById('cardAdmin1').style.display = 'block';
+          document.getElementById('cardAdmin2').style.display = 'block';
+          document.getElementById('cardAdmin3').style.display = 'block';
+
+          // Actualizar títulos
+          if (document.getElementById('tableTitle')) {
+            document.getElementById('tableTitle').textContent = 'Usuarios del Sistema';
+          }
+          if (document.getElementById('chartTitle')) {
+            document.getElementById('chartTitle').textContent = 'Reporte General de Ventas';
+          }
+        } else if (rol === 'VENDEDOR') {
+          // Mostrar menú de vendedor
+          document.getElementById('vendMenu').style.display = 'list-item';
+          document.getElementById('vendMenu2').style.display = 'list-item';
+          document.getElementById('vendMenu3').style.display = 'list-item';
+
+          // Mostrar card de vendedor
+          document.getElementById('cardVend').style.display = 'block';
+
+          // Actualizar títulos
+          if (document.getElementById('tableTitle')) {
+            document.getElementById('tableTitle').textContent = 'Resumen de Mis Ventas';
+          }
+          if (document.getElementById('chartTitle')) {
+            document.getElementById('chartTitle').textContent = 'Mi Rendimiento de Ventas';
+          }
+        }
+        
+        console.log('Menu renderizado para rol:', rol);
+      }
+
+      // Confirmar logout
+      function confirmLogout() {
+        if (confirm('¿Deseas cerrar sesión?')) {
+          logout();
+        }
+      }
+    </script>
   </body>
 </html>
