@@ -4,51 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar Venta - Colchones D'Encanto</title>
+  <title>Intranet - Registrar Ventas</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/intranet.css" />
   <link rel="stylesheet" href="/css/style.css" />
-  <style>
-    .product-item {
-      border: 1px solid #e0e0e0;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      transition: box-shadow 0.3s;
-    }
-    .product-item:hover {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .cart-item {
-      background: #f8f9fa;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .cart-total {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #2c3e50;
-      padding: 15px;
-      background: #e8f4f8;
-      border-radius: 5px;
-      text-align: right;
-    }
-    .ventasTabla {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/ventas.css" />
 </head>
 
 <body>
   <div class="wrapper">
     <!-- MENÚ LATERAL -->
-    <aside id="sidebar">
+    <aside id="sidebar" class="">
       <div class="d-flex justify-content-between p-4">
         <div class="sidebar-logo">
           <a href="#">Colchones D'<br />Encanto</a>
@@ -58,25 +24,52 @@
         </button>
       </div>
       <ul class="sidebar-nav">
+        <!-- PERFIL (ADMIN/USUARIO)-->
         <li class="sidebar-item">
           <a href="/intranet/dashboard" class="sidebar-link">
             <i class="bx bx-history"></i>
             <span>Historial</span>
           </a>
         </li>
-        <li id="vendMenu" class="sidebar-item">
+        <!-- MENU PARA ADMIN -->
+        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <a href="/intranet/reportes" class="sidebar-link">
+            <i class="bx bxs-report"></i>
+            <span>Generar Reportes</span>
+          </a>
+        </li>
+        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <a href="/intranet/productos" class="sidebar-link">
+            <i class="bx bxs-box"></i>
+            <span>Gestión de Productos</span>
+          </a>
+        </li>
+        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <a href="/intranet/usuarios" class="sidebar-link">
+            <i class="bx bxs-user-account"></i>
+            <span>Gestión de Usuarios</span>
+          </a>
+        </li>
+        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+          <a href="/intranet/cotizaciones" class="sidebar-link">
+            <i class="bx bxs-food-menu"></i>
+            <span>Visualizar Cotizaciones</span>
+          </a>
+        </li>
+        <!-- MENU PARA VENDEDORES -->
+        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
           <a href="/intranet/revisarCotizaciones" class="sidebar-link">
             <i class="bx bxs-file"></i>
             <span>Revisar Cotizaciones</span>
           </a>
         </li>
-        <li id="vendMenu2" class="sidebar-item">
+        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
           <a href="/intranet/ventas" class="sidebar-link">
             <i class="bx bxs-cart"></i>
             <span>Registrar Ventas</span>
           </a>
         </li>
-        <li id="vendMenu3" class="sidebar-item">
+        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
           <a href="/intranet/historialVentas" class="sidebar-link">
             <i class="bx bx-search-alt-2"></i>
             <span>Historial de Ventas</span>
@@ -84,431 +77,359 @@
         </li>
       </ul>
       <div class="sidebar-footer">
-        <a href="#" class="sidebar-link" onclick="confirmLogout()">
+        <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
           <i class="bx bx-log-out"></i>
           <span>Cerrar Sesión</span>
         </a>
       </div>
     </aside>
 
-    <!-- CONTENIDO -->
+    <!-- CONTENIDO PRINCIPAL -->
     <div class="main">
-      <!-- NAV -->
+      <!-- NAVBAR -->
       <nav class="navbar navbar-expand px-4 py-3">
         <div class="navbar-collapse collapse">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <span class="nav-link">
-                <b>Rol:</b> <span id="rolDisplay">Cargando...</span>
+                <b></b>
+                <span id="rolDisplay">VENDEDOR</span>
               </span>
+            </li>
+            <li class="nav-item-dropdown">
+              <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                <img src="/img/account.png" class="avatar img-fluid" alt="" />
+              </a>
             </li>
           </ul>
         </div>
       </nav>
 
-      <main class="content px-3 py-4">
+      <!-- CONTENIDO -->
+      <main class="content">
         <div class="container-fluid">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">📊 Registrar Venta</h2>
+          <!-- INDICADORES DE PASOS -->
+          <div class="steps-container">
+            <div class="steps-indicator">
+              <div class="step-item active" id="step1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Productos</div>
+              </div>
+              <div class="step-item" id="step2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Cliente</div>
+              </div>
+              <div class="step-item" id="step3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Pago</div>
+              </div>
+            </div>
           </div>
 
-          <div class="row">
-            <!-- PRODUCTOS DISPONIBLES -->
-            <div class="col-lg-7">
-              <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                  <h5 class="mb-0">🛒 Productos Disponibles</h5>
-                </div>
+          <!-- ALERTAS -->
+          <div id="alertContainer"></div>
+
+          <!-- FORMULARIO -->
+          <form id="ventaForm">
+            <!-- ===== PASO 1: PRODUCTOS ===== -->
+            <div class="form-section active" id="step1-content">
+              <div class="card">
                 <div class="card-body">
-                  <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="🔍 Buscar productos..." id="productSearch">
+                  <div class="form-title">
+                    <i class="bx bxs-box"></i>
+                    Seleccionar Productos
                   </div>
-                  <div id="products-list">
-                    <div class="text-center text-muted py-4">
-                      <p>Cargando productos...</p>
+
+                  <!-- Buscador -->
+                  <div class="product-search">
+                    <i class="bx bx-search-alt" style="position: absolute; left: 15px; top: 12px; color: #6c757d;"></i>
+                    <input type="text" id="productSearch" placeholder="Buscar por nombre o categoría...">
+                  </div>
+
+                  <!-- Grid de Productos -->
+                  <div class="products-grid" id="products-list">
+                    <!-- Se llena con JavaScript -->
+                  </div>
+
+                  <!-- Resumen Carrito -->
+                  <div class="cart-summary" id="selected-products">
+                    <h5><i class="bx bx-cart"></i> Carrito de Compra</h5>
+                    <p style="color: #6c757d; margin: 0;">No hay productos seleccionados</p>
+                  </div>
+
+                  <!-- Botones Navegación -->
+                  <div class="buttons-container">
+                    <button type="button" class="btn-nav btn-prev" id="btnPrev" onclick="previousStep(currentStep)"
+                      style="display: none;">
+                      <i class="bx bx-arrow-back"></i> Anterior
+                    </button>
+                    <button type="button" class="btn-nav btn-next" id="btnNext" onclick="nextStep(currentStep)">
+                      Siguiente <i class="bx bx-arrow-forward"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== PASO 2: CLIENTE ===== -->
+            <div class="form-section" id="step2-content">
+              <div class="card">
+                <div class="card-body">
+                  <div class="form-title">
+                    <i class="bx bxs-user"></i>
+                    Información del Cliente
+                  </div>
+
+                  <!-- Datos Cliente Nuevo -->
+                  <div id="newClientFields">
+                    <div class="form-group">
+                      <label for="clienteName">Nombre Completo *</label>
+                      <input type="text" id="clienteName" placeholder="Nombre del cliente" minlength="3"
+                        maxlength="100">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="clientePhone">Teléfono *</label>
+                      <input type="tel" id="clientePhone" placeholder="987654321" pattern="\d{9}" maxlength="9">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="clienteEmail">Correo Electrónico *</label>
+                      <input type="email" id="clienteEmail" placeholder="cliente@email.com">
                     </div>
                   </div>
+
+                  <!-- Tipo de Entrega -->
+                  <div class="form-group">
+                    <label>Tipo de Entrega *</label>
+                    <div class="delivery-type">
+                      <div class="radio-option">
+                        <input type="radio" id="recojoOption" name="tipoEntrega" value="RECOJO" checked>
+                        <label for="recojoOption">Recojo en Tienda</label>
+                      </div>
+                      <div class="radio-option">
+                        <input type="radio" id="domicilioOption" name="tipoEntrega" value="DOMICILIO">
+                        <label for="domicilioOption">Entrega a Domicilio</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Dirección Entrega (condicional) -->
+                  <div class="form-group" id="direccionGroup" style="display: none;">
+                    <label for="direccion">Dirección de Entrega *</label>
+                    <textarea id="direccion" placeholder="Ej: Av. Principal 123, Apto 4B, Lima" rows="3" minlength="10"
+                      maxlength="255"></textarea>
+                  </div>
+
+                  <!-- Costo Delivery -->
+                  <div class="form-group">
+                    <label for="costoDelivery">Costo de Delivery (S/)</label>
+                    <input type="number" id="costoDelivery" value="0" min="0" step="0.01">
+                  </div>
+
+                  <!-- Botones Navegación -->
+                  <div class="buttons-container">
+                    <button type="button" class="btn-nav btn-prev" onclick="previousStep(currentStep)">
+                      <i class="bx bx-arrow-back"></i> Anterior
+                    </button>
+                    <button type="button" class="btn-nav btn-next" onclick="nextStep(currentStep)">
+                      Siguiente <i class="bx bx-arrow-forward"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- CARRITO DE VENTA -->
-            <div class="col-lg-5">
-              <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                  <h5 class="mb-0">🧾 Carrito de Venta</h5>
-                </div>
+            <!-- ===== PASO 3: PAGO ===== -->
+            <div class="form-section" id="step3-content">
+              <div class="card">
                 <div class="card-body">
-                  <div id="cart-items" class="mb-3">
-                    <p class="text-muted text-center">El carrito está vacío</p>
-                  </div>
-                  
-                  <hr>
-                  
-                  <div class="cart-total">
-                    Total: S/ <span id="cart-total">0.00</span>
+                  <div class="form-title">
+                    <i class="bx bxs-credit-card"></i>
+                    Información de Pago
                   </div>
 
-                  <div class="d-grid gap-2 mt-3">
-                    <button class="btn btn-success btn-lg" id="btnRegistrarVenta" onclick="registrarVenta()">
-                      <i class="bx bx-check"></i> Registrar Venta
+                  <!-- Método de Pago -->
+                  <div class="form-group">
+                    <label for="paymentMethod">Método de Pago *</label>
+                    <div class="payment-method-box">
+                      <select id="paymentMethod" required>
+                        <option value="">-- Seleccionar método --</option>
+                        <option value="EFECTIVO">Efectivo</option>
+                        <option value="YAPE">Yape</option>
+                        <option value="PLIN">Plin</option>
+                        <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Campos según Método de Pago -->
+                  <!-- EFECTIVO -->
+                  <div id="cash-payment" class="payment-fields hidden">
+                    <h6>Pago en Efectivo</h6>
+                    <div class="form-group">
+                      <label for="amountReceived">Monto Recibido (S/) *</label>
+                      <input type="number" id="amountReceived" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                      <label for="changeAmount">Vuelto (S/)</label>
+                      <input type="number" id="changeAmount" readonly value="0.00">
+                    </div>
+                  </div>
+                  <!-- YAPE/PLIN -->
+                  <div id="yapeplin-payment" class="payment-fields hidden">
+                    <h6>Yape/Plin</h6>
+                    <p style="color: #6c757d; font-size: 0.9rem;">
+                      <strong>Yape:</strong> 934078986<br>
+                      <strong>Plin:</strong> 98765432101<br>
+                      Favor de confirmar depósito por WhatsApp
+                    </p>
+                  </div>
+
+                  <!-- TRANSFERENCIA -->
+                  <div id="bank-transfer-payment" class="payment-fields hidden">
+                    <h6>Transferencia Bancaria</h6>
+                    <p style="color: #6c757d; font-size: 0.9rem;">
+                      <strong>N° Cuenta BCP:</strong> 12345678901<br>
+                      <strong>N° Cuenta Interbank:</strong> 98765432101<br>
+                      Favor de confirmar depósito por WhatsApp
+                    </p>
+                  </div>
+
+                  <!-- Fecha de Entrega -->
+                  <div class="form-group">
+                    <label for="deliveryDate">Fecha de Entrega *</label>
+                    <input type="date" id="deliveryDate" required>
+                  </div>
+
+                  <!-- Resumen Final -->
+                  <div class="cart-summary" style="margin-top: 2rem;">
+                    <h5>Resumen de Compra</h5>
+                    <div class="total-row">
+                      <span>Subtotal:</span>
+                      <span>S/ <span id="resumen-subtotal">0.00</span></span>
+                    </div>
+                    <div class="total-row">
+                      <span>IGV (18%):</span>
+                      <span>S/ <span id="resumen-igv">0.00</span></span>
+                    </div>
+                    <div class="total-row">
+                      <span>Delivery:</span>
+                      <span>S/ <span id="resumen-delivery">0.00</span></span>
+                    </div>
+                    <div class="total-row final">
+                      <span>Total:</span>
+                      <span>S/ <span id="resumen-total">0.00</span></span>
+                    </div>
+                  </div>
+
+                  <!-- Botones Navegación -->
+                  <div class="buttons-container">
+                    <button type="button" class="btn-nav btn-prev" onclick="previousStep(currentStep)">
+                      <i class="bx bx-arrow-back"></i> Anterior
                     </button>
-                    <button class="btn btn-outline-danger" id="btnLimpiarCarrito" onclick="limpiarCarrito()">
-                      <i class="bx bx-trash"></i> Limpiar Carrito
+                    <button type="button" class="btn-nav btn-submit" id="btnSubmit" onclick="processSale()">
+                      <i class="bx bxs-check-circle"></i> Registrar Venta
                     </button>
                   </div>
                 </div>
               </div>
-
-              <!-- ALERTAS -->
-              <div id="alertSuccess" class="alert alert-success mt-3" style="display: none;">
-                <i class="bx bx-check-circle"></i> <span id="alertSuccessMsg"></span>
-              </div>
-              <div id="alertError" class="alert alert-danger mt-3" style="display: none;">
-                <i class="bx bx-x-circle"></i> <span id="alertErrorMsg"></span>
-              </div>
             </div>
-          </div>
-
-          <!-- HISTORIAL DE VENTAS -->
-          <div class="card shadow mt-4">
-            <div class="card-header bg-info text-white">
-              <h5 class="mb-0">📋 Mis Últimas Ventas</h5>
-            </div>
-            <div class="card-body">
-              <div class="ventasTabla">
-                <table class="table table-hover table-sm">
-                  <thead class="table-light">
-                    <tr>
-                      <th>#</th>
-                      <th>Fecha</th>
-                      <th>Productos</th>
-                      <th>Total</th>
-                      <th>Estado</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tablaMisVentas">
-                    <tr>
-                      <td colspan="6" class="text-center text-muted">Cargando ventas...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          </form>
         </div>
       </main>
     </div>
   </div>
 
+  <!-- MODAL ÉXITO -->
+  <div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">¡Venta Registrada Exitosamente!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="success-icon">
+            <i class="bx bxs-check-circle"></i>
+          </div>
+          <h6 style="color: var(--primary);">Referencia de Venta</h6>
+          <p style="font-size: 1.3rem; font-weight: 700; color: var(--secondary); margin-bottom: 1rem;"
+            id="modalVentaId">V-2024-0001</p>
+          <p style="color: #6c757d; margin-bottom: 0.5rem;">Total: <strong id="modalTotal"
+              style="color: var(--secondary); font-size: 1.1rem;">S/ 0.00</strong></p>
+          <p style="color: #6c757d;">La venta ha sido registrada correctamente en el sistema.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="recargarPagina()">
+            <i class="bx bx-plus"></i> Nueva Venta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/authUtils.js"></script>
-  <script src="/js/script.js"></script>
-  
+
   <script>
-    // ============ GESTIÓN DE CARRITO ============
-    let carrito = [];
-    let productosDisponibles = [];
-
-    // Validar autenticación
-    document.addEventListener('DOMContentLoaded', function() {
-      checkAuthentication();
-      const userInfo = getUserInfo();
-      if (userInfo) {
-        document.getElementById('rolDisplay').textContent = userInfo.rol;
+    // ============================================
+    // INICIALIZACIÓN DE MENÚ - EJECUTAR PRIMERO
+    // ============================================
+    function initMenuForCurrentUser() {
+      if (!hasToken()) {
+        window.location.href = "/intranet/login";
+        return;
       }
-      cargarProductos();
-      cargarMisVentas();
-    });
 
-    /**
-     * Cargar lista de productos desde API
-     */
-    function cargarProductos() {
-      fetch('/intranet/api/ventas/productos', {
-        headers: {
-          'Authorization': 'Bearer ' + getToken()
+      const currentUser = getCurrentUser();
+      if (currentUser && currentUser.rol) {
+        const rolDisplay = document.getElementById("rolDisplay");
+        if (rolDisplay) {
+          rolDisplay.textContent = currentUser.rol === "ADMIN" ? "Administrador" : "Vendedor";
         }
-      })
-      .then(response => response.json())
-      .then(data => {
-        productosDisponibles = data;
-        mostrarProductos(data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('products-list').innerHTML = 
-          '<div class="alert alert-danger">Error al cargar productos</div>';
-      });
-    }
 
-    /**
-     * Mostrar productos en la lista
-     */
-    function mostrarProductos(productos) {
-      const lista = document.getElementById('products-list');
-      
-      if (productos.length === 0) {
-        lista.innerHTML = '<p class="text-muted">No hay productos disponibles</p>';
-        return;
-      }
-
-      lista.innerHTML = productos.map(p => `
-        <div class="product-item">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="flex-grow-1">
-              <h6 class="fw-bold mb-2">${p.nombre}</h6>
-              <p class="text-muted small mb-2">${p.descripcion || 'Sin descripción'}</p>
-              <span class="badge bg-primary">S/ ${parseFloat(p.precio).toFixed(2)}</span>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="abrirModalProducto(${p.id}, '${p.nombre}', ${p.precio})">
-              <i class="bx bx-plus"></i> Agregar
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    /**
-     * Modal para agregar cantidad de producto
-     */
-    function abrirModalProducto(id, nombre, precio) {
-      const cantidad = prompt(`¿Cuántos '${nombre}' deseas agregar?\n(Precio: S/ ${parseFloat(precio).toFixed(2)})`);
-      
-      if (cantidad && cantidad > 0) {
-        agregarAlCarrito(id, nombre, parseFloat(precio), parseInt(cantidad));
-      }
-    }
-
-    /**
-     * Agregar producto al carrito
-     */
-    function agregarAlCarrito(productoId, nombre, precio, cantidad) {
-      const existe = carrito.find(item => item.productoId === productoId);
-      
-      if (existe) {
-        existe.cantidad += cantidad;
-      } else {
-        carrito.push({
-          productoId,
-          nombre,
-          precio,
-          cantidad
-        });
-      }
-
-      actualizarCarrito();
-      mostrarAlerta('success', `✅ ${nombre} agregado al carrito`);
-    }
-
-    /**
-     * Actualizar visualización del carrito
-     */
-    function actualizarCarrito() {
-      const cartItems = document.getElementById('cart-items');
-      let total = 0;
-
-      if (carrito.length === 0) {
-        cartItems.innerHTML = '<p class="text-muted text-center">El carrito está vacío</p>';
-        document.getElementById('cart-total').textContent = '0.00';
-        return;
-      }
-
-      cartItems.innerHTML = carrito.map((item, index) => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
-        
-        return `
-          <div class="cart-item">
-            <div class="flex-grow-1">
-              <strong>${item.nombre}</strong><br>
-              <small class="text-muted">${item.cantidad} x S/ ${item.precio.toFixed(2)}</small>
-            </div>
-            <div class="text-end">
-              <strong>S/ ${subtotal.toFixed(2)}</strong>
-              <button class="btn btn-sm btn-outline-danger" onclick="removeDelCarrito(${index})" style="margin-left: 10px;">
-                <i class="bx bx-trash"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      document.getElementById('cart-total').textContent = total.toFixed(2);
-    }
-
-    /**
-     * Remover producto del carrito
-     */
-    function removeDelCarrito(index) {
-      carrito.splice(index, 1);
-      actualizarCarrito();
-    }
-
-    /**
-     * Limpiar carrito
-     */
-    function limpiarCarrito() {
-      if (confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
-        carrito = [];
-        actualizarCarrito();
-        mostrarAlerta('info', 'Carrito vaciado');
-      }
-    }
-
-    /**
-     * Registrar venta
-     */
-    function registrarVenta() {
-      if (carrito.length === 0) {
-        mostrarAlerta('error', 'El carrito está vacío');
-        return;
-      }
-
-      const btnRegistrar = document.getElementById('btnRegistrarVenta');
-      btnRegistrar.disabled = true;
-      btnRegistrar.innerHTML = '<i class="bx bx-loader bx-spin"></i> Registrando...';
-
-      const payload = {
-        detalles: carrito
-      };
-
-      fetch('/intranet/api/ventas/crear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getToken()
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          mostrarAlerta('success', `✅ ${data.message}\nVenta ID: ${data.ventaId}`);
-          carrito = [];
-          actualizarCarrito();
-          cargarMisVentas(); // Recargar tabla de ventas
+        // Mostrar elementos del menú según el rol
+        if (currentUser.rol === "ADMIN") {
+          // ADMIN ve todas las opciones
+          const adminMenus = document.querySelectorAll("#adminMenu, #adminMenu2, #adminMenu3, #adminMenu4");
+          adminMenus.forEach(menu => menu.style.display = "block");
         } else {
-          mostrarAlerta('error', data.error || 'Error al registrar venta');
+          // VENDEDOR ve sus opciones
+          const vendMenus = document.querySelectorAll("#vendMenu, #vendMenu2, #vendMenu3");
+          vendMenus.forEach(menu => menu.style.display = "block");
         }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        mostrarAlerta('error', 'Error al conectar con el servidor');
-      })
-      .finally(() => {
-        btnRegistrar.disabled = false;
-        btnRegistrar.innerHTML = '<i class="bx bx-check"></i> Registrar Venta';
-      });
+      }
     }
 
-    /**
-     * Cargar mis ventas
-     */
-    function cargarMisVentas() {
-      fetch('/intranet/api/ventas/lista', {
-        headers: {
-          'Authorization': 'Bearer ' + getToken()
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        const tabla = document.getElementById('tablaMisVentas');
-        
-        if (Array.isArray(data) && data.length > 0) {
-          tabla.innerHTML = data.map((venta, index) => `
-            <tr>
-              <td>${venta.id}</td>
-              <td>${new Date(venta.fechaCreacion).toLocaleDateString('es-PE')}</td>
-              <td><span class="badge bg-info">${venta.cantidadProductos} productos</span></td>
-              <td><strong>S/ ${parseFloat(venta.total).toFixed(2)}</strong></td>
-              <td><span class="badge bg-success">${venta.estado}</span></td>
-              <td>
-                <button class="btn btn-sm btn-outline-danger" onclick="eliminarVenta(${venta.id})">
-                  <i class="bx bx-trash"></i>
-                </button>
-              </td>
-            </tr>
-          `).join('');
-        } else {
-          tabla.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No tienes ventas registradas</td></tr>';
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    // Inicializar menú apenas el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMenuForCurrentUser);
+    } else {
+      initMenuForCurrentUser();
     }
+  </script>
 
-    /**
-     * Eliminar venta
-     */
-    function eliminarVenta(ventaId) {
-      if (confirm('¿Estás seguro de que deseas eliminar esta venta?')) {
-        fetch(`/intranet/api/ventas/eliminar/${ventaId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': 'Bearer ' + getToken()
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            mostrarAlerta('success', '✅ Venta eliminada exitosamente');
-            cargarMisVentas();
+  <script src="/js/scriptVentas.js"></script>
+
+  <script>
+    // Sidebar toggle
+    document.addEventListener("DOMContentLoaded", function () {
+      const sidebarToggle = document.querySelector(".toggle-btn");
+      const sidebar = document.getElementById("sidebar");
+      const icon = document.getElementById("icon");
+
+      if (sidebarToggle && sidebar && icon) {
+        sidebarToggle.addEventListener("click", function () {
+          sidebar.classList.toggle("hide");
+          if (sidebar.classList.contains("hide")) {
+            icon.classList.remove("bxs-chevrons-right");
+            icon.classList.add("bxs-chevrons-left");
           } else {
-            mostrarAlerta('error', data.error || 'Error al eliminar venta');
+            icon.classList.remove("bxs-chevrons-left");
+            icon.classList.add("bxs-chevrons-right");
           }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          mostrarAlerta('error', 'Error al conectar con el servidor');
-        });
-      }
-    }
-
-    /**
-     * Mostrar alertas
-     */
-    function mostrarAlerta(tipo, mensaje) {
-      if (tipo === 'success') {
-        document.getElementById('alertSuccess').style.display = 'block';
-        document.getElementById('alertSuccessMsg').textContent = mensaje;
-        document.getElementById('alertError').style.display = 'none';
-        setTimeout(() => {
-          document.getElementById('alertSuccess').style.display = 'none';
-        }, 4000);
-      } else if (tipo === 'error') {
-        document.getElementById('alertError').style.display = 'block';
-        document.getElementById('alertErrorMsg').textContent = mensaje;
-        document.getElementById('alertSuccess').style.display = 'none';
-      } else {
-        document.getElementById('alertSuccess').style.display = 'block';
-        document.getElementById('alertSuccessMsg').textContent = mensaje;
-        document.getElementById('alertError').style.display = 'none';
-      }
-    }
-
-    /**
-     * Confirmar logout
-     */
-    function confirmLogout() {
-      if (confirm('¿Deseas cerrar sesión?')) {
-        logout();
-      }
-    }
-
-    // Búsqueda de productos
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('productSearch');
-      if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-          const texto = e.target.value.toLowerCase();
-          const filtrados = productosDisponibles.filter(p =>
-            p.nombre.toLowerCase().includes(texto) ||
-            (p.descripcion && p.descripcion.toLowerCase().includes(texto))
-          );
-          mostrarProductos(filtrados);
         });
       }
     });

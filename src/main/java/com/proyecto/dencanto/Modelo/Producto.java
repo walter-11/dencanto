@@ -37,6 +37,35 @@ public class Producto {
     @Column(name = "estado", length = 50)
     private String estado = "Disponible";
     
+    // ===== IMAGEN PRINCIPAL =====
+    @Column(name = "imagen_principal", columnDefinition = "LONGTEXT")
+    private String imagenPrincipal; // Base64 o URL
+    
+    // ===== FICHA TÉCNICA =====
+    @Column(name = "material", length = 200)
+    private String material;
+    
+    @Column(name = "dimensiones", length = 200)
+    private String dimensiones;
+    
+    @Column(name = "peso", length = 100)
+    private String peso;
+    
+    @Column(name = "firmeza", length = 100)
+    private String firmeza;
+    
+    @Column(name = "garantia", length = 100)
+    private String garantia;
+    
+    @Column(name = "caracteristicas", columnDefinition = "TEXT")
+    private String caracteristicas;
+    
+    @Column(name = "imagen_tecnica_1", columnDefinition = "LONGTEXT")
+    private String imagenTecnica1; // Primera imagen de ficha técnica
+    
+    @Column(name = "imagen_tecnica_2", columnDefinition = "LONGTEXT")
+    private String imagenTecnica2; // Segunda imagen de ficha técnica
+    
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
     
@@ -85,6 +114,35 @@ public class Producto {
     
     public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
+    
+    // ===== GETTERS Y SETTERS IMAGEN PRINCIPAL =====
+    public String getImagenPrincipal() { return imagenPrincipal; }
+    public void setImagenPrincipal(String imagenPrincipal) { this.imagenPrincipal = imagenPrincipal; }
+    
+    // ===== GETTERS Y SETTERS FICHA TÉCNICA =====
+    public String getMaterial() { return material; }
+    public void setMaterial(String material) { this.material = material; }
+    
+    public String getDimensiones() { return dimensiones; }
+    public void setDimensiones(String dimensiones) { this.dimensiones = dimensiones; }
+    
+    public String getPeso() { return peso; }
+    public void setPeso(String peso) { this.peso = peso; }
+    
+    public String getFirmeza() { return firmeza; }
+    public void setFirmeza(String firmeza) { this.firmeza = firmeza; }
+    
+    public String getGarantia() { return garantia; }
+    public void setGarantia(String garantia) { this.garantia = garantia; }
+    
+    public String getCaracteristicas() { return caracteristicas; }
+    public void setCaracteristicas(String caracteristicas) { this.caracteristicas = caracteristicas; }
+    
+    public String getImagenTecnica1() { return imagenTecnica1; }
+    public void setImagenTecnica1(String imagenTecnica1) { this.imagenTecnica1 = imagenTecnica1; }
+    
+    public String getImagenTecnica2() { return imagenTecnica2; }
+    public void setImagenTecnica2(String imagenTecnica2) { this.imagenTecnica2 = imagenTecnica2; }
     
     // Métodos para las fechas automáticas
     @PrePersist

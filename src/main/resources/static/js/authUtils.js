@@ -6,24 +6,55 @@
 // ============== GESTIÓN DE TOKENS ==============
 
 /**
- * Guarda el token JWT en localStorage Y en una cookie (para envío automático)
+ * Guarda el token JWT en localStorage Y en sessionStorage + cookie (para Tracking Prevention)
  */
 function saveToken(token) {
-    // Guardar en localStorage
-    localStorage.setItem('jwt_token', token);
+    try {
+        // Guardar en localStorage
+        localStorage.setItem('jwt_token', token);
+    } catch (e) {
+        console.warn('⚠️ No se pudo guardar en localStorage:', e.message);
+    }
     
-    // Guardar en cookie (24 horas de expiracion)
-    const date = new Date();
-    date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // 24 horas
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = "jwt_token=" + token + ";" + expires + ";path=/";
+    try {
+        // Guardar en sessionStorage como fallback
+        sessionStorage.setItem('jwt_token', token);
+    } catch (e) {
+        console.warn('⚠️ No se pudo guardar en sessionStorage:', e.message);
+    }
+    
+    try {
+        // Guardar en cookie (24 horas de expiracion)
+        const date = new Date();
+        date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // 24 horas
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = "jwt_token=" + token + ";" + expires + ";path=/";
+    } catch (e) {
+        console.warn('⚠️ No se pudo guardar en cookie:', e.message);
+    }
 }
 
 /**
- * Obtiene el token JWT del localStorage
+ * Obtiene el token JWT del localStorage o sessionStorage (fallback para Tracking Prevention)
  */
 function getToken() {
-    return localStorage.getItem('jwt_token');
+    try {
+        // Intentar localStorage primero
+        const token = localStorage.getItem('jwt_token');
+        if (token) return token;
+    } catch (e) {
+        console.warn('⚠️ localStorage bloqueado por Tracking Prevention');
+    }
+    
+    try {
+        // Fallback a sessionStorage
+        const token = sessionStorage.getItem('jwt_token');
+        if (token) return token;
+    } catch (e) {
+        console.warn('⚠️ sessionStorage también bloqueado');
+    }
+    
+    return null;
 }
 
 /**

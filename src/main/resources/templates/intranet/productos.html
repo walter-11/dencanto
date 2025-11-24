@@ -7,6 +7,89 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #0d6efd;
+        }
+        .producto-imagen {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background: #e9ecef;
+        }
+        .card-producto {
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+        .card-producto:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .estado-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.85rem;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        .imagen-input-group {
+            border: 2px dashed #0d6efd;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .imagen-input-group:hover {
+            background: #f0f7ff;
+        }
+        .imagen-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+        .ficha-tecnica-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .ficha-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #0d6efd;
+        }
+        .ficha-item label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #495057;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .no-resultados {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .no-resultados i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+    </style>
 </head>
 
 <body>
@@ -52,27 +135,9 @@
                         <span>Visualizar Cotizaciones</span>
                     </a>
                 </li>
-                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-                    <a href="/intranet/revisarCotizaciones" class="sidebar-link">
-                        <i class="bx bxs-file"></i>
-                        <span>Revisar Cotizaciones</span>
-                    </a>
-                </li>
-                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-                    <a href="/intranet/registrarVentas" class="sidebar-link">
-                        <i class="bx bxs-cart"></i>
-                        <span>Registrar Ventas</span>
-                    </a>
-                </li>
-                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-                    <a href="/intranet/historialVentas" class="sidebar-link">
-                        <i class="bx bxs-car"></i>
-                        <span>Historial de Ventas</span>
-                    </a>
-                </li>
             </ul>
             <div class="sidebar-footer">
-                <a href="/intranet/login" class="sidebar-link" onclick="return confirm('¿Está seguro de que desea cerrar sesión?')">
+                <a href="#" class="sidebar-link" onclick="confirmLogout()">
                     <i class="bx bx-log-out"></i>
                     <span>Cerrar Sesión</span>
                 </a>
@@ -85,14 +150,8 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
                             <span class="nav-link">
-                                <b></b>
-                                <span th:text="${rol}"></span>
+                                <b>Rol:</b> <span id="rolDisplay" th:text="${rol}">Cargando...</span>
                             </span>
-                        </li>
-                        <li class="nav-item-dropdown">
-                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                                <img src="/img/account.png" class="avatar img-fluid" alt="" />
-                            </a>
                         </li>
                     </ul>
                 </div>
@@ -100,82 +159,121 @@
             
             <main class="content px-3 py-4">
                 <div class="container-fluid">
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="fw-bold fs-4 mb-0">Gestión de Productos</h3>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                                <i class="bx bx-plus"></i> Agregar Producto
-                            </button>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold">📦 Gestión de Productos</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                            <i class="bx bx-plus"></i> Agregar Producto
+                        </button>
+                    </div>
+                    
+                    <!-- Mensajes de éxito -->
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bx bx-check-circle"></i> <span th:text="${successMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- SECCIÓN DE FILTROS -->
+                    <div class="filter-section">
+                        <h5 class="mb-3"><i class="bx bx-filter"></i> Filtros de Búsqueda</h5>
+                        <div class="row g-3">
+                            <div class="col-lg-4">
+                                <label class="form-label">🔍 Buscar por nombre o categoría</label>
+                                <input type="text" class="form-control" id="inputBusqueda" 
+                                       placeholder="Ej: Colchón, Almohada...">
+                            </div>
+                            <div class="col-lg-3">
+                                <label class="form-label">📁 Categoría</label>
+                                <select class="form-select" id="selectCategoria">
+                                    <option value="">Todas las categorías</option>
+                                    <option value="Colchones">Colchones</option>
+                                    <option value="Base Cama">Base Cama</option>
+                                    <option value="Almohadas">Almohadas</option>
+                                    <option value="Protectores">Protectores</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label class="form-label">📊 Estado</label>
+                                <select class="form-select" id="selectEstado">
+                                    <option value="">Todos los estados</option>
+                                    <option value="Disponible">Disponible</option>
+                                    <option value="Agotado">Agotado</option>
+                                    <option value="Descontinuado">Descontinuado</option>
+                                    <option value="No disponible">No disponible</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-success w-100" onclick="limpiarFiltros()">
+                                    <i class="bx bx-refresh"></i> Limpiar
+                                </button>
+                            </div>
                         </div>
-                        
-                        <!-- Mensajes de éxito -->
-                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                            <span th:text="${successMessage}"></span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- TABLA DE PRODUCTOS -->
+                    <div class="card shadow">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Productos Registrados (<span id="countProductos">0</span>)</h5>
                         </div>
-                        
-                        <!-- Tabla de productos -->
-                        <div class="card shadow">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr class="highlight">
-                                                <th scope="col">ID</th>
-                                                <th scope="col">Nombre</th>
-                                                <th scope="col">Categoría</th>
-                                                <th scope="col">Precio</th>
-                                                <th scope="col">Stock</th>
-                                                <th scope="col">Estado</th>
-                                                <th scope="col">Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Iterar sobre la lista de productos -->
-                                            <tr th:each="producto : ${productos}">
-                                                <th scope="row" th:text="${producto.id}"></th>
-                                                <td th:text="${producto.nombre}"></td>
-                                                <td th:text="${producto.categoria}"></td>
-                                                <td th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></td>
-                                                <td th:text="${producto.stock}"></td>
-                                                <td>
-                                                    <span th:if="${producto.estado == 'Disponible'}" class="badge bg-success">Disponible</span>
-                                                    <span th:if="${producto.estado == 'Agotado'}" class="badge bg-danger">Agotado</span>
-                                                    <span th:if="${producto.estado == 'Descontinuado'}" class="badge bg-warning">Descontinuado</span>
-                                                    <span th:if="${producto.estado == 'No disponible'}" class="badge bg-secondary">No disponible</span>
-                                                </td>
-                                                <td class="action-buttons">
-                                                    <!-- Botón Editar con datos en atributos data- -->
-                                                    <button class="btn btn-sm btn-outline-primary edit-btn" 
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#editProductModal"
-                                                            th:data-id="${producto.id}"
-                                                            th:data-nombre="${producto.nombre}"
-                                                            th:data-categoria="${producto.categoria}"
-                                                            th:data-precio="${producto.precio}"
-                                                            th:data-stock="${producto.stock}"
-                                                            th:data-descripcion="${producto.descripcion}"
-                                                            th:data-estado="${producto.estado}">
-                                                        <i class="bx bx-edit"></i>
-                                                    </button>
-                                                    
-                                                    <!-- Botón Eliminar -->
-                                                    <a th:href="@{/intranet/productos/eliminar/{id}(id=${producto.id})}" 
-                                                       class="btn btn-sm btn-outline-danger"
-                                                       onclick="return confirm('¿Está seguro de eliminar este producto?')">
-                                                        <i class="bx bx-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <!-- Mensaje si no hay productos -->
-                                            <tr th:if="${#lists.isEmpty(productos)}">
-                                                <td colspan="7" class="text-center text-muted py-4">
-                                                    No hay productos registrados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="tablaProductos">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Imagen</th>
+                                            <th>Nombre</th>
+                                            <th>Categoría</th>
+                                            <th>Precio</th>
+                                            <th>Stock</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bodyProductos">
+                                        <tr th:each="producto : ${productos}">
+                                            <td th:text="${producto.id}"></td>
+                                            <td>
+                                                <img th:if="${producto.imagenPrincipal}" 
+                                                     th:src="${'data:image/jpeg;base64,' + producto.imagenPrincipal}"
+                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                                <span th:unless="${producto.imagenPrincipal}" class="badge bg-secondary">Sin imagen</span>
+                                            </td>
+                                            <td th:text="${producto.nombre}"></td>
+                                            <td th:text="${producto.categoria}"></td>
+                                            <td class="product-price" th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></td>
+                                            <td>
+                                                <span th:if="${producto.stock > 0}" class="badge bg-success" th:text="${producto.stock} + ' un.'"></span>
+                                                <span th:unless="${producto.stock > 0}" class="badge bg-danger">Agotado</span>
+                                            </td>
+                                            <td>
+                                                <span th:if="${producto.estado == 'Disponible'}" class="badge bg-success">Disponible</span>
+                                                <span th:if="${producto.estado == 'Agotado'}" class="badge bg-danger">Agotado</span>
+                                                <span th:if="${producto.estado == 'Descontinuado'}" class="badge bg-warning">Descontinuado</span>
+                                                <span th:if="${producto.estado == 'No disponible'}" class="badge bg-secondary">No disponible</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editProductModal"
+                                                        th:data-id="${producto.id}"
+                                                        th:data-producto="${producto}"
+                                                        onclick="cargarProductoEnModal(this)">
+                                                    <i class="bx bx-edit"></i>
+                                                </button>
+                                                <a th:href="@{/intranet/productos/eliminar/{id}(id=${producto.id})}" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                                    <i class="bx bx-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="noResultados" class="no-resultados" style="display: none;">
+                                <i class="bx bx-inbox"></i>
+                                <p>No se encontraron productos</p>
                             </div>
                         </div>
                     </div>
@@ -184,126 +282,414 @@
         </div>
     </div>
 
-    <!-- Modal para agregar producto -->
+    <!-- MODAL: Agregar Producto -->
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addProductModalLabel">Agregar Nuevo Producto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addProductModalLabel">➕ Agregar Nuevo Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/intranet/productos/agregar}" method="post" th:object="${producto}">
+                <form th:action="@{/intranet/productos/agregar}" method="post" enctype="multipart/form-data" th:object="${producto}">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="nombre" class="form-label">Nombre del Producto *</label>
-                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                        <!-- INFORMACIÓN BÁSICA -->
+                        <div class="accordion" id="accordionProducto">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasico">
+                                        <i class="bx bx-info-circle"></i> Información Básica
+                                    </button>
+                                </h2>
+                                <div id="collapseBasico" class="accordion-collapse collapse show" data-bs-parent="#accordionProducto">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="nombre" class="form-label">Nombre del Producto *</label>
+                                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="codigo" class="form-label">Código/SKU</label>
+                                                <input type="text" class="form-control" id="codigo" th:field="*{codigo}">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="categoria" class="form-label">Categoría *</label>
+                                                <select class="form-select" id="categoria" th:field="*{categoria}" required>
+                                                    <option value="">Seleccionar categoría</option>
+                                                    <option value="Colchones">Colchones</option>
+                                                    <option value="Base Cama">Base Cama</option>
+                                                    <option value="Almohadas">Almohadas</option>
+                                                    <option value="Protectores">Protectores</option>
+                                                </select>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="estado" class="form-label">Estado *</label>
+                                                <select class="form-select" id="estado" th:field="*{estado}" required>
+                                                    <option value="Disponible">Disponible</option>
+                                                    <option value="Agotado">Agotado</option>
+                                                    <option value="Descontinuado">Descontinuado</option>
+                                                    <option value="No disponible">No disponible</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="descripcion" class="form-label">Descripción General</label>
+                                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3" 
+                                                      placeholder="Descripción breve del producto..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="categoria" class="form-label">Categoría *</label>
-                                <select class="form-select" id="categoria" th:field="*{categoria}" required>
-                                    <option value="">Seleccionar categoría</option>
-                                    <option value="Colchones">Colchones</option>
-                                    <option value="Base Cama">Base Cama</option>
-                                    <option value="Almohadas">Almohadas</option>
-                                    <option value="Protectores">Protectores</option>
-                                </select>
-                                <div class="text-danger" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+
+                            <!-- PRECIOS Y STOCK -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecio">
+                                        <i class="bx bx-dollar"></i> Precios y Stock
+                                    </button>
+                                </h2>
+                                <div id="collapsePrecio" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="precio" class="form-label">Precio Unitario (S/) *</label>
+                                                <input type="number" class="form-control" id="precio" th:field="*{precio}" 
+                                                       step="0.01" min="0" required>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="stock" class="form-label">Stock Disponible *</label>
+                                                <input type="number" class="form-control" id="stock" th:field="*{stock}" 
+                                                       min="0" required>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="precio" class="form-label">Precio (S/) *</label>
-                                <input type="number" class="form-control" id="precio" th:field="*{precio}" step="0.01" min="0" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+
+                            <!-- IMAGEN PRINCIPAL -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagen">
+                                        <i class="bx bx-image"></i> Imagen Principal
+                                    </button>
+                                </h2>
+                                <div id="collapseImagen" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                    <div class="accordion-body">
+                                        <div class="imagen-input-group" onclick="document.getElementById('inputImagenPrincipal').click()">
+                                            <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                            <p class="mb-0 mt-2">Haz clic para seleccionar imagen principal</p>
+                                            <small class="text-muted">Formatos: JPG, PNG (Max: 5MB)</small>
+                                        </div>
+                                        <input type="file" id="inputImagenPrincipal" name="imagenPrincipalFile" 
+                                               accept="image/*" style="display: none;" onchange="previewImagePrincipal(this)">
+                                        <img id="previewImagenPrincipal" class="imagen-preview" style="display: none;">
+                                        <input type="hidden" id="imagenPrincipal" th:field="*{imagenPrincipal}">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="stock" class="form-label">Stock *</label>
-                                <input type="number" class="form-control" id="stock" th:field="*{stock}" min="0" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+
+                            <!-- FICHA TÉCNICA -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFicha">
+                                        <i class="bx bx-spreadsheet"></i> Ficha Técnica del Colchón
+                                    </button>
+                                </h2>
+                                <div id="collapseFicha" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                    <div class="accordion-body">
+                                        <div class="ficha-tecnica-grid">
+                                            <div class="ficha-item">
+                                                <label for="material" class="form-label">Material</label>
+                                                <input type="text" class="form-control form-control-sm" id="material" 
+                                                       th:field="*{material}" placeholder="Ej: Espuma, Muelles...">
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="dimensiones" class="form-label">Dimensiones</label>
+                                                <input type="text" class="form-control form-control-sm" id="dimensiones" 
+                                                       th:field="*{dimensiones}" placeholder="Ej: 140x190 cm">
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="peso" class="form-label">Peso</label>
+                                                <input type="text" class="form-control form-control-sm" id="peso" 
+                                                       th:field="*{peso}" placeholder="Ej: 25 kg">
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="firmeza" class="form-label">Firmeza</label>
+                                                <select class="form-select form-select-sm" id="firmeza" th:field="*{firmeza}">
+                                                    <option value="">Seleccionar</option>
+                                                    <option value="Blanda">Blanda</option>
+                                                    <option value="Media">Media</option>
+                                                    <option value="Firme">Firme</option>
+                                                    <option value="Muy Firme">Muy Firme</option>
+                                                </select>
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="garantia" class="form-label">Garantía</label>
+                                                <input type="text" class="form-control form-control-sm" id="garantia" 
+                                                       th:field="*{garantia}" placeholder="Ej: 5 años">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 mt-3">
+                                            <label for="caracteristicas" class="form-label">Características Adicionales</label>
+                                            <textarea class="form-control" id="caracteristicas" th:field="*{caracteristicas}" 
+                                                      rows="3" placeholder="Información técnica adicional..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estado" class="form-label">Estado *</label>
-                            <select class="form-select" id="estado" th:field="*{estado}" required>
-                                <option value="Disponible">Disponible</option>
-                                <option value="Agotado">Agotado</option>
-                                <option value="Descontinuado">Descontinuado</option>
-                                <option value="No disponible">No disponible</option>
-                            </select>
+
+                            <!-- IMÁGENES TÉCNICAS -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagenesTecnicas">
+                                        <i class="bx bx-image-multiple"></i> Imágenes Técnicas (Ficha)
+                                    </button>
+                                </h2>
+                                <div id="collapseImagenesTecnicas" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Imagen Técnica 1</label>
+                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica1').click()">
+                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                    <p class="mb-0 mt-2">Seleccionar imagen 1</p>
+                                                </div>
+                                                <input type="file" id="inputImagenTecnica1" name="imagenTecnica1File" 
+                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica1(this)">
+                                                <img id="previewImagenTecnica1" class="imagen-preview" style="display: none;">
+                                                <input type="hidden" id="imagenTecnica1" th:field="*{imagenTecnica1}">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Imagen Técnica 2</label>
+                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica2').click()">
+                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                    <p class="mb-0 mt-2">Seleccionar imagen 2</p>
+                                                </div>
+                                                <input type="file" id="inputImagenTecnica2" name="imagenTecnica2File" 
+                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica2(this)">
+                                                <img id="previewImagenTecnica2" class="imagen-preview" style="display: none;">
+                                                <input type="hidden" id="imagenTecnica2" th:field="*{imagenTecnica2}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                        <button type="button" class="btn btn-primary" onclick="guardarProductoAgregar()">
+                            <i class="bx bx-save"></i> Guardar Producto
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar producto -->
+    <!-- MODAL: Editar Producto (Similar al anterior) -->
     <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProductModalLabel">Editar Producto</h5>
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="editProductModalLabel">✏️ Editar Producto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/intranet/productos/editar}" method="post" th:object="${producto}">
-                    <input type="hidden" th:field="*{id}" id="editProductId">
+                <form th:action="@{/intranet/productos/editar}" method="post" enctype="multipart/form-data" th:object="${producto}">
+                    <input type="hidden" id="editId" th:field="*{id}">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editProductName" class="form-label">Nombre del Producto *</label>
-                                <input type="text" class="form-control" id="editProductName" th:field="*{nombre}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                        <!-- CONTENIDO IGUAL AL MODAL DE AGREGAR -->
+                        <div class="accordion" id="accordionProductoEdit">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicoEdit">
+                                        <i class="bx bx-info-circle"></i> Información Básica
+                                    </button>
+                                </h2>
+                                <div id="collapseBasicoEdit" class="accordion-collapse collapse show" data-bs-parent="#accordionProductoEdit">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Nombre del Producto *</label>
+                                                <input type="text" class="form-control" id="editNombre" th:field="*{nombre}" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Código/SKU</label>
+                                                <input type="text" class="form-control" id="editCodigo" th:field="*{codigo}">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Categoría *</label>
+                                                <select class="form-select" id="editCategoria" th:field="*{categoria}" required>
+                                                    <option value="Colchones">Colchones</option>
+                                                    <option value="Base Cama">Base Cama</option>
+                                                    <option value="Almohadas">Almohadas</option>
+                                                    <option value="Protectores">Protectores</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Estado *</label>
+                                                <select class="form-select" id="editEstado" th:field="*{estado}" required>
+                                                    <option value="Disponible">Disponible</option>
+                                                    <option value="Agotado">Agotado</option>
+                                                    <option value="Descontinuado">Descontinuado</option>
+                                                    <option value="No disponible">No disponible</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Descripción General</label>
+                                            <textarea class="form-control" id="editDescripcion" th:field="*{descripcion}" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editProductCategory" class="form-label">Categoría *</label>
-                                <select class="form-select" id="editProductCategory" th:field="*{categoria}" required>
-                                    <option value="Colchones">Colchones</option>
-                                    <option value="Base Cama">Base Cama</option>
-                                    <option value="Almohadas">Almohadas</option>
-                                    <option value="Protectores">Protectores</option>
-                                </select>
-                                <div class="text-danger" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecioEdit">
+                                        <i class="bx bx-dollar"></i> Precios y Stock
+                                    </button>
+                                </h2>
+                                <div id="collapsePrecioEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Precio Unitario (S/) *</label>
+                                                <input type="number" class="form-control" id="editPrecio" th:field="*{precio}" 
+                                                       step="0.01" min="0" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Stock Disponible *</label>
+                                                <input type="number" class="form-control" id="editStock" th:field="*{stock}" 
+                                                       min="0" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editProductPrice" class="form-label">Precio (S/) *</label>
-                                <input type="number" class="form-control" id="editProductPrice" th:field="*{precio}" step="0.01" min="0" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+
+                            <!-- IMAGEN PRINCIPAL EDIT -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagenEdit">
+                                        <i class="bx bx-image"></i> Imagen Principal
+                                    </button>
+                                </h2>
+                                <div id="collapseImagenEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                    <div class="accordion-body">
+                                        <div class="imagen-input-group" onclick="document.getElementById('inputImagenPrincipalEdit').click()">
+                                            <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                            <p class="mb-0 mt-2">Haz clic para cambiar imagen principal</p>
+                                            <small class="text-muted">Formatos: JPG, PNG (Max: 5MB)</small>
+                                        </div>
+                                        <input type="file" id="inputImagenPrincipalEdit" name="imagenPrincipalFileEdit" 
+                                               accept="image/*" style="display: none;" onchange="previewImagePrincipalEdit(this)">
+                                        <img id="previewImagenPrincipalEdit" class="imagen-preview" style="display: none;">
+                                        <input type="hidden" id="editImagenPrincipal" th:field="*{imagenPrincipal}">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editProductStock" class="form-label">Stock *</label>
-                                <input type="number" class="form-control" id="editProductStock" th:field="*{stock}" min="0" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+
+                            <!-- FICHA TÉCNICA EDIT -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFichaEdit">
+                                        <i class="bx bx-spreadsheet"></i> Ficha Técnica del Colchón
+                                    </button>
+                                </h2>
+                                <div id="collapseFichaEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                    <div class="accordion-body">
+                                        <div class="ficha-tecnica-grid">
+                                            <div class="ficha-item">
+                                                <label for="editMaterial" class="form-label">Material</label>
+                                                <input type="text" class="form-control form-control-sm" id="editMaterial" 
+                                                       th:field="*{material}" placeholder="Ej: Espuma, Muelles...">
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="editDimensiones" class="form-label">Dimensiones</label>
+                                                <input type="text" class="form-control form-control-sm" id="editDimensiones" 
+                                                       th:field="*{dimensiones}" placeholder="Ej: 140x190 cm">
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="editPeso" class="form-label">Peso</label>
+                                                <input type="text" class="form-control form-control-sm" id="editPeso" 
+                                                       th:field="*{peso}" placeholder="Ej: 25 kg">
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="editFirmeza" class="form-label">Firmeza</label>
+                                                <select class="form-select form-select-sm" id="editFirmeza" th:field="*{firmeza}">
+                                                    <option value="">Seleccionar</option>
+                                                    <option value="Blanda">Blanda</option>
+                                                    <option value="Media">Media</option>
+                                                    <option value="Firme">Firme</option>
+                                                    <option value="Muy Firme">Muy Firme</option>
+                                                </select>
+                                            </div>
+                                            <div class="ficha-item">
+                                                <label for="editGarantia" class="form-label">Garantía</label>
+                                                <input type="text" class="form-control form-control-sm" id="editGarantia" 
+                                                       th:field="*{garantia}" placeholder="Ej: 5 años">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 mt-3">
+                                            <label for="editCaracteristicas" class="form-label">Características Adicionales</label>
+                                            <textarea class="form-control" id="editCaracteristicas" th:field="*{caracteristicas}" 
+                                                      rows="3" placeholder="Información técnica adicional..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editProductDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editProductDescription" th:field="*{descripcion}" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editProductEstado" class="form-label">Estado *</label>
-                            <select class="form-select" id="editProductEstado" th:field="*{estado}" required>
-                                <option value="Disponible">Disponible</option>
-                                <option value="Agotado">Agotado</option>
-                                <option value="Descontinuado">Descontinuado</option>
-                                <option value="No disponible">No disponible</option>
-                            </select>
+
+                            <!-- IMÁGENES TÉCNICAS EDIT -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagenesTecnicasEdit">
+                                        <i class="bx bx-image-multiple"></i> Imágenes Técnicas (Ficha)
+                                    </button>
+                                </h2>
+                                <div id="collapseImagenesTecnicasEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Imagen Técnica 1</label>
+                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica1Edit').click()">
+                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                    <p class="mb-0 mt-2">Seleccionar imagen 1</p>
+                                                </div>
+                                                <input type="file" id="inputImagenTecnica1Edit" name="imagenTecnica1FileEdit" 
+                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica1Edit(this)">
+                                                <img id="previewImagenTecnica1Edit" class="imagen-preview" style="display: none;">
+                                                <input type="hidden" id="editImagenTecnica1" th:field="*{imagenTecnica1}">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Imagen Técnica 2</label>
+                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica2Edit').click()">
+                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                    <p class="mb-0 mt-2">Seleccionar imagen 2</p>
+                                                </div>
+                                                <input type="file" id="inputImagenTecnica2Edit" name="imagenTecnica2FileEdit" 
+                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica2Edit(this)">
+                                                <img id="previewImagenTecnica2Edit" class="imagen-preview" style="display: none;">
+                                                <input type="hidden" id="editImagenTecnica2" th:field="*{imagenTecnica2}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-primary" onclick="guardarProductoEditar()">
+                            <i class="bx bx-save"></i> Guardar Cambios
+                        </button>
                     </div>
                 </form>
             </div>
@@ -313,31 +699,438 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Cargar datos en el modal de edición usando atributos data-
-        document.addEventListener('DOMContentLoaded', function() {
-            const editButtons = document.querySelectorAll('.edit-btn');
+        // Función para convertir imagen a Base64
+        function convertirImagenABase64(file, callback) {
+            if (!file) {
+                callback(null);
+                return;
+            }
             
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const nombre = this.getAttribute('data-nombre');
-                    const categoria = this.getAttribute('data-categoria');
-                    const precio = this.getAttribute('data-precio');
-                    const stock = this.getAttribute('data-stock');
-                    const descripcion = this.getAttribute('data-descripcion');
-                    const estado = this.getAttribute('data-estado');
-                    
-                    // Llenar el formulario de edición
-                    document.getElementById('editProductId').value = id;
-                    document.getElementById('editProductName').value = nombre || '';
-                    document.getElementById('editProductCategory').value = categoria || '';
-                    document.getElementById('editProductPrice').value = precio || '';
-                    document.getElementById('editProductStock').value = stock || '';
-                    document.getElementById('editProductDescription').value = descripcion || '';
-                    document.getElementById('editProductEstado').value = estado || 'Disponible';
-                });
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Extraer solo la parte base64 (sin el prefijo data:image...)
+                const base64 = e.target.result.split(',')[1];
+                callback(base64);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Preview Imagen Principal
+        function previewImagePrincipal(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('previewImagenPrincipal');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    // Guardar en el campo hidden
+                    const base64 = e.target.result.split(',')[1];
+                    document.getElementById('imagenPrincipal').value = base64;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Preview Imagen Técnica 1
+        function previewImagenTecnica1(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('previewImagenTecnica1');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    const base64 = e.target.result.split(',')[1];
+                    document.getElementById('imagenTecnica1').value = base64;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Preview Imagen Técnica 2
+        function previewImagenTecnica2(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('previewImagenTecnica2');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    const base64 = e.target.result.split(',')[1];
+                    document.getElementById('imagenTecnica2').value = base64;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Preview Imagen Principal EDIT
+        function previewImagePrincipalEdit(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('previewImagenPrincipalEdit');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    const base64 = e.target.result.split(',')[1];
+                    document.getElementById('editImagenPrincipal').value = base64;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Preview Imagen Técnica 1 EDIT
+        function previewImagenTecnica1Edit(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('previewImagenTecnica1Edit');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    const base64 = e.target.result.split(',')[1];
+                    document.getElementById('editImagenTecnica1').value = base64;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Preview Imagen Técnica 2 EDIT
+        function previewImagenTecnica2Edit(input) {
+            if (input.files && input.files[0]) {
+                const preview = document.getElementById('previewImagenTecnica2Edit');
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    const base64 = e.target.result.split(',')[1];
+                    document.getElementById('editImagenTecnica2').value = base64;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Cargar producto en modal de edición
+        function cargarProductoEnModal(button) {
+            const id = button.getAttribute('data-id');
+            fetch(`/intranet/productos/api/obtener/${id}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + getToken()
+                }
+            })
+            .then(r => r.json())
+            .then(producto => {
+                // Información Básica
+                document.getElementById('editId').value = producto.id;
+                document.getElementById('editNombre').value = producto.nombre || '';
+                document.getElementById('editCodigo').value = producto.codigo || '';
+                document.getElementById('editCategoria').value = producto.categoria || '';
+                document.getElementById('editEstado').value = producto.estado || '';
+                document.getElementById('editDescripcion').value = producto.descripcion || '';
+                
+                // Precios y Stock
+                document.getElementById('editPrecio').value = producto.precio || '';
+                document.getElementById('editStock').value = producto.stock || '';
+                
+                // Imagen Principal
+                document.getElementById('editImagenPrincipal').value = producto.imagenPrincipal || '';
+                if (producto.imagenPrincipal) {
+                    const previewEdit = document.getElementById('previewImagenPrincipalEdit');
+                    previewEdit.src = 'data:image/jpeg;base64,' + producto.imagenPrincipal;
+                    previewEdit.style.display = 'block';
+                }
+                
+                // Ficha Técnica
+                document.getElementById('editMaterial').value = producto.material || '';
+                document.getElementById('editDimensiones').value = producto.dimensiones || '';
+                document.getElementById('editPeso').value = producto.peso || '';
+                document.getElementById('editFirmeza').value = producto.firmeza || '';
+                document.getElementById('editGarantia').value = producto.garantia || '';
+                document.getElementById('editCaracteristicas').value = producto.caracteristicas || '';
+                
+                // Imágenes Técnicas
+                document.getElementById('editImagenTecnica1').value = producto.imagenTecnica1 || '';
+                if (producto.imagenTecnica1) {
+                    const previewTec1 = document.getElementById('previewImagenTecnica1Edit');
+                    previewTec1.src = 'data:image/jpeg;base64,' + producto.imagenTecnica1;
+                    previewTec1.style.display = 'block';
+                }
+                
+                document.getElementById('editImagenTecnica2').value = producto.imagenTecnica2 || '';
+                if (producto.imagenTecnica2) {
+                    const previewTec2 = document.getElementById('previewImagenTecnica2Edit');
+                    previewTec2.src = 'data:image/jpeg;base64,' + producto.imagenTecnica2;
+                    previewTec2.style.display = 'block';
+                }
+            })
+            .catch(e => console.error('Error al cargar producto:', e));
+        }
+
+        // Función para obtener el token JWT (con fallback para localStorage bloqueado)
+        function getToken() {
+            try {
+                const token = localStorage.getItem('jwt_token');
+                return token || '';
+            } catch (e) {
+                // Si localStorage está bloqueado, intentar obtener del sessionStorage
+                try {
+                    const token = sessionStorage.getItem('jwt_token');
+                    return token || '';
+                } catch (e2) {
+                    console.warn('No se puede acceder al almacenamiento de tokens');
+                    return '';
+                }
+            }
+        }
+
+        // Filtrar productos
+        function aplicarFiltros() {
+            const termino = document.getElementById('inputBusqueda').value;
+            const categoria = document.getElementById('selectCategoria').value;
+            const estado = document.getElementById('selectEstado').value;
+
+            fetch(`/intranet/productos/api/filtrar?termino=${encodeURIComponent(termino)}&categoria=${encodeURIComponent(categoria)}&estado=${encodeURIComponent(estado)}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + getToken()
+                }
+            })
+            .then(r => r.json())
+            .then(productos => {
+                mostrarProductos(productos);
+            })
+            .catch(e => console.error('Error:', e));
+        }
+
+        // Mostrar productos en tabla
+        function mostrarProductos(productos) {
+            const tbody = document.getElementById('bodyProductos');
+            const noResultados = document.getElementById('noResultados');
+            const countProductos = document.getElementById('countProductos');
+
+            if (productos.length === 0) {
+                tbody.style.display = 'none';
+                noResultados.style.display = 'block';
+                countProductos.textContent = '0';
+                return;
+            }
+
+            tbody.style.display = 'table-row-group';
+            noResultados.style.display = 'none';
+            countProductos.textContent = productos.length;
+
+            tbody.innerHTML = productos.map(p => `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>
+                        ${p.imagenPrincipal ? `<img src="data:image/jpeg;base64,${p.imagenPrincipal}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : '<span class="badge bg-secondary">Sin imagen</span>'}
+                    </td>
+                    <td>${p.nombre}</td>
+                    <td>${p.categoria}</td>
+                    <td class="product-price">S/ ${p.precio.toFixed(2)}</td>
+                    <td>
+                        ${p.stock > 0 ? `<span class="badge bg-success">${p.stock} un.</span>` : '<span class="badge bg-danger">Agotado</span>'}
+                    </td>
+                    <td>
+                        <span class="badge ${
+                            p.estado === 'Disponible' ? 'bg-success' :
+                            p.estado === 'Agotado' ? 'bg-danger' :
+                            p.estado === 'Descontinuado' ? 'bg-warning' :
+                            'bg-secondary'
+                        }">${p.estado}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProductModal" onclick="cargarProductoEnModal(this)" data-id="${p.id}">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarProductoRest(${p.id})">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ========== FUNCIONES SIMPLIFICADAS (Lógica 100% en Java) ==========
+
+        // Guardar producto AGREGAR - Solo envía JSON a Java
+        function guardarProductoAgregar() {
+            const modal = document.getElementById('addProductModal');
+            const form = modal.querySelector('form');
+            
+            if (!form) {
+                console.error('No se encontró el formulario de agregar');
+                return;
+            }
+            
+            // Recopilar datos del formulario
+            const formData = new FormData(form);
+            const producto = {
+                nombre: formData.get('nombre'),
+                codigo: formData.get('codigo'),
+                categoria: formData.get('categoria'),
+                estado: formData.get('estado'),
+                descripcion: formData.get('descripcion'),
+                precio: parseFloat(formData.get('precio')),
+                stock: parseInt(formData.get('stock')),
+                imagenPrincipal: formData.get('imagenPrincipal'),
+                material: formData.get('material'),
+                dimensiones: formData.get('dimensiones'),
+                peso: formData.get('peso'),
+                firmeza: formData.get('firmeza'),
+                garantia: formData.get('garantia'),
+                caracteristicas: formData.get('caracteristicas'),
+                imagenTecnica1: formData.get('imagenTecnica1'),
+                imagenTecnica2: formData.get('imagenTecnica2')
+            };
+            
+            // ✅ Enviar JSON a Java (100% lógica en backend)
+            fetch('/intranet/productos/api/agregar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getToken()
+                },
+                body: JSON.stringify(producto)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+                    if (modal) modal.hide();
+                    alert(data.message);
+                    setTimeout(() => location.reload(), 500);
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Error al guardar el producto');
+                }
+            })
+            .catch(e => alert('Error: ' + e.message));
+        }
+
+        // Guardar producto EDITAR - Solo envía JSON a Java
+        function guardarProductoEditar() {
+            const modal = document.getElementById('editProductModal');
+            const form = modal.querySelector('form');
+            
+            if (!form) {
+                console.error('No se encontró el formulario de editar');
+                return;
+            }
+            
+            const id = document.getElementById('editId').value;
+            
+            // Recopilar datos del formulario
+            const formData = new FormData(form);
+            const producto = {
+                nombre: formData.get('nombre'),
+                codigo: formData.get('codigo'),
+                categoria: formData.get('categoria'),
+                estado: formData.get('estado'),
+                descripcion: formData.get('descripcion'),
+                precio: parseFloat(formData.get('precio')),
+                stock: parseInt(formData.get('stock')),
+                imagenPrincipal: formData.get('imagenPrincipal'),
+                material: formData.get('material'),
+                dimensiones: formData.get('dimensiones'),
+                peso: formData.get('peso'),
+                firmeza: formData.get('firmeza'),
+                garantia: formData.get('garantia'),
+                caracteristicas: formData.get('caracteristicas'),
+                imagenTecnica1: formData.get('imagenTecnica1'),
+                imagenTecnica2: formData.get('imagenTecnica2')
+            };
+            
+            // ✅ Enviar JSON a Java (100% lógica en backend)
+            fetch(`/intranet/productos/api/editar/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getToken()
+                },
+                body: JSON.stringify(producto)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+                    if (modal) modal.hide();
+                    alert(data.message);
+                    setTimeout(() => location.reload(), 500);
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Error al actualizar el producto');
+                }
+            })
+            .catch(e => alert('Error: ' + e.message));
+        }
+
+        // Eliminar producto - Usar fetchWithAuth para manejo automático de JWT
+        function eliminarProductoRest(id) {
+            if (!confirm('¿Está seguro de que desea descontinuar este producto?')) return;
+            
+            fetchWithAuth(`/intranet/productos/api/eliminar/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                console.log('📊 Respuesta DELETE:', response.status);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Producto descontinuado:', data);
+                if (data.success) {
+                    alert(data.message);
+                    setTimeout(() => location.reload(), 500);
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(e => {
+                console.error('❌ Error:', e);
+                alert('Error: ' + e.message);
             });
+        }
+
+        // Limpiar filtros
+        function limpiarFiltros() {
+            document.getElementById('inputBusqueda').value = '';
+            document.getElementById('selectCategoria').value = '';
+            document.getElementById('selectEstado').value = '';
+            aplicarFiltros();
+        }
+
+        // Event listeners para filtros en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar productos al iniciar
+            aplicarFiltros();
+            
+            // Configurar listeners para filtros
+            document.getElementById('inputBusqueda').addEventListener('input', aplicarFiltros);
+            document.getElementById('selectCategoria').addEventListener('change', aplicarFiltros);
+            document.getElementById('selectEstado').addEventListener('change', aplicarFiltros);
         });
+
+        // Confirmar cierre de sesión
+        function confirmLogout() {
+            if (confirm('¿Está seguro de que desea cerrar sesión?')) {
+                try {
+                    localStorage.removeItem('jwt_token');
+                } catch (e) {
+                    // Si localStorage está bloqueado
+                }
+                try {
+                    sessionStorage.removeItem('jwt_token');
+                } catch (e) {
+                    // Si sessionStorage está bloqueado
+                }
+                window.location.href = '/intranet/login';
+            }
+        }
     </script>
 </body>
 </html>

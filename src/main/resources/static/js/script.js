@@ -16,30 +16,6 @@ function confirmLogout() {
 
 
 
-// Gráfico de barras
-new Chart(document.getElementById("bar-chart-grouped"), {
-  type: 'bar',
-  data: {
-    labels: ["2022", "2023", "2024", "2025"],
-    datasets: [
-      {
-        label: "D' Encanto",
-        backgroundColor: "#3e95cd",
-        data: [133, 221, 783, 2478]
-      }
-    ]
-  },
-  options: {
-    title: {
-      display: true,
-      text: 'Population growth (millions)'
-    }
-  }
-});
-
-
-
-
 
 
 

@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .requestMatchers("/intranet/login").permitAll()
                 // Recursos estáticos públicos (CSS, JS, imágenes)
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                // API endpoints protegidos - requieren JWT
+                .requestMatchers("/intranet/api/**").authenticated()
                 // Rutas intranet protegidas
                 .requestMatchers("/intranet/**").authenticated()
                 // Protege todo lo demás
