@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class AuthController {
     private LoginValidator loginValidator;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request, BindingResult bindingResult) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest request, BindingResult bindingResult, HttpServletResponse response) {
         // Validar con el LoginValidator
         loginValidator.validate(request, bindingResult);
 
@@ -61,6 +62,9 @@ public class AuthController {
                     .map(a -> a.getAuthority().replace("ROLE_", ""))
                     .findFirst()
                     .orElse("USUARIO");
+            
+            // 🔐 Agregar token en cookie HTTP (24 horas)
+            response.addHeader("Set-Cookie", "jwt_token=" + token + "; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax");
             
             return ResponseEntity.ok(new AuthResponse(token, userDetails.getUsername(), rol, userDetails.getAuthorities().stream()
                     .map(Object::toString)

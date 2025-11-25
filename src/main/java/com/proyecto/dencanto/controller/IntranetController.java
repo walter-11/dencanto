@@ -8,18 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.proyecto.dencanto.Repository.VentaRepository;
 import com.proyecto.dencanto.security.UserDetailsImpl;
 
 @Controller
 @RequestMapping("/intranet")
 public class IntranetController {
-
-    private final VentaRepository ventaRepository;
-
-    public IntranetController(VentaRepository ventaRepository) {
-        this.ventaRepository = ventaRepository;
-    }
 
     /**
      * Obtiene la información del usuario autenticado y la añade al modelo
@@ -92,7 +85,6 @@ public class IntranetController {
     @PreAuthorize("hasRole('VENDEDOR')")
     public String mostrarHistorialVentas(Model model) {
         addUserInfoToModel(model);
-        model.addAttribute("ventas", ventaRepository.findAll());
         return "intranet/historialVentas";
     }
 }
