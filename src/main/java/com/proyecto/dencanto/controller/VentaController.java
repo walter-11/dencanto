@@ -100,7 +100,41 @@ public class VentaController {
                 ventas = new ArrayList<>();
             }
             
-            return ResponseEntity.ok(ventas);
+            // Convertir a Map para evitar problemas de lazy loading
+            List<Map<String, Object>> ventasMap = new ArrayList<>();
+            for (Venta venta : ventas) {
+                Map<String, Object> ventaData = new HashMap<>();
+                ventaData.put("id", venta.getId());
+                ventaData.put("cliente", venta.getClienteNombre());
+                ventaData.put("clienteTelefono", venta.getClienteTelefono());
+                ventaData.put("clienteEmail", venta.getClienteEmail());
+                ventaData.put("montoTotal", venta.getTotal());
+                ventaData.put("metodoPago", venta.getMetodoPago() != null ? venta.getMetodoPago().name() : "N/A");
+                ventaData.put("estado", venta.getEstado().name());
+                ventaData.put("fechaCreacion", venta.getFechaCreacion());
+                
+                // Detalles de productos
+                List<Map<String, Object>> detalles = new ArrayList<>();
+                if (venta.getDetalles() != null) {
+                    for (DetalleVenta detalle : venta.getDetalles()) {
+                        Map<String, Object> detalleData = new HashMap<>();
+                        detalleData.put("cantidad", detalle.getCantidad());
+                        if (detalle.getProducto() != null) {
+                            Map<String, Object> productoData = new HashMap<>();
+                            productoData.put("id", detalle.getProducto().getId());
+                            productoData.put("nombre", detalle.getProducto().getNombre());
+                            productoData.put("precio", detalle.getProducto().getPrecio());
+                            detalleData.put("producto", productoData);
+                        }
+                        detalles.add(detalleData);
+                    }
+                }
+                ventaData.put("detalles", detalles);
+                
+                ventasMap.add(ventaData);
+            }
+            
+            return ResponseEntity.ok(ventasMap);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
