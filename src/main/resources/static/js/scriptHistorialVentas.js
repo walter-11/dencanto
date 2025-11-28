@@ -1,13 +1,35 @@
 const hamburger = document.querySelector(".toggle-btn");
 const toggler = document.querySelector("#icon");
 
-// Variable global para la venta seleccionada
+// Variables globales
 let ventaIdSeleccionada = null;
+let ventasCache = [];  // Caché de ventas para filtrado
+let detalleVentaActual = null;
+let chartInstances = {}; // Guardar instancias de gráficos para destruir después
 
 // Inicializar cuando la página carga
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📱 Inicializando página de Historial de Ventas...');
+    
     cargarVentas();
+    configurarFiltros();
     initializeCharts();
+    
+    // Event listeners para botones sin onclick
+    const logoutBtn = document.querySelector('#logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            confirmLogout();
+        });
+    }
+    
+    const confirmarCancelBtn = document.querySelector('#confirmarCancelBtn');
+    if (confirmarCancelBtn) {
+        confirmarCancelBtn.addEventListener('click', function() {
+            cancelarVentaConfirmado();
+        });
+    }
 });
 
 hamburger.addEventListener("click", function () {
@@ -16,11 +38,194 @@ hamburger.addEventListener("click", function () {
     toggler.classList.toggle("bxs-chevrons-left");
 });
 
+// ============ CONFIGURAR FILTROS ============
+function configurarFiltros() {
+    console.log('⚙️ Configurando filtros...');
+    
+    const btnAplicar = document.getElementById('btnAplicarFiltros');
+    const btnLimpiar = document.getElementById('btnLimpiarFiltros');
+    
+    if (btnAplicar) {
+        btnAplicar.addEventListener('click', aplicarFiltros);
+    }
+    
+    if (btnLimpiar) {
+        btnLimpiar.addEventListener('click', limpiarFiltros);
+    }
+    
+    // También aplicar filtros al presionar Enter en los campos de fecha
+    const filtroFechaDesde = document.getElementById('filtroFechaDesde');
+    const filtroFechaHasta = document.getElementById('filtroFechaHasta');
+    
+    if (filtroFechaDesde) {
+        filtroFechaDesde.addEventListener('change', aplicarFiltros);
+    }
+    if (filtroFechaHasta) {
+        filtroFechaHasta.addEventListener('change', aplicarFiltros);
+    }
+}
+
+function aplicarFiltros() {
+    console.log('🔍 Aplicando filtros...');
+    
+    // Obtener valores de filtros con IDs específicos
+    const fechaDesde = document.getElementById('filtroFechaDesde')?.value;
+    const fechaHasta = document.getElementById('filtroFechaHasta')?.value;
+    const estado = document.getElementById('filtroEstado')?.value;
+    const metodoPago = document.getElementById('filtroMetodoPago')?.value;
+    const ordenar = document.getElementById('filtroOrdenamiento')?.value || 'reciente';
+    
+    console.log('📋 Filtros aplicados:', { fechaDesde, fechaHasta, estado, metodoPago, ordenar });
+    
+    // Filtrar ventas
+    let ventasFiltradas = [...ventasCache];
+    
+    // Filtrar por rango de fechas
+    if (fechaDesde || fechaHasta) {
+        ventasFiltradas = ventasFiltradas.filter(v => {
+            const fecha = new Date(v.fechaCreacion);
+            
+            if (fechaDesde) {
+                const desde = new Date(fechaDesde);
+                if (fecha < desde) return false;
+            }
+            
+            if (fechaHasta) {
+                const hasta = new Date(fechaHasta);
+                // Agregar un día para incluir hasta el final del día
+                hasta.setDate(hasta.getDate() + 1);
+                if (fecha >= hasta) return false;
+            }
+            
+            return true;
+        });
+    }
+    
+    // Filtrar por estado
+    if (estado && estado.trim() !== '') {
+        ventasFiltradas = ventasFiltradas.filter(v => v.estado === estado);
+    }
+    
+    // Filtrar por método de pago
+    if (metodoPago && metodoPago.trim() !== '') {
+        ventasFiltradas = ventasFiltradas.filter(v => v.metodoPago === metodoPago);
+    }
+    
+    // Ordenar
+    switch(ordenar) {
+        case 'mayor':
+            ventasFiltradas.sort((a, b) => b.montoTotal - a.montoTotal);
+            break;
+        case 'menor':
+            ventasFiltradas.sort((a, b) => a.montoTotal - b.montoTotal);
+            break;
+        case 'cliente':
+            ventasFiltradas.sort((a, b) => (a.cliente || '').localeCompare(b.cliente || ''));
+            break;
+        case 'reciente':
+        default:
+            ventasFiltradas.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+    }
+    
+    console.log(`✅ Ventas filtradas: ${ventasFiltradas.length} de ${ventasCache.length}`);
+    llenarTablaVentas(ventasFiltradas);
+    actualizarKPIs(ventasFiltradas);
+    actualizarGraficoBarras(ventasFiltradas);
+    actualizarGraficos(ventasFiltradas);
+}
+
+function limpiarFiltros() {
+    console.log('🔄 Limpiando filtros...');
+    
+    // Resetear todos los inputs
+    document.getElementById('filtroFechaDesde').value = '';
+    document.getElementById('filtroFechaHasta').value = '';
+    document.getElementById('filtroEstado').value = '';
+    document.getElementById('filtroMetodoPago').value = '';
+    document.getElementById('filtroOrdenamiento').value = 'reciente';
+    
+    // Recargar todas las ventas
+    llenarTablaVentas(ventasCache);
+    actualizarKPIs(ventasCache);
+    actualizarGraficoBarras(ventasCache);
+    actualizarGraficos(ventasCache);
+}
+
+// ============ ACTUALIZAR KPIs ============
+function actualizarKPIs(ventas) {
+    console.log('📊 Actualizando KPIs...');
+    
+    if (!ventas || ventas.length === 0) {
+        // Si no hay ventas, mostrar 0 en los KPIs
+        document.querySelectorAll('.kpi-value')[0].textContent = 'S/ 0.00';
+        document.querySelectorAll('.kpi-value')[1].textContent = '0';
+        document.querySelectorAll('.kpi-value')[2].textContent = 'S/ 0.00';
+        document.querySelectorAll('.kpi-value')[3].textContent = 'S/ 0.00';
+        return;
+    }
+    
+    // Calcular totales
+    const totalVentas = ventas.reduce((sum, v) => sum + (v.montoTotal || 0), 0);
+    const cantidadVentas = ventas.length;
+    const promedioPorVenta = cantidadVentas > 0 ? totalVentas / cantidadVentas : 0;
+    const comisiones = totalVentas * 0.10; // 10% de comisión
+    
+    // Actualizar elementos
+    const kpiValues = document.querySelectorAll('.kpi-value');
+    if (kpiValues.length >= 4) {
+        kpiValues[0].textContent = `S/ ${totalVentas.toFixed(2)}`;
+        kpiValues[1].textContent = cantidadVentas;
+        kpiValues[2].textContent = `S/ ${promedioPorVenta.toFixed(2)}`;
+        kpiValues[3].textContent = `S/ ${comisiones.toFixed(2)}`;
+    }
+    
+    console.log('✅ KPIs actualizados:', {
+        totalVentas,
+        cantidadVentas,
+        promedioPorVenta,
+        comisiones
+    });
+}
+
+// ============ ACTUALIZAR GRÁFICOS ============
+function actualizarGraficos(ventas) {
+    console.log('📈 Actualizando gráficos...');
+    
+    if (!ventas || ventas.length === 0) {
+        console.warn('⚠️ Sin ventas para gráficos');
+        return;
+    }
+    
+    // Calcular datos por estado
+    const estadoStats = {
+        COMPLETADA: 0,
+        PENDIENTE: 0,
+        CANCELADA: 0
+    };
+    
+    ventas.forEach(v => {
+        if (estadoStats.hasOwnProperty(v.estado)) {
+            estadoStats[v.estado]++;
+        }
+    });
+    
+    // Actualizar gráfico de distribución
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx && chartInstances.categoryChart) {
+        chartInstances.categoryChart.data.datasets[0].data = [
+            estadoStats.COMPLETADA,
+            estadoStats.PENDIENTE,
+            estadoStats.CANCELADA
+        ];
+        chartInstances.categoryChart.update();
+    }
+}
+
 // ============ CARGAR VENTAS ============
 async function cargarVentas() {
     try {
         const token = getToken();
-        console.log('🔑 Token obtenido:', token ? 'SÍ' : 'NO');
+        console.log('🔑 Token obtenido:', token ? '✓' : '✗');
         
         if (!token) {
             console.error("❌ No hay token JWT");
@@ -28,7 +233,7 @@ async function cargarVentas() {
             return;
         }
 
-        console.log('📡 Llamando a /intranet/api/ventas...');
+        console.log('📡 Llamando a GET /intranet/api/ventas...');
         
         const response = await fetch('/intranet/api/ventas', {
             method: 'GET',
@@ -40,7 +245,7 @@ async function cargarVentas() {
             credentials: 'include'
         });
 
-        console.log('📊 Response status:', response.status);
+        console.log('🔄 Response status:', response.status);
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -49,10 +254,20 @@ async function cargarVentas() {
         }
 
         const ventas = await response.json();
-        console.log("✅ Ventas cargadas:", ventas);
+        console.log(`✅ Ventas cargadas: ${ventas.length} registros`);
+        
+        // Guardar en caché
+        ventasCache = ventas;
         
         // Llenar tabla
         llenarTablaVentas(ventas);
+        
+        // Actualizar KPIs
+        actualizarKPIs(ventas);
+        
+        // Actualizar gráficos
+        actualizarGraficoBarras(ventas);
+        actualizarGraficos(ventas);
     } catch (error) {
         console.error("❌ Error al cargar ventas:", error);
         mostrarAlertaError('Error', 'Error al cargar ventas: ' + error.message);
@@ -74,6 +289,8 @@ function llenarTablaVentas(ventas) {
         tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No hay ventas registradas</td></tr>';
         return;
     }
+
+    console.log(`📝 Llenando tabla con ${ventas.length} ventas...`);
 
     // Agregar cada venta
     ventas.forEach(venta => {
@@ -98,9 +315,33 @@ function crearFilaVenta(venta) {
         `<span class="badge bg-primary product-badge">${d.producto.nombre} x${d.cantidad}</span>`
     ).join(' ');
 
+    // Botones condicionales según estado
+    let botonesAccion = `
+        <button class="btn btn-sm btn-outline-primary" onclick="verDetalles(${venta.id})" title="Ver detalles">
+            <i class="bx bx-show"></i>
+        </button>
+    `;
+    
+    if (venta.estado === 'PENDIENTE') {
+        botonesAccion += `
+            <button class="btn btn-sm btn-outline-success ms-2" onclick="confirmarCompletacion(${venta.id})" title="Marcar como completada">
+                <i class="bx bx-check"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger ms-2" onclick="confirmarCancelacion(${venta.id})" title="Cancelar venta">
+                <i class="bx bx-x"></i>
+            </button>
+        `;
+    } else if (venta.estado === 'COMPLETADA') {
+        botonesAccion += `
+            <button class="btn btn-sm btn-outline-danger ms-2" onclick="confirmarCancelacion(${venta.id})" title="Cancelar venta">
+                <i class="bx bx-x"></i>
+            </button>
+        `;
+    }
+
     tr.innerHTML = `
         <th scope="row">
-            <div class="fw-bold">${venta.id}</div>
+            <div class="fw-bold">#${venta.id}</div>
         </th>
         <td>
             <div class="d-flex align-items-center">
@@ -121,14 +362,7 @@ function crearFilaVenta(venta) {
             <div class="fw-bold">${fechaVenta}</div>
         </td>
         <td>
-            <button class="btn btn-sm btn-outline-primary" onclick="verDetalles(${venta.id})" title="Ver detalles">
-                <i class="bx bx-show"></i>
-            </button>
-            ${venta.estado !== 'CANCELADA' ? `
-                <button class="btn btn-sm btn-outline-danger ms-2" onclick="confirmarCancelacion(${venta.id})" title="Cancelar venta">
-                    <i class="bx bx-x"></i>
-                </button>
-            ` : ''}
+            ${botonesAccion}
         </td>
     `;
 
@@ -150,9 +384,9 @@ function obtenerBadgeEstado(estado) {
 function obtenerBadgeMetodoPago(metodo) {
     const badges = {
         'EFECTIVO': '<span class="badge bg-success status-badge"><i class="bx bx-money"></i> Efectivo</span>',
-        'TARJETA': '<span class="badge bg-primary status-badge"><i class="bx bx-credit-card"></i> Tarjeta</span>',
-        'TRANSFERENCIA': '<span class="badge bg-info status-badge"><i class="bx bx-transfer"></i> Transferencia</span>',
-        'CHEQUE': '<span class="badge bg-warning status-badge"><i class="bx bx-receipt"></i> Cheque</span>'
+        'YAPE': '<span class="badge bg-primary status-badge"><i class="bx bx-mobile"></i> Yape</span>',
+        'PLIN': '<span class="badge bg-info status-badge"><i class="bx bx-mobile"></i> Plin</span>',
+        'TRANSFERENCIA': '<span class="badge bg-warning status-badge"><i class="bx bx-transfer"></i> Transferencia</span>'
     };
     return badges[metodo] || `<span class="badge bg-secondary">${metodo}</span>`;
 }
@@ -206,11 +440,11 @@ async function cancelarVentaConfirmado() {
             
             // Cerrar modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('cancelarVentaModal'));
-            modal.hide();
+            if (modal) modal.hide();
 
             // Mostrar alert de éxito
             mostrarAlertaExito('Venta cancelada exitosamente', 
-                `La venta ${ventaIdSeleccionada} ha sido cancelada y el stock ha sido revertido.`);
+                `La venta #${ventaIdSeleccionada} ha sido cancelada y el stock ha sido revertido.`);
             
             // Recargar tabla después de 2 segundos
             setTimeout(() => {
@@ -228,10 +462,140 @@ async function cancelarVentaConfirmado() {
 
 function verDetalles(ventaId) {
     console.log('👀 Ver detalles de venta:', ventaId);
-    // Aquí puedes implementar la lógica para mostrar detalles
-    // Por ahora, abre el modal existente
-    const modal = new bootstrap.Modal(document.getElementById('saleDetailModal'));
-    modal.show();
+    
+    // Buscar la venta en el caché primero
+    const ventaEnCache = ventasCache.find(v => v.id === ventaId);
+    
+    const token = getToken();
+    fetch(`/intranet/api/ventas/${ventaId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+    })
+    .then(venta => {
+        detalleVentaActual = venta;
+        llenarModalDetalles(venta);
+        const modal = new bootstrap.Modal(document.getElementById('saleDetailModal'));
+        modal.show();
+    })
+    .catch(error => {
+        console.error('❌ Error al obtener detalles:', error);
+        mostrarAlertaError('Error', 'No se pudo obtener los detalles de la venta');
+    });
+}
+
+function llenarModalDetalles(venta) {
+    console.log('📋 Llenando modal con detalles completos...');
+    
+    // ===== INFORMACIÓN BÁSICA =====
+    document.getElementById('ventaIdDetail').textContent = venta.id;
+    document.getElementById('clienteDetail').textContent = venta.cliente || 'N/A';
+    document.getElementById('telefonoDetail').textContent = venta.clienteTelefono || 'N/A';
+    document.getElementById('emailDetail').textContent = venta.clienteEmail || 'N/A';
+    document.getElementById('estadoDetail').textContent = venta.estado;
+    document.getElementById('metodoPagoDetail').textContent = venta.metodoPago || 'N/A';
+    document.getElementById('fechaDetail').textContent = new Date(venta.fechaCreacion).toLocaleDateString('es-PE');
+    
+    // ===== INFORMACIÓN DE ENTREGA =====
+    const tipoEntregaText = venta.tipoEntrega === 'DOMICILIO' ? 'Entrega a Domicilio' : 'Recojo en Tienda';
+    document.getElementById('tipoEntregaDetail').textContent = tipoEntregaText;
+    
+    const direccionElem = document.getElementById('direccionEntregaDetail');
+    if (venta.tipoEntrega === 'DOMICILIO' && venta.direccionEntrega) {
+        direccionElem.textContent = venta.direccionEntrega;
+    } else {
+        direccionElem.textContent = 'No aplica (Recojo en tienda)';
+    }
+    
+    // ===== OBSERVACIONES =====
+    document.getElementById('observacionesDetail').textContent = venta.observaciones || '-';
+    
+    // ===== DETALLES DE PRODUCTOS =====
+    const detallesTableBody = document.getElementById('detallesTableBody');
+    if (detallesTableBody) {
+        detallesTableBody.innerHTML = '';
+        
+        if (venta.detalles && venta.detalles.length > 0) {
+            venta.detalles.forEach(detalle => {
+                const subtotal = (detalle.cantidad * detalle.producto.precio);
+                
+                const row = `
+                    <tr>
+                        <td>${detalle.producto.nombre}</td>
+                        <td>${detalle.cantidad}</td>
+                        <td>S/ ${parseFloat(detalle.producto.precio).toFixed(2)}</td>
+                        <td>S/ ${subtotal.toFixed(2)}</td>
+                    </tr>
+                `;
+                detallesTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        } else {
+            detallesTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay productos</td></tr>';
+        }
+    }
+    
+    // ===== DESGLOSE DE MONTOS =====
+    document.getElementById('subtotalDetail').textContent = `S/ ${(venta.subtotal || 0).toFixed(2)}`;
+    document.getElementById('descuentoDetail').textContent = `S/ ${(venta.descuento || 0).toFixed(2)}`;
+    document.getElementById('igvDetail').textContent = `S/ ${(venta.igv || 0).toFixed(2)}`;
+    document.getElementById('costoDeliveryDetail').textContent = `S/ ${(venta.costoDelivery || 0).toFixed(2)}`;
+    document.getElementById('totalDetail').textContent = `S/ ${(venta.montoTotal || 0).toFixed(2)}`;
+    
+    console.log('✅ Modal completamente actualizado con todos los datos');
+}
+
+// ============ COMPLETAR VENTA ============
+function confirmarCompletacion(ventaId) {
+    console.log('✅ Completar venta:', ventaId);
+    if (confirm('¿Está seguro de que desea marcar esta venta como completada?')) {
+        completarVenta(ventaId);
+    }
+}
+
+async function completarVenta(ventaId) {
+    const token = getToken();
+    if (!token) {
+        alert('❌ Error: No autenticado.');
+        window.location.href = '/intranet/login';
+        return;
+    }
+
+    try {
+        console.log('📤 Enviando petición de completación...');
+        
+        // Cambiar estado a COMPLETADA
+        const response = await fetch(`/intranet/api/ventas/${ventaId}/estado`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ estado: 'COMPLETADA' })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            console.log('✅ Venta completada:', data);
+            mostrarAlertaExito('Venta completada', 'La venta #' + ventaId + ' ha sido marcada como completada.');
+            
+            setTimeout(() => {
+                cargarVentas();
+            }, 1500);
+        } else {
+            console.error('❌ Error:', data.error);
+            mostrarAlertaError('Error', data.error || 'No se pudo completar la venta');
+        }
+    } catch (error) {
+        console.error('❌ Error:', error);
+        mostrarAlertaError('Error de conexión', error.message);
+    }
 }
 
 // ============ ALERTAS ============
@@ -275,23 +639,27 @@ function mostrarAlertaError(titulo, mensaje) {
     }, 5000);
 }
 
+// ============ GRÁFICOS CON CHART.JS ============
 function initializeCharts() {
-    // Gráfico de ventas mensuales personales
+    console.log('📊 Inicializando gráficos...');
+    
+    // Gráfico de ventas mensuales personales (Bar Chart)
     const salesCtx = document.getElementById('salesChart');
     if (!salesCtx) {
         console.warn('⚠️ Canvas salesChart no encontrado, saltando gráfico');
         return;
     }
     
-    new Chart(salesCtx.getContext('2d'), {
+    chartInstances.salesChart = new Chart(salesCtx.getContext('2d'), {
         type: 'bar',
         data: {
-            labels: ['Oct', 'Nov', 'Dic', 'Ene'],
+            labels: [],
             datasets: [{
                 label: 'Mis Ventas (S/)',
-                data: [12500, 14200, 15800, 18250],
+                data: [],
                 backgroundColor: '#007bff',
-                borderWidth: 0
+                borderWidth: 0,
+                borderRadius: 4
             }]
         },
         options: {
@@ -299,7 +667,8 @@ function initializeCharts() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'top'
                 }
             },
             scales: {
@@ -307,6 +676,11 @@ function initializeCharts() {
                     beginAtZero: true,
                     grid: {
                         color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return 'S/ ' + value.toFixed(0);
+                        }
                     }
                 },
                 x: {
@@ -318,17 +692,16 @@ function initializeCharts() {
         }
     });
 
-    // Gráfico de distribución por categoría
+    // Gráfico de distribución por estado
     const categoryCtx = document.getElementById('categoryChart');
     if (categoryCtx) {
-        new Chart(categoryCtx.getContext('2d'), {
+        chartInstances.categoryChart = new Chart(categoryCtx.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['Colchones', 'Base Cama', 'Almohadas', 'Protectores'],
+                labels: ['Completadas', 'Pendientes', 'Canceladas'],
                 datasets: [{
-                    data: [65, 20, 10, 5],
+                    data: [0, 0, 0],
                     backgroundColor: [
-                        '#007bff',
                         '#28a745',
                         '#ffc107',
                         '#dc3545'
@@ -347,5 +720,41 @@ function initializeCharts() {
                 }
             }
         });
+        
+        console.log('✅ Gráficos inicializados correctamente');
     }
+}
+
+// Función para actualizar el gráfico de barras con datos reales
+function actualizarGraficoBarras(ventas) {
+    console.log('📊 Actualizando gráfico de barras con datos reales...');
+    
+    if (!ventas || ventas.length === 0 || !chartInstances.salesChart) {
+        console.warn('⚠️ Sin datos o gráfico no inicializado');
+        return;
+    }
+    
+    // Agrupar ventas por mes
+    const ventasPorMes = {};
+    
+    ventas.forEach(v => {
+        const fecha = new Date(v.fechaCreacion);
+        const mes = fecha.toLocaleDateString('es-PE', { month: 'long', year: 'numeric' });
+        
+        if (!ventasPorMes[mes]) {
+            ventasPorMes[mes] = 0;
+        }
+        ventasPorMes[mes] += v.montoTotal || 0;
+    });
+    
+    // Convertir a arrays para el gráfico
+    const meses = Object.keys(ventasPorMes);
+    const montos = Object.values(ventasPorMes);
+    
+    console.log('📈 Datos del gráfico:', { meses, montos });
+    
+    // Actualizar gráfico
+    chartInstances.salesChart.data.labels = meses;
+    chartInstances.salesChart.data.datasets[0].data = montos;
+    chartInstances.salesChart.update();
 }

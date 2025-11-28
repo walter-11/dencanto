@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +16,7 @@
             margin-bottom: 25px;
             border-left: 4px solid #0d6efd;
         }
+
         .producto-imagen {
             width: 100%;
             height: 200px;
@@ -23,25 +25,30 @@
             margin-bottom: 10px;
             background: #e9ecef;
         }
+
         .card-producto {
             transition: transform 0.2s, box-shadow 0.2s;
             height: 100%;
         }
+
         .card-producto:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
+
         .estado-badge {
             position: absolute;
             top: 10px;
             right: 10px;
             font-size: 0.85rem;
         }
+
         .product-price {
             font-size: 1.5rem;
             font-weight: bold;
             color: #0d6efd;
         }
+
         .imagen-input-group {
             border: 2px dashed #0d6efd;
             padding: 15px;
@@ -50,27 +57,32 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .imagen-input-group:hover {
             background: #f0f7ff;
         }
+
         .imagen-preview {
             max-width: 100%;
             max-height: 200px;
             margin-top: 10px;
             border-radius: 6px;
         }
+
         .ficha-tecnica-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin-top: 15px;
         }
+
         .ficha-item {
             background: #f8f9fa;
             padding: 10px;
             border-radius: 6px;
             border-left: 3px solid #0d6efd;
         }
+
         .ficha-item label {
             font-weight: 600;
             font-size: 0.85rem;
@@ -79,11 +91,13 @@
             margin-bottom: 5px;
             display: block;
         }
+
         .no-resultados {
             text-align: center;
             padding: 60px 20px;
             color: #6c757d;
         }
+
         .no-resultados i {
             font-size: 4rem;
             margin-bottom: 20px;
@@ -94,8 +108,9 @@
 
 <body>
     <div class="wrapper">
+
         <!-- MENÚ LATERAL -->
-        <aside id="sidebar">
+        <aside id="sidebar" class="">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
                     <a href="#">Colchones D'<br />Encanto</a>
@@ -105,12 +120,14 @@
                 </button>
             </div>
             <ul class="sidebar-nav">
+                <!-- PERFIL (ADMIN/USUARIO)-->
                 <li class="sidebar-item">
                     <a href="/intranet/dashboard" class="sidebar-link">
                         <i class="bx bx-history"></i>
                         <span>Historial</span>
                     </a>
                 </li>
+                <!-- MENU PARA ADMIN -->
                 <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
                     <a href="/intranet/reportes" class="sidebar-link">
                         <i class="bx bxs-report"></i>
@@ -135,14 +152,34 @@
                         <span>Visualizar Cotizaciones</span>
                     </a>
                 </li>
+                <!-- MENU PARA VENDEDORES -->
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/revisarCotizaciones" class="sidebar-link">
+                        <i class="bx bxs-file"></i>
+                        <span>Revisar Cotizaciones</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/ventas" class="sidebar-link">
+                        <i class="bx bxs-cart"></i>
+                        <span>Registrar Ventas</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/historialVentas" class="sidebar-link">
+                        <i class="bx bx-search-alt-2"></i>
+                        <span>Historial de Ventas</span>
+                    </a>
+                </li>
             </ul>
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-link" onclick="confirmLogout()">
+                <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
                     <i class="bx bx-log-out"></i>
                     <span>Cerrar Sesión</span>
                 </a>
             </div>
         </aside>
+
 
         <div class="main">
             <nav class="navbar navbar-expand px-4 py-3">
@@ -156,7 +193,7 @@
                     </ul>
                 </div>
             </nav>
-            
+
             <main class="content px-3 py-4">
                 <div class="container-fluid">
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -165,21 +202,21 @@
                             <i class="bx bx-plus"></i> Agregar Producto
                         </button>
                     </div>
-                    
+
                     <!-- Mensajes de éxito -->
                     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
                         <i class="bx bx-check-circle"></i> <span th:text="${successMessage}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
+
                     <!-- SECCIÓN DE FILTROS -->
                     <div class="filter-section">
                         <h5 class="mb-3"><i class="bx bx-filter"></i> Filtros de Búsqueda</h5>
                         <div class="row g-3">
                             <div class="col-lg-4">
                                 <label class="form-label">🔍 Buscar por nombre o categoría</label>
-                                <input type="text" class="form-control" id="inputBusqueda" 
-                                       placeholder="Ej: Colchón, Almohada...">
+                                <input type="text" class="form-control" id="inputBusqueda"
+                                    placeholder="Ej: Colchón, Almohada...">
                             </div>
                             <div class="col-lg-3">
                                 <label class="form-label">📁 Categoría</label>
@@ -209,7 +246,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- TABLA DE PRODUCTOS -->
                     <div class="card shadow">
                         <div class="card-header bg-light">
@@ -234,36 +271,42 @@
                                         <tr th:each="producto : ${productos}">
                                             <td th:text="${producto.id}"></td>
                                             <td>
-                                                <img th:if="${producto.imagenPrincipal}" 
-                                                     th:src="${'data:image/jpeg;base64,' + producto.imagenPrincipal}"
-                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
-                                                <span th:unless="${producto.imagenPrincipal}" class="badge bg-secondary">Sin imagen</span>
+                                                <img th:if="${producto.imagenPrincipal}"
+                                                    th:src="${'data:image/jpeg;base64,' + producto.imagenPrincipal}"
+                                                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                                <span th:unless="${producto.imagenPrincipal}"
+                                                    class="badge bg-secondary">Sin imagen</span>
                                             </td>
                                             <td th:text="${producto.nombre}"></td>
                                             <td th:text="${producto.categoria}"></td>
-                                            <td class="product-price" th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></td>
+                                            <td class="product-price"
+                                                th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></td>
                                             <td>
-                                                <span th:if="${producto.stock > 0}" class="badge bg-success" th:text="${producto.stock} + ' un.'"></span>
-                                                <span th:unless="${producto.stock > 0}" class="badge bg-danger">Agotado</span>
+                                                <span th:if="${producto.stock > 0}" class="badge bg-success"
+                                                    th:text="${producto.stock} + ' un.'"></span>
+                                                <span th:unless="${producto.stock > 0}"
+                                                    class="badge bg-danger">Agotado</span>
                                             </td>
                                             <td>
-                                                <span th:if="${producto.estado == 'Disponible'}" class="badge bg-success">Disponible</span>
-                                                <span th:if="${producto.estado == 'Agotado'}" class="badge bg-danger">Agotado</span>
-                                                <span th:if="${producto.estado == 'Descontinuado'}" class="badge bg-warning">Descontinuado</span>
-                                                <span th:if="${producto.estado == 'No disponible'}" class="badge bg-secondary">No disponible</span>
+                                                <span th:if="${producto.estado == 'Disponible'}"
+                                                    class="badge bg-success">Disponible</span>
+                                                <span th:if="${producto.estado == 'Agotado'}"
+                                                    class="badge bg-danger">Agotado</span>
+                                                <span th:if="${producto.estado == 'Descontinuado'}"
+                                                    class="badge bg-warning">Descontinuado</span>
+                                                <span th:if="${producto.estado == 'No disponible'}"
+                                                    class="badge bg-secondary">No disponible</span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-primary" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#editProductModal"
-                                                        th:data-id="${producto.id}"
-                                                        th:data-producto="${producto}"
-                                                        onclick="cargarProductoEnModal(this)">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#editProductModal" th:data-id="${producto.id}"
+                                                    th:data-producto="${producto}"
+                                                    onclick="cargarProductoEnModal(this)">
                                                     <i class="bx bx-edit"></i>
                                                 </button>
-                                                <a th:href="@{/intranet/productos/eliminar/{id}(id=${producto.id})}" 
-                                                   class="btn btn-sm btn-outline-danger"
-                                                   onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                                <a th:href="@{/intranet/productos/eliminar/{id}(id=${producto.id})}"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('¿Está seguro de eliminar este producto?')">
                                                     <i class="bx bx-trash"></i>
                                                 </a>
                                             </td>
@@ -283,47 +326,65 @@
     </div>
 
     <!-- MODAL: Agregar Producto -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="addProductModalLabel">➕ Agregar Nuevo Producto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
-                <form th:action="@{/intranet/productos/agregar}" method="post" enctype="multipart/form-data" th:object="${producto}">
+                <form th:action="@{/intranet/productos/agregar}" method="post" enctype="multipart/form-data"
+                    th:object="${producto}">
                     <div class="modal-body">
                         <!-- INFORMACIÓN BÁSICA -->
                         <div class="accordion" id="accordionProducto">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasico">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseBasico">
                                         <i class="bx bx-info-circle"></i> Información Básica
                                     </button>
                                 </h2>
-                                <div id="collapseBasico" class="accordion-collapse collapse show" data-bs-parent="#accordionProducto">
+                                <div id="collapseBasico" class="accordion-collapse collapse show"
+                                    data-bs-parent="#accordionProducto">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="nombre" class="form-label">Nombre del Producto *</label>
-                                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
-                                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}"
+                                                    required minlength="3" maxlength="200" 
+                                                    placeholder="Mínimo 3 caracteres"
+                                                    pattern="^[a-zA-Z0-9\s\-áéíóúÁÉÍÓÚñÑ,.:]+$">
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}"
+                                                    th:errors="*{nombre}"></div>
+                                                <small class="form-text text-muted d-block mt-1">Entre 3 y 200 caracteres</small>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="codigo" class="form-label">Código/SKU</label>
-                                                <input type="text" class="form-control" id="codigo" th:field="*{codigo}">
+                                                <label for="codigo" class="form-label">Código/SKU *</label>
+                                                <input type="text" class="form-control" id="codigo"
+                                                    th:field="*{codigo}" required minlength="3" maxlength="100"
+                                                    placeholder="Ej: COL-001"
+                                                    pattern="^[a-zA-Z0-9\-_]+$">
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('codigo')}"
+                                                    th:errors="*{codigo}"></div>
+                                                <small class="form-text text-muted d-block mt-1">Solo letras, números, guiones y guiones bajos</small>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="categoria" class="form-label">Categoría *</label>
-                                                <select class="form-select" id="categoria" th:field="*{categoria}" required>
+                                                <select class="form-select" id="categoria" th:field="*{categoria}"
+                                                    required>
                                                     <option value="">Seleccionar categoría</option>
                                                     <option value="Colchones">Colchones</option>
                                                     <option value="Base Cama">Base Cama</option>
                                                     <option value="Almohadas">Almohadas</option>
                                                     <option value="Protectores">Protectores</option>
                                                 </select>
-                                                <div class="text-danger small" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('categoria')}"
+                                                    th:errors="*{categoria}"></div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="estado" class="form-label">Estado *</label>
@@ -337,8 +398,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="descripcion" class="form-label">Descripción General</label>
-                                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3" 
-                                                      placeholder="Descripción breve del producto..."></textarea>
+                                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}"
+                                                rows="3" maxlength="1000" placeholder="Descripción breve del producto (máx 1000 caracteres)..."></textarea>
+                                            <div class="text-danger small" th:if="${#fields.hasErrors('descripcion')}"
+                                                th:errors="*{descripcion}"></div>
+                                            <small class="form-text text-muted d-block mt-1">Máximo 1000 caracteres</small>
                                         </div>
                                     </div>
                                 </div>
@@ -347,24 +411,30 @@
                             <!-- PRECIOS Y STOCK -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecio">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapsePrecio">
                                         <i class="bx bx-dollar"></i> Precios y Stock
                                     </button>
                                 </h2>
-                                <div id="collapsePrecio" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                <div id="collapsePrecio" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProducto">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="precio" class="form-label">Precio Unitario (S/) *</label>
-                                                <input type="number" class="form-control" id="precio" th:field="*{precio}" 
-                                                       step="0.01" min="0" required>
-                                                <div class="text-danger small" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                                                <input type="number" class="form-control" id="precio"
+                                                    th:field="*{precio}" step="0.01" min="0.01" max="999999.99" required>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('precio')}"
+                                                    th:errors="*{precio}"></div>
+                                                <small class="form-text text-muted d-block mt-1">Mínimo: S/ 0.01 | Máximo: S/ 999,999.99</small>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="stock" class="form-label">Stock Disponible *</label>
-                                                <input type="number" class="form-control" id="stock" th:field="*{stock}" 
-                                                       min="0" required>
-                                                <div class="text-danger small" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                                                <input type="number" class="form-control" id="stock" th:field="*{stock}"
+                                                    min="0" max="999999" required>
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('stock')}"
+                                                    th:errors="*{stock}"></div>
+                                                <small class="form-text text-muted d-block mt-1">Máximo: 999,999 unidades</small>
                                             </div>
                                         </div>
                                     </div>
@@ -374,19 +444,23 @@
                             <!-- IMAGEN PRINCIPAL -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagen">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseImagen">
                                         <i class="bx bx-image"></i> Imagen Principal
                                     </button>
                                 </h2>
-                                <div id="collapseImagen" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                <div id="collapseImagen" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProducto">
                                     <div class="accordion-body">
-                                        <div class="imagen-input-group" onclick="document.getElementById('inputImagenPrincipal').click()">
+                                        <div class="imagen-input-group"
+                                            onclick="document.getElementById('inputImagenPrincipal').click()">
                                             <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
                                             <p class="mb-0 mt-2">Haz clic para seleccionar imagen principal</p>
                                             <small class="text-muted">Formatos: JPG, PNG (Max: 5MB)</small>
                                         </div>
-                                        <input type="file" id="inputImagenPrincipal" name="imagenPrincipalFile" 
-                                               accept="image/*" style="display: none;" onchange="previewImagePrincipal(this)">
+                                        <input type="file" id="inputImagenPrincipal" name="imagenPrincipalFile"
+                                            accept="image/*" style="display: none;"
+                                            onchange="previewImagePrincipal(this)">
                                         <img id="previewImagenPrincipal" class="imagen-preview" style="display: none;">
                                         <input type="hidden" id="imagenPrincipal" th:field="*{imagenPrincipal}">
                                     </div>
@@ -396,31 +470,42 @@
                             <!-- FICHA TÉCNICA -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFicha">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFicha">
                                         <i class="bx bx-spreadsheet"></i> Ficha Técnica del Colchón
                                     </button>
                                 </h2>
-                                <div id="collapseFicha" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                <div id="collapseFicha" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProducto">
                                     <div class="accordion-body">
                                         <div class="ficha-tecnica-grid">
                                             <div class="ficha-item">
                                                 <label for="material" class="form-label">Material</label>
-                                                <input type="text" class="form-control form-control-sm" id="material" 
-                                                       th:field="*{material}" placeholder="Ej: Espuma, Muelles...">
+                                                <input type="text" class="form-control form-control-sm" id="material"
+                                                    th:field="*{material}" maxlength="200" placeholder="Ej: Espuma, Muelles...">
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('material')}"
+                                                    th:errors="*{material}"></div>
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="dimensiones" class="form-label">Dimensiones</label>
-                                                <input type="text" class="form-control form-control-sm" id="dimensiones" 
-                                                       th:field="*{dimensiones}" placeholder="Ej: 140x190 cm">
+                                                <input type="text" class="form-control form-control-sm" id="dimensiones"
+                                                    th:field="*{dimensiones}" maxlength="200" placeholder="Ej: 140x190 cm"
+                                                    pattern="^[0-9x,\.\s]*$">
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('dimensiones')}"
+                                                    th:errors="*{dimensiones}"></div>
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="peso" class="form-label">Peso</label>
-                                                <input type="text" class="form-control form-control-sm" id="peso" 
-                                                       th:field="*{peso}" placeholder="Ej: 25 kg">
+                                                <input type="text" class="form-control form-control-sm" id="peso"
+                                                    th:field="*{peso}" maxlength="100" placeholder="Ej: 25 kg"
+                                                    pattern="^[0-9,\.\s\w]*$">
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('peso')}"
+                                                    th:errors="*{peso}"></div>
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="firmeza" class="form-label">Firmeza</label>
-                                                <select class="form-select form-select-sm" id="firmeza" th:field="*{firmeza}">
+                                                <select class="form-select form-select-sm" id="firmeza"
+                                                    th:field="*{firmeza}">
                                                     <option value="">Seleccionar</option>
                                                     <option value="Blanda">Blanda</option>
                                                     <option value="Media">Media</option>
@@ -430,14 +515,21 @@
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="garantia" class="form-label">Garantía</label>
-                                                <input type="text" class="form-control form-control-sm" id="garantia" 
-                                                       th:field="*{garantia}" placeholder="Ej: 5 años">
+                                                <input type="text" class="form-control form-control-sm" id="garantia"
+                                                    th:field="*{garantia}" maxlength="100" placeholder="Ej: 5 años">
+                                                <div class="text-danger small" th:if="${#fields.hasErrors('garantia')}"
+                                                    th:errors="*{garantia}"></div>
                                             </div>
                                         </div>
                                         <div class="mb-3 mt-3">
-                                            <label for="caracteristicas" class="form-label">Características Adicionales</label>
-                                            <textarea class="form-control" id="caracteristicas" th:field="*{caracteristicas}" 
-                                                      rows="3" placeholder="Información técnica adicional..."></textarea>
+                                            <label for="caracteristicas" class="form-label">Características
+                                                Adicionales</label>
+                                            <textarea class="form-control" id="caracteristicas"
+                                                th:field="*{caracteristicas}" rows="3" maxlength="2000"
+                                                placeholder="Información técnica adicional (máx 2000 caracteres)..."></textarea>
+                                            <div class="text-danger small" th:if="${#fields.hasErrors('caracteristicas')}"
+                                                th:errors="*{caracteristicas}"></div>
+                                            <small class="form-text text-muted d-block mt-1">Máximo 2000 caracteres</small>
                                         </div>
                                     </div>
                                 </div>
@@ -446,33 +538,43 @@
                             <!-- IMÁGENES TÉCNICAS -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagenesTecnicas">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseImagenesTecnicas">
                                         <i class="bx bx-image-multiple"></i> Imágenes Técnicas (Ficha)
                                     </button>
                                 </h2>
-                                <div id="collapseImagenesTecnicas" class="accordion-collapse collapse" data-bs-parent="#accordionProducto">
+                                <div id="collapseImagenesTecnicas" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProducto">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Imagen Técnica 1</label>
-                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica1').click()">
-                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                <div class="imagen-input-group"
+                                                    onclick="document.getElementById('inputImagenTecnica1').click()">
+                                                    <i class="bx bx-cloud-upload"
+                                                        style="font-size: 2rem; color: #0d6efd;"></i>
                                                     <p class="mb-0 mt-2">Seleccionar imagen 1</p>
                                                 </div>
-                                                <input type="file" id="inputImagenTecnica1" name="imagenTecnica1File" 
-                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica1(this)">
-                                                <img id="previewImagenTecnica1" class="imagen-preview" style="display: none;">
+                                                <input type="file" id="inputImagenTecnica1" name="imagenTecnica1File"
+                                                    accept="image/*" style="display: none;"
+                                                    onchange="previewImagenTecnica1(this)">
+                                                <img id="previewImagenTecnica1" class="imagen-preview"
+                                                    style="display: none;">
                                                 <input type="hidden" id="imagenTecnica1" th:field="*{imagenTecnica1}">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Imagen Técnica 2</label>
-                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica2').click()">
-                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                <div class="imagen-input-group"
+                                                    onclick="document.getElementById('inputImagenTecnica2').click()">
+                                                    <i class="bx bx-cloud-upload"
+                                                        style="font-size: 2rem; color: #0d6efd;"></i>
                                                     <p class="mb-0 mt-2">Seleccionar imagen 2</p>
                                                 </div>
-                                                <input type="file" id="inputImagenTecnica2" name="imagenTecnica2File" 
-                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica2(this)">
-                                                <img id="previewImagenTecnica2" class="imagen-preview" style="display: none;">
+                                                <input type="file" id="inputImagenTecnica2" name="imagenTecnica2File"
+                                                    accept="image/*" style="display: none;"
+                                                    onchange="previewImagenTecnica2(this)">
+                                                <img id="previewImagenTecnica2" class="imagen-preview"
+                                                    style="display: none;">
                                                 <input type="hidden" id="imagenTecnica2" th:field="*{imagenTecnica2}">
                                             </div>
                                         </div>
@@ -493,40 +595,51 @@
     </div>
 
     <!-- MODAL: Editar Producto (Similar al anterior) -->
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-dark">
                     <h5 class="modal-title" id="editProductModalLabel">✏️ Editar Producto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/intranet/productos/editar}" method="post" enctype="multipart/form-data" th:object="${producto}">
+                <form th:action="@{/intranet/productos/editar}" method="post" enctype="multipart/form-data"
+                    th:object="${producto}">
                     <input type="hidden" id="editId" th:field="*{id}">
                     <div class="modal-body">
                         <!-- CONTENIDO IGUAL AL MODAL DE AGREGAR -->
                         <div class="accordion" id="accordionProductoEdit">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicoEdit">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseBasicoEdit">
                                         <i class="bx bx-info-circle"></i> Información Básica
                                     </button>
                                 </h2>
-                                <div id="collapseBasicoEdit" class="accordion-collapse collapse show" data-bs-parent="#accordionProductoEdit">
+                                <div id="collapseBasicoEdit" class="accordion-collapse collapse show"
+                                    data-bs-parent="#accordionProductoEdit">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Nombre del Producto *</label>
-                                                <input type="text" class="form-control" id="editNombre" th:field="*{nombre}" required>
+                                                <input type="text" class="form-control" id="editNombre"
+                                                    th:field="*{nombre}" required minlength="3" maxlength="200"
+                                                    pattern="^[a-zA-Z0-9\s\-áéíóúÁÉÍÓÚñÑ,.:]+$">
+                                                <small class="form-text text-muted d-block mt-1">Entre 3 y 200 caracteres</small>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label">Código/SKU</label>
-                                                <input type="text" class="form-control" id="editCodigo" th:field="*{codigo}">
+                                                <label class="form-label">Código/SKU *</label>
+                                                <input type="text" class="form-control" id="editCodigo"
+                                                    th:field="*{codigo}" required minlength="3" maxlength="100"
+                                                    pattern="^[a-zA-Z0-9\-_]+$">
+                                                <small class="form-text text-muted d-block mt-1">Solo letras, números, guiones y guiones bajos</small>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Categoría *</label>
-                                                <select class="form-select" id="editCategoria" th:field="*{categoria}" required>
+                                                <select class="form-select" id="editCategoria" th:field="*{categoria}"
+                                                    required>
                                                     <option value="Colchones">Colchones</option>
                                                     <option value="Base Cama">Base Cama</option>
                                                     <option value="Almohadas">Almohadas</option>
@@ -535,7 +648,8 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Estado *</label>
-                                                <select class="form-select" id="editEstado" th:field="*{estado}" required>
+                                                <select class="form-select" id="editEstado" th:field="*{estado}"
+                                                    required>
                                                     <option value="Disponible">Disponible</option>
                                                     <option value="Agotado">Agotado</option>
                                                     <option value="Descontinuado">Descontinuado</option>
@@ -545,7 +659,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Descripción General</label>
-                                            <textarea class="form-control" id="editDescripcion" th:field="*{descripcion}" rows="3"></textarea>
+                                            <textarea class="form-control" id="editDescripcion"
+                                                th:field="*{descripcion}" rows="3"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -553,22 +668,24 @@
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrecioEdit">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapsePrecioEdit">
                                         <i class="bx bx-dollar"></i> Precios y Stock
                                     </button>
                                 </h2>
-                                <div id="collapsePrecioEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                <div id="collapsePrecioEdit" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProductoEdit">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Precio Unitario (S/) *</label>
-                                                <input type="number" class="form-control" id="editPrecio" th:field="*{precio}" 
-                                                       step="0.01" min="0" required>
+                                                <input type="number" class="form-control" id="editPrecio"
+                                                    th:field="*{precio}" step="0.01" min="0" required>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Stock Disponible *</label>
-                                                <input type="number" class="form-control" id="editStock" th:field="*{stock}" 
-                                                       min="0" required>
+                                                <input type="number" class="form-control" id="editStock"
+                                                    th:field="*{stock}" min="0" required>
                                             </div>
                                         </div>
                                     </div>
@@ -578,20 +695,25 @@
                             <!-- IMAGEN PRINCIPAL EDIT -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagenEdit">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseImagenEdit">
                                         <i class="bx bx-image"></i> Imagen Principal
                                     </button>
                                 </h2>
-                                <div id="collapseImagenEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                <div id="collapseImagenEdit" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProductoEdit">
                                     <div class="accordion-body">
-                                        <div class="imagen-input-group" onclick="document.getElementById('inputImagenPrincipalEdit').click()">
+                                        <div class="imagen-input-group"
+                                            onclick="document.getElementById('inputImagenPrincipalEdit').click()">
                                             <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
                                             <p class="mb-0 mt-2">Haz clic para cambiar imagen principal</p>
                                             <small class="text-muted">Formatos: JPG, PNG (Max: 5MB)</small>
                                         </div>
-                                        <input type="file" id="inputImagenPrincipalEdit" name="imagenPrincipalFileEdit" 
-                                               accept="image/*" style="display: none;" onchange="previewImagePrincipalEdit(this)">
-                                        <img id="previewImagenPrincipalEdit" class="imagen-preview" style="display: none;">
+                                        <input type="file" id="inputImagenPrincipalEdit" name="imagenPrincipalFileEdit"
+                                            accept="image/*" style="display: none;"
+                                            onchange="previewImagePrincipalEdit(this)">
+                                        <img id="previewImagenPrincipalEdit" class="imagen-preview"
+                                            style="display: none;">
                                         <input type="hidden" id="editImagenPrincipal" th:field="*{imagenPrincipal}">
                                     </div>
                                 </div>
@@ -600,31 +722,36 @@
                             <!-- FICHA TÉCNICA EDIT -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFichaEdit">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFichaEdit">
                                         <i class="bx bx-spreadsheet"></i> Ficha Técnica del Colchón
                                     </button>
                                 </h2>
-                                <div id="collapseFichaEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                <div id="collapseFichaEdit" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProductoEdit">
                                     <div class="accordion-body">
                                         <div class="ficha-tecnica-grid">
                                             <div class="ficha-item">
                                                 <label for="editMaterial" class="form-label">Material</label>
-                                                <input type="text" class="form-control form-control-sm" id="editMaterial" 
-                                                       th:field="*{material}" placeholder="Ej: Espuma, Muelles...">
+                                                <input type="text" class="form-control form-control-sm"
+                                                    id="editMaterial" th:field="*{material}"
+                                                    placeholder="Ej: Espuma, Muelles...">
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="editDimensiones" class="form-label">Dimensiones</label>
-                                                <input type="text" class="form-control form-control-sm" id="editDimensiones" 
-                                                       th:field="*{dimensiones}" placeholder="Ej: 140x190 cm">
+                                                <input type="text" class="form-control form-control-sm"
+                                                    id="editDimensiones" th:field="*{dimensiones}"
+                                                    placeholder="Ej: 140x190 cm">
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="editPeso" class="form-label">Peso</label>
-                                                <input type="text" class="form-control form-control-sm" id="editPeso" 
-                                                       th:field="*{peso}" placeholder="Ej: 25 kg">
+                                                <input type="text" class="form-control form-control-sm" id="editPeso"
+                                                    th:field="*{peso}" placeholder="Ej: 25 kg">
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="editFirmeza" class="form-label">Firmeza</label>
-                                                <select class="form-select form-select-sm" id="editFirmeza" th:field="*{firmeza}">
+                                                <select class="form-select form-select-sm" id="editFirmeza"
+                                                    th:field="*{firmeza}">
                                                     <option value="">Seleccionar</option>
                                                     <option value="Blanda">Blanda</option>
                                                     <option value="Media">Media</option>
@@ -634,14 +761,16 @@
                                             </div>
                                             <div class="ficha-item">
                                                 <label for="editGarantia" class="form-label">Garantía</label>
-                                                <input type="text" class="form-control form-control-sm" id="editGarantia" 
-                                                       th:field="*{garantia}" placeholder="Ej: 5 años">
+                                                <input type="text" class="form-control form-control-sm"
+                                                    id="editGarantia" th:field="*{garantia}" placeholder="Ej: 5 años">
                                             </div>
                                         </div>
                                         <div class="mb-3 mt-3">
-                                            <label for="editCaracteristicas" class="form-label">Características Adicionales</label>
-                                            <textarea class="form-control" id="editCaracteristicas" th:field="*{caracteristicas}" 
-                                                      rows="3" placeholder="Información técnica adicional..."></textarea>
+                                            <label for="editCaracteristicas" class="form-label">Características
+                                                Adicionales</label>
+                                            <textarea class="form-control" id="editCaracteristicas"
+                                                th:field="*{caracteristicas}" rows="3"
+                                                placeholder="Información técnica adicional..."></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -650,34 +779,46 @@
                             <!-- IMÁGENES TÉCNICAS EDIT -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImagenesTecnicasEdit">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseImagenesTecnicasEdit">
                                         <i class="bx bx-image-multiple"></i> Imágenes Técnicas (Ficha)
                                     </button>
                                 </h2>
-                                <div id="collapseImagenesTecnicasEdit" class="accordion-collapse collapse" data-bs-parent="#accordionProductoEdit">
+                                <div id="collapseImagenesTecnicasEdit" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionProductoEdit">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Imagen Técnica 1</label>
-                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica1Edit').click()">
-                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                <div class="imagen-input-group"
+                                                    onclick="document.getElementById('inputImagenTecnica1Edit').click()">
+                                                    <i class="bx bx-cloud-upload"
+                                                        style="font-size: 2rem; color: #0d6efd;"></i>
                                                     <p class="mb-0 mt-2">Seleccionar imagen 1</p>
                                                 </div>
-                                                <input type="file" id="inputImagenTecnica1Edit" name="imagenTecnica1FileEdit" 
-                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica1Edit(this)">
-                                                <img id="previewImagenTecnica1Edit" class="imagen-preview" style="display: none;">
-                                                <input type="hidden" id="editImagenTecnica1" th:field="*{imagenTecnica1}">
+                                                <input type="file" id="inputImagenTecnica1Edit"
+                                                    name="imagenTecnica1FileEdit" accept="image/*"
+                                                    style="display: none;" onchange="previewImagenTecnica1Edit(this)">
+                                                <img id="previewImagenTecnica1Edit" class="imagen-preview"
+                                                    style="display: none;">
+                                                <input type="hidden" id="editImagenTecnica1"
+                                                    th:field="*{imagenTecnica1}">
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Imagen Técnica 2</label>
-                                                <div class="imagen-input-group" onclick="document.getElementById('inputImagenTecnica2Edit').click()">
-                                                    <i class="bx bx-cloud-upload" style="font-size: 2rem; color: #0d6efd;"></i>
+                                                <div class="imagen-input-group"
+                                                    onclick="document.getElementById('inputImagenTecnica2Edit').click()">
+                                                    <i class="bx bx-cloud-upload"
+                                                        style="font-size: 2rem; color: #0d6efd;"></i>
                                                     <p class="mb-0 mt-2">Seleccionar imagen 2</p>
                                                 </div>
-                                                <input type="file" id="inputImagenTecnica2Edit" name="imagenTecnica2FileEdit" 
-                                                       accept="image/*" style="display: none;" onchange="previewImagenTecnica2Edit(this)">
-                                                <img id="previewImagenTecnica2Edit" class="imagen-preview" style="display: none;">
-                                                <input type="hidden" id="editImagenTecnica2" th:field="*{imagenTecnica2}">
+                                                <input type="file" id="inputImagenTecnica2Edit"
+                                                    name="imagenTecnica2FileEdit" accept="image/*"
+                                                    style="display: none;" onchange="previewImagenTecnica2Edit(this)">
+                                                <img id="previewImagenTecnica2Edit" class="imagen-preview"
+                                                    style="display: none;">
+                                                <input type="hidden" id="editImagenTecnica2"
+                                                    th:field="*{imagenTecnica2}">
                                             </div>
                                         </div>
                                     </div>
@@ -697,7 +838,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         // Función para convertir imagen a Base64
         function convertirImagenABase64(file, callback) {
@@ -705,9 +846,9 @@
                 callback(null);
                 return;
             }
-            
+
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 // Extraer solo la parte base64 (sin el prefijo data:image...)
                 const base64 = e.target.result.split(',')[1];
                 callback(base64);
@@ -720,8 +861,8 @@
             if (input.files && input.files[0]) {
                 const preview = document.getElementById('previewImagenPrincipal');
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     // Guardar en el campo hidden
@@ -737,8 +878,8 @@
             if (input.files && input.files[0]) {
                 const preview = document.getElementById('previewImagenTecnica1');
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     const base64 = e.target.result.split(',')[1];
@@ -753,8 +894,8 @@
             if (input.files && input.files[0]) {
                 const preview = document.getElementById('previewImagenTecnica2');
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     const base64 = e.target.result.split(',')[1];
@@ -769,8 +910,8 @@
             if (input.files && input.files[0]) {
                 const preview = document.getElementById('previewImagenPrincipalEdit');
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     const base64 = e.target.result.split(',')[1];
@@ -785,8 +926,8 @@
             if (input.files && input.files[0]) {
                 const preview = document.getElementById('previewImagenTecnica1Edit');
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     const base64 = e.target.result.split(',')[1];
@@ -801,8 +942,8 @@
             if (input.files && input.files[0]) {
                 const preview = document.getElementById('previewImagenTecnica2Edit');
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     const base64 = e.target.result.split(',')[1];
@@ -820,52 +961,52 @@
                     'Authorization': 'Bearer ' + getToken()
                 }
             })
-            .then(r => r.json())
-            .then(producto => {
-                // Información Básica
-                document.getElementById('editId').value = producto.id;
-                document.getElementById('editNombre').value = producto.nombre || '';
-                document.getElementById('editCodigo').value = producto.codigo || '';
-                document.getElementById('editCategoria').value = producto.categoria || '';
-                document.getElementById('editEstado').value = producto.estado || '';
-                document.getElementById('editDescripcion').value = producto.descripcion || '';
-                
-                // Precios y Stock
-                document.getElementById('editPrecio').value = producto.precio || '';
-                document.getElementById('editStock').value = producto.stock || '';
-                
-                // Imagen Principal
-                document.getElementById('editImagenPrincipal').value = producto.imagenPrincipal || '';
-                if (producto.imagenPrincipal) {
-                    const previewEdit = document.getElementById('previewImagenPrincipalEdit');
-                    previewEdit.src = 'data:image/jpeg;base64,' + producto.imagenPrincipal;
-                    previewEdit.style.display = 'block';
-                }
-                
-                // Ficha Técnica
-                document.getElementById('editMaterial').value = producto.material || '';
-                document.getElementById('editDimensiones').value = producto.dimensiones || '';
-                document.getElementById('editPeso').value = producto.peso || '';
-                document.getElementById('editFirmeza').value = producto.firmeza || '';
-                document.getElementById('editGarantia').value = producto.garantia || '';
-                document.getElementById('editCaracteristicas').value = producto.caracteristicas || '';
-                
-                // Imágenes Técnicas
-                document.getElementById('editImagenTecnica1').value = producto.imagenTecnica1 || '';
-                if (producto.imagenTecnica1) {
-                    const previewTec1 = document.getElementById('previewImagenTecnica1Edit');
-                    previewTec1.src = 'data:image/jpeg;base64,' + producto.imagenTecnica1;
-                    previewTec1.style.display = 'block';
-                }
-                
-                document.getElementById('editImagenTecnica2').value = producto.imagenTecnica2 || '';
-                if (producto.imagenTecnica2) {
-                    const previewTec2 = document.getElementById('previewImagenTecnica2Edit');
-                    previewTec2.src = 'data:image/jpeg;base64,' + producto.imagenTecnica2;
-                    previewTec2.style.display = 'block';
-                }
-            })
-            .catch(e => console.error('Error al cargar producto:', e));
+                .then(r => r.json())
+                .then(producto => {
+                    // Información Básica
+                    document.getElementById('editId').value = producto.id;
+                    document.getElementById('editNombre').value = producto.nombre || '';
+                    document.getElementById('editCodigo').value = producto.codigo || '';
+                    document.getElementById('editCategoria').value = producto.categoria || '';
+                    document.getElementById('editEstado').value = producto.estado || '';
+                    document.getElementById('editDescripcion').value = producto.descripcion || '';
+
+                    // Precios y Stock
+                    document.getElementById('editPrecio').value = producto.precio || '';
+                    document.getElementById('editStock').value = producto.stock || '';
+
+                    // Imagen Principal
+                    document.getElementById('editImagenPrincipal').value = producto.imagenPrincipal || '';
+                    if (producto.imagenPrincipal) {
+                        const previewEdit = document.getElementById('previewImagenPrincipalEdit');
+                        previewEdit.src = 'data:image/jpeg;base64,' + producto.imagenPrincipal;
+                        previewEdit.style.display = 'block';
+                    }
+
+                    // Ficha Técnica
+                    document.getElementById('editMaterial').value = producto.material || '';
+                    document.getElementById('editDimensiones').value = producto.dimensiones || '';
+                    document.getElementById('editPeso').value = producto.peso || '';
+                    document.getElementById('editFirmeza').value = producto.firmeza || '';
+                    document.getElementById('editGarantia').value = producto.garantia || '';
+                    document.getElementById('editCaracteristicas').value = producto.caracteristicas || '';
+
+                    // Imágenes Técnicas
+                    document.getElementById('editImagenTecnica1').value = producto.imagenTecnica1 || '';
+                    if (producto.imagenTecnica1) {
+                        const previewTec1 = document.getElementById('previewImagenTecnica1Edit');
+                        previewTec1.src = 'data:image/jpeg;base64,' + producto.imagenTecnica1;
+                        previewTec1.style.display = 'block';
+                    }
+
+                    document.getElementById('editImagenTecnica2').value = producto.imagenTecnica2 || '';
+                    if (producto.imagenTecnica2) {
+                        const previewTec2 = document.getElementById('previewImagenTecnica2Edit');
+                        previewTec2.src = 'data:image/jpeg;base64,' + producto.imagenTecnica2;
+                        previewTec2.style.display = 'block';
+                    }
+                })
+                .catch(e => console.error('Error al cargar producto:', e));
         }
 
         // Función para obtener el token JWT (con fallback para localStorage bloqueado)
@@ -896,11 +1037,11 @@
                     'Authorization': 'Bearer ' + getToken()
                 }
             })
-            .then(r => r.json())
-            .then(productos => {
-                mostrarProductos(productos);
-            })
-            .catch(e => console.error('Error:', e));
+                .then(r => r.json())
+                .then(productos => {
+                    mostrarProductos(productos);
+                })
+                .catch(e => console.error('Error:', e));
         }
 
         // Mostrar productos en tabla
@@ -933,12 +1074,11 @@
                         ${p.stock > 0 ? `<span class="badge bg-success">${p.stock} un.</span>` : '<span class="badge bg-danger">Agotado</span>'}
                     </td>
                     <td>
-                        <span class="badge ${
-                            p.estado === 'Disponible' ? 'bg-success' :
-                            p.estado === 'Agotado' ? 'bg-danger' :
-                            p.estado === 'Descontinuado' ? 'bg-warning' :
+                        <span class="badge ${p.estado === 'Disponible' ? 'bg-success' :
+                    p.estado === 'Agotado' ? 'bg-danger' :
+                        p.estado === 'Descontinuado' ? 'bg-warning' :
                             'bg-secondary'
-                        }">${p.estado}</span>
+                }">${p.estado}</span>
                     </td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProductModal" onclick="cargarProductoEnModal(this)" data-id="${p.id}">
@@ -958,33 +1098,33 @@
         function guardarProductoAgregar() {
             const modal = document.getElementById('addProductModal');
             const form = modal.querySelector('form');
-            
+
             if (!form) {
                 console.error('No se encontró el formulario de agregar');
                 return;
             }
-            
+
             // Recopilar datos del formulario
             const formData = new FormData(form);
             const producto = {
-                nombre: formData.get('nombre'),
-                codigo: formData.get('codigo'),
-                categoria: formData.get('categoria'),
-                estado: formData.get('estado'),
-                descripcion: formData.get('descripcion'),
-                precio: parseFloat(formData.get('precio')),
-                stock: parseInt(formData.get('stock')),
-                imagenPrincipal: formData.get('imagenPrincipal'),
-                material: formData.get('material'),
-                dimensiones: formData.get('dimensiones'),
-                peso: formData.get('peso'),
-                firmeza: formData.get('firmeza'),
-                garantia: formData.get('garantia'),
-                caracteristicas: formData.get('caracteristicas'),
-                imagenTecnica1: formData.get('imagenTecnica1'),
-                imagenTecnica2: formData.get('imagenTecnica2')
+                nombre: document.getElementById('nombre').value,
+                codigo: document.getElementById('codigo').value,
+                categoria: document.getElementById('categoria').value,
+                estado: document.getElementById('estado').value,
+                descripcion: document.getElementById('descripcion').value,
+                precio: parseFloat(document.getElementById('precio').value),
+                stock: parseInt(document.getElementById('stock').value),
+                imagenPrincipal: document.getElementById('imagenPrincipal').value,
+                material: document.getElementById('material').value,
+                dimensiones: document.getElementById('dimensiones').value,
+                peso: document.getElementById('peso').value,
+                firmeza: document.getElementById('firmeza').value,
+                garantia: document.getElementById('garantia').value,
+                caracteristicas: document.getElementById('caracteristicas').value,
+                imagenTecnica1: document.getElementById('imagenTecnica1').value,
+                imagenTecnica2: document.getElementById('imagenTecnica2').value
             };
-            
+
             // ✅ Enviar JSON a Java (100% lógica en backend)
             fetch('/intranet/productos/api/agregar', {
                 method: 'POST',
@@ -994,55 +1134,54 @@
                 },
                 body: JSON.stringify(producto)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
-                    if (modal) modal.hide();
-                    alert(data.message);
-                    setTimeout(() => location.reload(), 500);
-                } else if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    alert('Error al guardar el producto');
-                }
-            })
-            .catch(e => alert('Error: ' + e.message));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+                        if (modal) modal.hide();
+                        alert(data.message);
+                        setTimeout(() => location.reload(), 500);
+                    } else if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        alert('Error al guardar el producto');
+                    }
+                })
+                .catch(e => alert('Error: ' + e.message));
         }
 
         // Guardar producto EDITAR - Solo envía JSON a Java
         function guardarProductoEditar() {
             const modal = document.getElementById('editProductModal');
             const form = modal.querySelector('form');
-            
+
             if (!form) {
                 console.error('No se encontró el formulario de editar');
                 return;
             }
-            
+
             const id = document.getElementById('editId').value;
-            
-            // Recopilar datos del formulario
-            const formData = new FormData(form);
+
+            // Recopilar datos directamente desde los elementos del DOM
             const producto = {
-                nombre: formData.get('nombre'),
-                codigo: formData.get('codigo'),
-                categoria: formData.get('categoria'),
-                estado: formData.get('estado'),
-                descripcion: formData.get('descripcion'),
-                precio: parseFloat(formData.get('precio')),
-                stock: parseInt(formData.get('stock')),
-                imagenPrincipal: formData.get('imagenPrincipal'),
-                material: formData.get('material'),
-                dimensiones: formData.get('dimensiones'),
-                peso: formData.get('peso'),
-                firmeza: formData.get('firmeza'),
-                garantia: formData.get('garantia'),
-                caracteristicas: formData.get('caracteristicas'),
-                imagenTecnica1: formData.get('imagenTecnica1'),
-                imagenTecnica2: formData.get('imagenTecnica2')
+                nombre: document.getElementById('editNombre').value,
+                codigo: document.getElementById('editCodigo').value,
+                categoria: document.getElementById('editCategoria').value,
+                estado: document.getElementById('editEstado').value,
+                descripcion: document.getElementById('editDescripcion').value,
+                precio: parseFloat(document.getElementById('editPrecio').value),
+                stock: parseInt(document.getElementById('editStock').value),
+                imagenPrincipal: document.getElementById('editImagenPrincipal').value,
+                material: document.getElementById('editMaterial').value,
+                dimensiones: document.getElementById('editDimensiones').value,
+                peso: document.getElementById('editPeso').value,
+                firmeza: document.getElementById('editFirmeza').value,
+                garantia: document.getElementById('editGarantia').value,
+                caracteristicas: document.getElementById('editCaracteristicas').value,
+                imagenTecnica1: document.getElementById('editImagenTecnica1').value,
+                imagenTecnica2: document.getElementById('editImagenTecnica2').value
             };
-            
+
             // ✅ Enviar JSON a Java (100% lógica en backend)
             fetch(`/intranet/productos/api/editar/${id}`, {
                 method: 'PUT',
@@ -1052,48 +1191,48 @@
                 },
                 body: JSON.stringify(producto)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
-                    if (modal) modal.hide();
-                    alert(data.message);
-                    setTimeout(() => location.reload(), 500);
-                } else if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    alert('Error al actualizar el producto');
-                }
-            })
-            .catch(e => alert('Error: ' + e.message));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+                        if (modal) modal.hide();
+                        alert(data.message);
+                        setTimeout(() => location.reload(), 500);
+                    } else if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        alert('Error al actualizar el producto');
+                    }
+                })
+                .catch(e => alert('Error: ' + e.message));
         }
 
         // Eliminar producto - Usar fetchWithAuth para manejo automático de JWT
         function eliminarProductoRest(id) {
             if (!confirm('¿Está seguro de que desea descontinuar este producto?')) return;
-            
+
             fetchWithAuth(`/intranet/productos/api/eliminar/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             })
-            .then(response => {
-                console.log('📊 Respuesta DELETE:', response.status);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return response.json();
-            })
-            .then(data => {
-                console.log('✅ Producto descontinuado:', data);
-                if (data.success) {
-                    alert(data.message);
-                    setTimeout(() => location.reload(), 500);
-                } else if (data.error) {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(e => {
-                console.error('❌ Error:', e);
-                alert('Error: ' + e.message);
-            });
+                .then(response => {
+                    console.log('📊 Respuesta DELETE:', response.status);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('✅ Producto descontinuado:', data);
+                    if (data.success) {
+                        alert(data.message);
+                        setTimeout(() => location.reload(), 500);
+                    } else if (data.error) {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(e => {
+                    console.error('❌ Error:', e);
+                    alert('Error: ' + e.message);
+                });
         }
 
         // Limpiar filtros
@@ -1105,10 +1244,10 @@
         }
 
         // Event listeners para filtros en tiempo real
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Cargar productos al iniciar
             aplicarFiltros();
-            
+
             // Configurar listeners para filtros
             document.getElementById('inputBusqueda').addEventListener('input', aplicarFiltros);
             document.getElementById('selectCategoria').addEventListener('change', aplicarFiltros);
@@ -1133,4 +1272,5 @@
         }
     </script>
 </body>
+
 </html>

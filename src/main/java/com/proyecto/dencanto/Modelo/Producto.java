@@ -12,25 +12,35 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @Column(name = "codigo")
+    @Column(name = "codigo", unique = true, length = 100)
+    @NotBlank(message = "El código es obligatorio")
+    @Size(min = 3, max = 100, message = "El código debe tener entre 3 y 100 caracteres")
+    @Pattern(regexp = "^[a-zA-Z0-9\\-_]+$", message = "El código solo puede contener letras, números, guiones y guiones bajos")
     private String codigo;
     
     @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 3, max = 200, message = "El nombre debe tener entre 3 y 200 caracteres")
     @Column(name = "nombre", nullable = false, length = 200)
     private String nombre;
     
+    @Size(max = 1000, message = "La descripción no puede exceder 1000 caracteres")
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
     
     @NotBlank(message = "La categoría es obligatoria")
+    @Size(min = 2, max = 100, message = "La categoría debe tener entre 2 y 100 caracteres")
     @Column(name = "categoria", nullable = false, length = 100)
     private String categoria;
     
-    @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a 0")
+    @NotNull(message = "El precio es obligatorio")
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
+    @DecimalMax(value = "999999.99", message = "El precio no puede exceder 999999.99")
     @Column(name = "precio", nullable = false)
     private Double precio;
     
+    @NotNull(message = "El stock es obligatorio")
     @Min(value = 0, message = "El stock no puede ser negativo")
+    @Max(value = 999999, message = "El stock no puede exceder 999999")
     @Column(name = "stock", nullable = false)
     private Integer stock;
     
@@ -39,32 +49,40 @@ public class Producto {
     
     // ===== IMAGEN PRINCIPAL =====
     @Column(name = "imagen_principal", columnDefinition = "LONGTEXT")
-    private String imagenPrincipal; // Base64 o URL
+    private String imagenPrincipal;
     
     // ===== FICHA TÉCNICA =====
+    @Size(max = 200, message = "El material no puede exceder 200 caracteres")
     @Column(name = "material", length = 200)
     private String material;
     
+    @Size(max = 200, message = "Las dimensiones no pueden exceder 200 caracteres")
+    @Pattern(regexp = "^[0-9x,\\.\\s]*$", message = "Las dimensiones deben contener solo números, 'x', comas y puntos", groups = {})
     @Column(name = "dimensiones", length = 200)
     private String dimensiones;
     
+    @Size(max = 100, message = "El peso no puede exceder 100 caracteres")
+    @Pattern(regexp = "^[0-9,\\.\\s\\w]*$", message = "El peso debe ser un valor numérico válido")
     @Column(name = "peso", length = 100)
     private String peso;
     
+    @Size(max = 100, message = "La firmeza no puede exceder 100 caracteres")
     @Column(name = "firmeza", length = 100)
     private String firmeza;
     
+    @Size(max = 100, message = "La garantía no puede exceder 100 caracteres")
     @Column(name = "garantia", length = 100)
     private String garantia;
     
+    @Size(max = 2000, message = "Las características no pueden exceder 2000 caracteres")
     @Column(name = "caracteristicas", columnDefinition = "TEXT")
     private String caracteristicas;
     
     @Column(name = "imagen_tecnica_1", columnDefinition = "LONGTEXT")
-    private String imagenTecnica1; // Primera imagen de ficha técnica
+    private String imagenTecnica1;
     
     @Column(name = "imagen_tecnica_2", columnDefinition = "LONGTEXT")
-    private String imagenTecnica2; // Segunda imagen de ficha técnica
+    private String imagenTecnica2;
     
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;

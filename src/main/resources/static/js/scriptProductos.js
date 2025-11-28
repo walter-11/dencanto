@@ -1,60 +1,179 @@
-// SCRIPT PARA LA PÁGINA DE PRODUCTOS.HTML
-const hamburger = document.querySelector(".toggle-btn");
-const toggler = document.querySelector("#icon");
-hamburger.addEventListener("click", function () {
-  document.querySelector("#sidebar").classList.toggle("expand");
-  toggler.classList.toggle("bxs-chevrons-right");
-  toggler.classList.toggle("bxs-chevrons-left");
-});
-
-// CERRAR SESION EN LA INTRANET
-function confirmLogout() {
-  if (confirm('¿Está seguro de que desea cerrar sesión?')) {
-    window.location.href = '/login';
-  }
-}
-
-// Script para el sidebar toggle
+// ========== INICIALIZACIÓN ========== 
 document.addEventListener('DOMContentLoaded', function () {
-  const toggleBtn = document.querySelector('.toggle-btn');
-  const sidebar = document.getElementById('sidebar');
-  const icon = document.getElementById('icon');
-
-  toggleBtn.addEventListener('click', function () {
-    sidebar.classList.toggle('collapsed');
-    if (sidebar.classList.contains('collapsed')) {
-      icon.classList.remove('bx-chevrons-right');
-      icon.classList.add('bx-chevrons-left');
-    } else {
-      icon.classList.remove('bx-chevrons-left');
-      icon.classList.add('bx-chevrons-right');
+    console.log('📱 Inicializando página de Productos...');
+    
+    // Caché de todos los productos
+    const allProducts = Array.from(document.querySelectorAll('[data-product-id]'));
+    console.log(`📦 Total de productos cargados: ${allProducts.length}`);
+    
+    // Referencias a elementos del DOM
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const priceFilter = document.getElementById('priceFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const priceValue = document.getElementById('priceValue');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const productsGrid = document.getElementById('productsContainer');
+    const emptyState = document.getElementById('emptyState');
+    
+    // ========== ACTUALIZAR VALOR DEL RANGO ========== 
+    if (priceFilter) {
+        priceFilter.addEventListener('input', function () {
+            priceValue.textContent = `S/ ${parseInt(this.value).toLocaleString('es-PE')}`;
+        });
     }
-  });
-
-  // Simulación de datos para la tabla
-  const products = [
-    {
-      id: '001',
-      name: 'Colchón Queen Size Memory Foam',
-      category: 'Colchones',
-      price: 'S/ 1,250.00',
-      stock: 15,
-      status: 'Disponible'
+    
+    // ========== APLICAR FILTROS ========== 
+    function applyFilters() {
+        console.log('🔍 Aplicando filtros...');
+        
+        const searchTerm = searchInput?.value.toLowerCase() || '';
+        const selectedCategory = categoryFilter?.value || '';
+        const maxPrice = parseInt(priceFilter?.value) || 5000;
+        const selectedStatus = statusFilter?.value || '';
+        
+        console.log(`Filtros: búsqueda='${searchTerm}', categoría='${selectedCategory}', precio=${maxPrice}, estado='${selectedStatus}'`);
+        
+        let visibleCount = 0;
+        
+        // Filtrar productos
+        allProducts.forEach(product => {
+            const name = product.getAttribute('data-name')?.toLowerCase() || '';
+            const category = product.getAttribute('data-category') || '';
+            const price = parseFloat(product.getAttribute('data-price')) || 0;
+            const status = product.getAttribute('data-status') || '';
+            
+            // Aplicar criterios de filtro
+            const matchesSearch = name.includes(searchTerm);
+            const matchesCategory = !selectedCategory || category === selectedCategory;
+            const matchesPrice = price <= maxPrice;
+            const matchesStatus = !selectedStatus || status === selectedStatus;
+            
+            const shouldShow = matchesSearch && matchesCategory && matchesPrice && matchesStatus;
+            
+            if (shouldShow) {
+                product.style.display = '';
+                visibleCount++;
+            } else {
+                product.style.display = 'none';
+            }
+        });
+        
+        // Mostrar/ocultar estado vacío
+        if (visibleCount === 0) {
+            emptyState.style.display = 'block';
+        } else {
+            emptyState.style.display = 'none';
+        }
+        
+        console.log(`✅ Filtrado completado: ${visibleCount} productos visibles`);
     }
-  ];
-
-  // Función para filtrar productos
-  document.querySelector('.search-container input').addEventListener('input', function (e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('tbody tr');
-
-    rows.forEach(row => {
-      const productName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-      if (productName.includes(searchTerm)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+    
+    // ========== EVENT LISTENERS PARA FILTROS ========== 
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', applyFilters);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+    
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', applyFilters);
+    }
+    
+    if (priceFilter) {
+        priceFilter.addEventListener('change', applyFilters);
+    }
+    
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyFilters);
+    }
+    
+    // ========== LIMPIAR FILTROS ========== 
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function () {
+            console.log('🔄 Limpiando filtros...');
+            
+            if (searchInput) searchInput.value = '';
+            if (categoryFilter) categoryFilter.value = '';
+            if (priceFilter) {
+                priceFilter.value = 5000;
+                priceValue.textContent = 'S/ 5000';
+            }
+            if (statusFilter) statusFilter.value = '';
+            
+            emptyState.style.display = 'none';
+            
+            allProducts.forEach(product => {
+                product.style.display = '';
+            });
+            
+            console.log('✅ Filtros limpiados');
+        });
+    }
+    
+    // ========== FUNCIONALIDAD DE ZOOM EN CARRUSEL ========== 
+    const zoomInBtns = document.querySelectorAll('.zoom-in-btn');
+    const zoomOutBtns = document.querySelectorAll('.zoom-out-btn');
+    
+    let zoomLevels = {}; // Almacenar niveles de zoom por producto
+    
+    zoomInBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productoId = this.getAttribute('data-producto-id');
+            const carousel = document.querySelector(`#carouselProducto${productoId} .carousel-image`);
+            
+            if (carousel) {
+                zoomLevels[productoId] = (zoomLevels[productoId] || 1) + 0.2;
+                const allImages = document.querySelectorAll(`#carouselProducto${productoId} .carousel-image`);
+                allImages.forEach(img => {
+                    img.style.transform = `scale(${zoomLevels[productoId]})`;
+                });
+                console.log(`🔍 Zoom in producto ${productoId}: ${(zoomLevels[productoId] * 100).toFixed(0)}%`);
+            }
+        });
     });
-  });
+    
+    zoomOutBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productoId = this.getAttribute('data-producto-id');
+            const carousel = document.querySelector(`#carouselProducto${productoId} .carousel-image`);
+            
+            if (carousel) {
+                zoomLevels[productoId] = Math.max(1, (zoomLevels[productoId] || 1) - 0.2);
+                const allImages = document.querySelectorAll(`#carouselProducto${productoId} .carousel-image`);
+                allImages.forEach(img => {
+                    img.style.transform = `scale(${zoomLevels[productoId]})`;
+                });
+                console.log(`🔍 Zoom out producto ${productoId}: ${(zoomLevels[productoId] * 100).toFixed(0)}%`);
+            }
+        });
+    });
+    
+    // ========== CLICK EN IMAGEN PARA ZOOM ========== 
+    const carouselImages = document.querySelectorAll('.carousel-image');
+    carouselImages.forEach(img => {
+        img.addEventListener('click', function() {
+            const productoId = this.getAttribute('data-product-id');
+            const currentZoom = zoomLevels[productoId] || 1;
+            
+            if (currentZoom === 1) {
+                zoomLevels[productoId] = 1.5;
+                const allImages = document.querySelectorAll(`#carouselProducto${productoId} .carousel-image`);
+                allImages.forEach(i => {
+                    i.style.transform = 'scale(1.5)';
+                });
+                console.log(`🔍 Zoom click en producto ${productoId}: 150%`);
+            } else {
+                zoomLevels[productoId] = 1;
+                const allImages = document.querySelectorAll(`#carouselProducto${productoId} .carousel-image`);
+                allImages.forEach(i => {
+                    i.style.transform = 'scale(1)';
+                });
+                console.log(`🔍 Zoom click en producto ${productoId}: 100%`);
+            }
+        });
+    });
 });

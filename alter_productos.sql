@@ -1,0 +1,9 @@
+ALTER TABLE productos ADD COLUMN imagen_principal LONGTEXT;
+ALTER TABLE productos ADD COLUMN material VARCHAR(200);
+ALTER TABLE productos ADD COLUMN dimensiones VARCHAR(200);
+ALTER TABLE productos ADD COLUMN peso VARCHAR(100);
+ALTER TABLE productos ADD COLUMN firmeza VARCHAR(100);
+ALTER TABLE productos ADD COLUMN garantia VARCHAR(100);
+ALTER TABLE productos ADD COLUMN caracteristicas TEXT;
+ALTER TABLE productos ADD COLUMN imagen_tecnica_1 LONGTEXT;
+ALTER TABLE productos ADD COLUMN imagen_tecnica_2 LONGTEXT;

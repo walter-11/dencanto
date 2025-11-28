@@ -62,6 +62,15 @@ CREATE TABLE productos (
   precio DECIMAL(12,2) NOT NULL,
   stock INT DEFAULT 0,
   estado VARCHAR(50) DEFAULT 'Disponible',
+  imagen_principal LONGTEXT,
+  material VARCHAR(200),
+  dimensiones VARCHAR(200),
+  peso VARCHAR(100),
+  firmeza VARCHAR(100),
+  garantia VARCHAR(100),
+  caracteristicas TEXT,
+  imagen_tecnica_1 LONGTEXT,
+  imagen_tecnica_2 LONGTEXT,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

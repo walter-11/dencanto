@@ -167,22 +167,20 @@ public class ProductoController {
      */
     @PostMapping("/api/agregar")
     @ResponseBody
-    public ResponseEntity<?> agregarProductoRest(@RequestBody Producto producto) {
+    public ResponseEntity<?> agregarProductoRest(@Valid @RequestBody Producto producto, BindingResult result) {
         try {
-            if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El nombre del producto es requerido"));
-            }
-            if (producto.getCategoria() == null || producto.getCategoria().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "La categoría es requerida"));
-            }
-            if (producto.getEstado() == null || producto.getEstado().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El estado es requerido"));
-            }
-            if (producto.getPrecio() == null || producto.getPrecio() <= 0) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El precio debe ser mayor a 0"));
-            }
-            if (producto.getStock() == null || producto.getStock() < 0) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El stock no puede ser negativo"));
+            // Validar errores de validación
+            if (result.hasErrors()) {
+                Map<String, String> errores = new HashMap<>();
+                result.getFieldErrors().forEach(error -> {
+                    String fieldName = error.getField();
+                    String errorMessage = error.getDefaultMessage();
+                    errores.put(fieldName, errorMessage);
+                });
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Errores de validación",
+                    "detalles", errores
+                ));
             }
 
             productoService.guardar(producto);
@@ -206,28 +204,25 @@ public class ProductoController {
      */
     @PutMapping("/api/editar/{id}")
     @ResponseBody
-    public ResponseEntity<?> editarProductoRest(@PathVariable Integer id, @RequestBody Producto productoActualizado) {
+    public ResponseEntity<?> editarProductoRest(@PathVariable Integer id, @Valid @RequestBody Producto productoActualizado, BindingResult result) {
         try {
             Producto productoExistente = productoService.obtenerPorId(id);
             if (productoExistente == null) {
                 return ResponseEntity.notFound().build();
             }
 
-            // Validar campos requeridos
-            if (productoActualizado.getNombre() == null || productoActualizado.getNombre().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El nombre del producto es requerido"));
-            }
-            if (productoActualizado.getCategoria() == null || productoActualizado.getCategoria().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "La categoría es requerida"));
-            }
-            if (productoActualizado.getEstado() == null || productoActualizado.getEstado().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El estado es requerido"));
-            }
-            if (productoActualizado.getPrecio() == null || productoActualizado.getPrecio() <= 0) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El precio debe ser mayor a 0"));
-            }
-            if (productoActualizado.getStock() == null || productoActualizado.getStock() < 0) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El stock no puede ser negativo"));
+            // Validar errores de validación
+            if (result.hasErrors()) {
+                Map<String, String> errores = new HashMap<>();
+                result.getFieldErrors().forEach(error -> {
+                    String fieldName = error.getField();
+                    String errorMessage = error.getDefaultMessage();
+                    errores.put(fieldName, errorMessage);
+                });
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Errores de validación",
+                    "detalles", errores
+                ));
             }
 
             // Actualizar solo los campos modificados

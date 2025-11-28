@@ -144,9 +144,10 @@ public class VentaController {
 
     /**
      * GET /intranet/api/ventas/{id}
-     * Obtiene detalle de una venta específica
+     * Obtiene detalle de una venta específica (serializada como Map para evitar lazy loading)
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('VENDEDOR')")
     public ResponseEntity<?> obtenerVentaPorId(@PathVariable Long id) {
         try {
             Optional<Venta> ventaOpt = ventaService.obtenerPorId(id);
@@ -154,7 +155,56 @@ public class VentaController {
                 return ResponseEntity.notFound().build();
             }
 
-            return ResponseEntity.ok(ventaOpt.get());
+            Venta venta = ventaOpt.get();
+            Map<String, Object> ventaData = new HashMap<>();
+            
+            // Información básica
+            ventaData.put("id", venta.getId());
+            ventaData.put("estado", venta.getEstado().name());
+            ventaData.put("fechaCreacion", venta.getFechaCreacion());
+            ventaData.put("fechaPago", venta.getFechaPago());
+            
+            // Información del cliente
+            ventaData.put("cliente", venta.getClienteNombre());
+            ventaData.put("clienteTelefono", venta.getClienteTelefono());
+            ventaData.put("clienteEmail", venta.getClienteEmail());
+            
+            // Información de entrega
+            ventaData.put("tipoEntrega", venta.getTipoEntrega() != null ? venta.getTipoEntrega().name() : "N/A");
+            ventaData.put("direccionEntrega", venta.getDireccionEntrega() != null ? venta.getDireccionEntrega() : "");
+            
+            // Información de pago
+            ventaData.put("metodoPago", venta.getMetodoPago() != null ? venta.getMetodoPago().name() : "N/A");
+            
+            // Montos detallados
+            ventaData.put("subtotal", venta.getSubtotal());
+            ventaData.put("descuento", venta.getDescuento() != null ? venta.getDescuento() : 0.0);
+            ventaData.put("igv", venta.getIgv());
+            ventaData.put("costoDelivery", venta.getCostoDelivery() != null ? venta.getCostoDelivery() : 0.0);
+            ventaData.put("montoTotal", venta.getTotal());
+            
+            // Información adicional
+            ventaData.put("observaciones", venta.getObservaciones() != null ? venta.getObservaciones() : "");
+            
+            // Detalles de productos
+            List<Map<String, Object>> detalles = new ArrayList<>();
+            if (venta.getDetalles() != null) {
+                for (DetalleVenta detalle : venta.getDetalles()) {
+                    Map<String, Object> detalleData = new HashMap<>();
+                    detalleData.put("cantidad", detalle.getCantidad());
+                    if (detalle.getProducto() != null) {
+                        Map<String, Object> productoData = new HashMap<>();
+                        productoData.put("id", detalle.getProducto().getId());
+                        productoData.put("nombre", detalle.getProducto().getNombre());
+                        productoData.put("precio", detalle.getProducto().getPrecio());
+                        detalleData.put("producto", productoData);
+                    }
+                    detalles.add(detalleData);
+                }
+            }
+            ventaData.put("detalles", detalles);
+
+            return ResponseEntity.ok(ventaData);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
