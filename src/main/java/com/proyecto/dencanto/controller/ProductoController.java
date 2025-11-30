@@ -247,11 +247,13 @@ public class ProductoController {
      */
     @DeleteMapping("/api/eliminar/{id}")
     @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> eliminarProductoRest(@PathVariable Integer id) throws Exception {
         try {
             Producto producto = productoService.obtenerPorId(id);
             if (producto == null) {
                 return ResponseEntity.status(404).body(Map.of(
+                    "success", false,
                     "error", "Producto no encontrado"
                 ));
             }
@@ -263,9 +265,9 @@ public class ProductoController {
                 "message", "Producto descontinuado exitosamente"
             ));
         } catch (Exception e) {
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", e.getMessage()
+            return ResponseEntity.status(400).body(Map.of(
+                "success", false,
+                "error", e.getMessage()
             ));
         }
     }
