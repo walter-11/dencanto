@@ -176,4 +176,34 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // ========== AGREGAR AL CARRITO ========== 
+    const agregarCarritoButtons = document.querySelectorAll('.agregar-carrito-btn');
+    agregarCarritoButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productoId = parseInt(this.getAttribute('data-product-id'));
+            const nombre = this.getAttribute('data-nombre');
+            const precio = parseFloat(this.getAttribute('data-precio'));
+            const imagenProducto = this.getAttribute('data-imagen');
+            
+            // Obtener cantidad del input
+            const modal = this.closest('.modal');
+            const cantidadInput = modal?.querySelector('.cantidad-input[data-product-id="' + productoId + '"]');
+            const cantidad = cantidadInput ? parseInt(cantidadInput.value) : 1;
+            
+            // Crear objeto producto
+            const producto = {
+                id: productoId,
+                nombre: nombre,
+                precio: precio,
+                imagenPrincipal: imagenProducto
+            };
+            
+            // Agregar al carrito
+            agregarAlCarrito(producto, cantidad);
+            
+            console.log(`✅ Producto agregado: ${nombre} (Cantidad: ${cantidad})`);
+        });
+    });
 });
+

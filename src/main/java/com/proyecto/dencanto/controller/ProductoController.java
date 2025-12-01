@@ -5,6 +5,8 @@ import com.proyecto.dencanto.Service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,8 +27,20 @@ public class ProductoController {
 
     // Mostrar la lista de productos (sin cargar datos, se cargan por AJAX)
     @GetMapping
-    public String listarProductos(Model model) {
+    public String listarProductos(Model model, Authentication authentication) {
         model.addAttribute("producto", new Producto()); // Para el formulario de agregar
+        
+        // Obtener el rol del usuario autenticado
+        if (authentication != null) {
+            String rol = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(auth -> auth.startsWith("ROLE_"))
+                .map(auth -> auth.replace("ROLE_", ""))
+                .findFirst()
+                .orElse("USUARIO");
+            model.addAttribute("rol", rol);
+        }
+        
         return "intranet/productos";
     }
 

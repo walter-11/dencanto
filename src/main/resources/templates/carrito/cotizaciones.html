@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrito de Cotizaciones - Colchones D'Encanto</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <style>
+        .cotizacion-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .cotizacion-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 20px;
+        }
+
+        .cotizacion-header h2 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .cotizacion-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .productos-resumen {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .producto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .producto-item:last-child {
+            border-bottom: none;
+        }
+
+        .producto-info {
+            flex: 1;
+        }
+
+        .producto-precio {
+            font-weight: 600;
+            color: #0d6efd;
+            text-align: right;
+            min-width: 100px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .total-resumen {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: right;
+            margin-bottom: 30px;
+            border-top: 2px solid #0d6efd;
+        }
+
+        .total-resumen h4 {
+            color: #0d6efd;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section h4 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0d6efd;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+        }
+
+        .error-message {
+            color: #721c24 !important;
+            font-size: 0.9rem !important;
+            margin-top: 8px !important;
+            display: none !important;
+            font-weight: 600 !important;
+            padding: 10px 12px !important;
+            background-color: #f8d7da !important;
+            border: 2px solid #dc3545 !important;
+            border-radius: 4px !important;
+            line-height: 1.4 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .error-message.show {
+            display: block !important;
+            animation: slideDown 0.3s ease-out !important;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545 !important;
+            border-width: 2px !important;
+            background-image: none !important;
+            background-color: #fff !important;
+        }
+
+        .form-control.is-invalid:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5) !important;
+        }
+
+        .form-select.is-invalid {
+            border-color: #dc3545 !important;
+            border-width: 2px !important;
+        }
+
+        .form-select.is-invalid:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5) !important;
+        }
+
+        .btn-enviar {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            border: none;
+            padding: 12px 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-enviar:hover {
+            background: linear-gradient(135deg, #0a58ca 0%, #0845b8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+            color: white;
+        }
+
+        .btn-enviar:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-outline-danger {
+            border-color: #dc3545 !important;
+            color: #dc3545 !important;
+            font-weight: 600;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .alert-container {
+            margin-bottom: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .required-asterisk {
+            color: #dc3545;
+        }
+
+        .row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .row-2col {
+                grid-template-columns: 1fr;
+            }
+            
+            .cotizacion-container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR SUPERIOR -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom py-1">
+            <div class="container d-flex justify-content-between">
+                <div class="collapse navbar-collapse" id="navbarSup">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link small text-light" th:href="@{/FAQ}">
+                                <i class="bi bi-question-circle me-1"></i> Preguntas Frecuentes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link small text-light" th:href="@{/ubicanos}">
+                                <i class="bi bi-geo-alt me-1"></i> Ubícanos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link small text-warning fw-bold" th:href="@{/intranet/login}">
+                                <i class="bi bi-person-circle me-1"></i> Intranet
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- NAVBAR PRINCIPAL -->
+        <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-dark" th:href="@{/}">
+                    <img src="https://utp-prd-upload-file-storage.s3.amazonaws.com/pao/content/110ef33b-0246-49d3-bdda-72b3e0ee8b42/LogoEncanto_QCBIJL.png"
+                        height="45" class="me-2" />
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarInf">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarInf">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" th:href="@{/productos}">Productos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" th:href="@{/ofertas}">Ofertas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" th:href="@{/nosotros}">Nosotros</a>
+                        </li>
+                    </ul>
+
+                    <a class="btn btn-outline-warning rounded-pill ms-lg-3" th:href="@{/carrito/cotizaciones}">
+                        <i class="bi bi-cart me-1"></i> Carrito <span class="badge bg-danger" id="cartBadge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="cotizacion-container">
+            <!-- HEADER -->
+            <div class="cotizacion-header">
+                <h2>🛒 Carrito de Cotizaciones</h2>
+                <p>Completa el formulario para enviar tu cotización personalizada</p>
+            </div>
+
+            <!-- ALERTA DE ÉXITO -->
+            <div class="alert-container" id="alertContainer"></div>
+
+            <!-- RESUMEN DE PRODUCTOS -->
+            <div class="productos-resumen" id="productosResumen">
+                <h5 class="mb-3"><i class="bx bx-package"></i> Productos Seleccionados</h5>
+                <div id="productosList"></div>
+            </div>
+
+            <!-- TOTAL -->
+            <div class="total-resumen">
+                <p class="text-muted mb-2">Total de la Cotización</p>
+                <h4>S/ <span id="totalCotizacion">0.00</span></h4>
+            </div>
+
+            <!-- FORMULARIO -->
+            <div class="form-section">
+                <h4><i class="bx bx-edit"></i> Datos del Cliente</h4>
+                
+                <form id="formularioCotizacion">
+                    <!-- NOMBRE -->
+                    <div class="form-group">
+                        <label for="nombreCliente" class="form-label">
+                            Nombre Completo <span class="required-asterisk">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="nombreCliente" 
+                               name="nombreCliente" placeholder="Ej: Juan Pérez"
+                               minlength="3" maxlength="100" required>
+                        <div class="error-message" id="error-nombreCliente"></div>
+                    </div>
+
+                    <div class="row-2col">
+                        <!-- EMAIL -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                Email <span class="required-asterisk">*</span>
+                            </label>
+                            <input type="email" class="form-control" id="email" 
+                                   name="email" placeholder="Ej: juan@example.com" required>
+                            <div class="error-message" id="error-email"></div>
+                        </div>
+
+                        <!-- TELÉFONO -->
+                        <div class="form-group">
+                            <label for="telefono" class="form-label">
+                                Teléfono <span class="required-asterisk">*</span>
+                            </label>
+                            <input type="tel" class="form-control" id="telefono" 
+                                   name="telefono" placeholder="Ej: +51 987 654 321" required>
+                            <div class="error-message" id="error-telefono"></div>
+                        </div>
+                    </div>
+
+                    <!-- DIRECCIÓN -->
+                    <div class="form-group">
+                        <label for="direccion" class="form-label">
+                            Dirección <span class="required-asterisk">*</span>
+                        </label>
+                        <textarea class="form-control" id="direccion" name="direccion" 
+                                  rows="3" placeholder="Ej: Jr. Lima 123, Apto 4, Lima"
+                                  minlength="5" maxlength="255" required></textarea>
+                        <div class="error-message" id="error-direccion"></div>
+                    </div>
+
+                    <!-- FECHA DESEADA -->
+                    <div class="form-group">
+                        <label for="fechaDeseada" class="form-label">
+                            Fecha Deseada de Entrega <span class="required-asterisk">*</span>
+                        </label>
+                        <input type="date" class="form-control" id="fechaDeseada" 
+                               name="fechaDeseada" required>
+                        <div class="error-message" id="error-fechaDeseada"></div>
+                        <small class="text-muted">Selecciona la fecha en que deseas recibir tu pedido</small>
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="d-grid gap-2 d-md-flex mt-4">
+                        <button type="submit" class="btn btn-enviar flex-grow-1" id="btnEnviar">
+                            <span id="btnText">Enviar Cotización</span>
+                            <span id="btnSpinner" class="spinner" style="display: none;"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" id="btnCancelar" style="min-width: 150px;">
+                            <i class="bi bi-trash me-2"></i>Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h6 class="text-warning fw-bold mb-3">Sobre Nosotros</h6>
+                    <p class="small text-muted">Colchones D'Encanto ofrece las mejores soluciones en descanso y comodidad para tu hogar.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="text-warning fw-bold mb-3">Enlaces Rápidos</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/productos" class="text-muted text-decoration-none">Productos</a></li>
+                        <li><a href="/FAQ" class="text-muted text-decoration-none">Preguntas Frecuentes</a></li>
+                        <li><a href="/ubicanos" class="text-muted text-decoration-none">Ubícanos</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="text-warning fw-bold mb-3">Contacto</h6>
+                    <p class="small text-muted mb-1"><i class="bi bi-telephone"></i> +51 987 654 321</p>
+                    <p class="small text-muted"><i class="bi bi-envelope"></i> info@dencanto.com</p>
+                </div>
+            </div>
+            <hr class="bg-secondary">
+            <div class="text-center text-muted small">
+                <p>&copy; 2024 Colchones D'Encanto. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/carrito.js"></script>
+    <script>
+        // Cargar carrito desde localStorage
+        function cargarCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carritoCotizaciones') || '[]');
+            const productosList = document.getElementById('productosList');
+            let total = 0;
+
+            if (carrito.length === 0) {
+                productosList.innerHTML = '<p class="text-muted">Tu carrito está vacío. <a href="/productos">Ir a productos</a></p>';
+            } else {
+                productosList.innerHTML = carrito.map(producto => {
+                    const subtotal = producto.precio * producto.cantidad;
+                    total += subtotal;
+                    return `
+                        <div class="producto-item">
+                            <div class="producto-info">
+                                <strong>${producto.nombre}</strong><br>
+                                <small class="text-muted">Cantidad: ${producto.cantidad}</small>
+                            </div>
+                            <div class="producto-precio">
+                                S/ ${subtotal.toFixed(2)}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('totalCotizacion').textContent = total.toFixed(2);
+            return {carrito, total};
+        }
+
+        // Validar formulario
+        function validarFormulario(datos) {
+            const errores = {};
+
+            // Validar nombre
+            if (!datos.nombreCliente || datos.nombreCliente.trim() === '') {
+                errores.nombreCliente = 'Por favor, ingresa tu nombre completo';
+            } else if (datos.nombreCliente.length < 3) {
+                errores.nombreCliente = 'El nombre debe tener entre 3 y 100 caracteres';
+            } else if (datos.nombreCliente.length > 100) {
+                errores.nombreCliente = 'El nombre debe tener entre 3 y 100 caracteres';
+            }
+
+            // Validar email
+            if (!datos.email || datos.email.trim() === '') {
+                errores.email = 'Por favor, ingresa tu email';
+            } else if (!validarEmail(datos.email)) {
+                errores.email = 'Por favor, ingresa un email válido (ej: usuario@ejemplo.com)';
+            }
+
+            // Validar teléfono
+            if (!datos.telefono || datos.telefono.trim() === '') {
+                errores.telefono = 'Por favor, ingresa tu teléfono';
+            } else if (!/^[0-9\-\+\s()]*$/.test(datos.telefono)) {
+                errores.telefono = 'El teléfono solo debe contener números y caracteres permitidos';
+            } else if (datos.telefono.length < 7 || datos.telefono.length > 20) {
+                errores.telefono = 'El teléfono debe tener entre 7 y 20 dígitos';
+            }
+
+            // Validar dirección
+            if (!datos.direccion || datos.direccion.trim() === '') {
+                errores.direccion = 'Por favor, ingresa tu dirección completa';
+            } else if (datos.direccion.length < 5) {
+                errores.direccion = 'La dirección debe tener entre 5 y 255 caracteres';
+            } else if (datos.direccion.length > 255) {
+                errores.direccion = 'La dirección debe tener entre 5 y 255 caracteres';
+            }
+
+            // Validar fecha
+            if (!datos.fechaDeseada || datos.fechaDeseada.trim() === '') {
+                errores.fechaDeseada = 'Por favor, selecciona una fecha de entrega';
+            }
+
+            return errores;
+        }
+
+        function validarEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Mostrar errores en el formulario
+        function mostrarErrores(errores) {
+            // Limpiar errores anteriores
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+
+            // Mostrar nuevos errores
+            let primerCampoError = null;
+            Object.entries(errores).forEach(([campo, mensaje]) => {
+                const errorEl = document.getElementById(`error-${campo}`);
+                const inputEl = document.getElementById(campo);
+                
+                if (errorEl && inputEl) {
+                    errorEl.textContent = mensaje;
+                    errorEl.classList.add('show');
+                    inputEl.classList.add('is-invalid');
+                    
+                    // Guardar primer error para scroll
+                    if (!primerCampoError) {
+                        primerCampoError = inputEl;
+                    }
+                }
+            });
+            
+            // Scroll al primer error
+            if (primerCampoError) {
+                primerCampoError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                primerCampoError.focus();
+            }
+        }
+
+        // Enviar cotización
+        document.getElementById('formularioCotizacion').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('=== Formulario enviado ===');
+
+            const {carrito, total} = cargarCarrito();
+
+            if (carrito.length === 0) {
+                alert('Tu carrito está vacío. Agrega productos primero.');
+                return;
+            }
+
+            // Recopilar datos
+            const datos = {
+                nombreCliente: document.getElementById('nombreCliente').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                direccion: document.getElementById('direccion').value,
+                fechaDeseada: document.getElementById('fechaDeseada').value,
+                productosJson: JSON.stringify(carrito),
+                total: total,
+                estado: 'Pendiente'
+            };
+            
+            console.log('Datos recopilados:', datos);
+
+            // Validar
+            const errores = validarFormulario(datos);
+            console.log('Errores encontrados:', errores);
+            
+            if (Object.keys(errores).length > 0) {
+                console.log('Mostrando errores en formulario...');
+                mostrarErrores(errores);
+                return;
+            }
+
+            // Mostrar cargando
+            document.getElementById('btnEnviar').disabled = true;
+            document.getElementById('btnText').style.display = 'none';
+            document.getElementById('btnSpinner').style.display = 'inline-block';
+
+            try {
+                const response = await fetch('/carrito/api/enviar-cotizacion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response JSON:', result);
+
+                if (result.success) {
+                    // Limpiar carrito
+                    localStorage.removeItem('carritoCotizaciones');
+
+                    // Mostrar alerta de éxito
+                    const alertHTML = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bx bx-check-circle"></i> <strong>¡Cotización Enviada!</strong>
+                            <p class="mb-0">Tu cotización ha sido enviada exitosamente. Nos pondremos en contacto pronto.</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    document.getElementById('alertContainer').innerHTML = alertHTML;
+
+                    // Limpiar formulario
+                    document.getElementById('formularioCotizacion').reset();
+                    mostrarErrores({});
+
+                    // Recargar carrito
+                    setTimeout(() => cargarCarrito(), 1000);
+
+                    // Redirigir a home después de 3 segundos
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000);
+                } else {
+                    // Mostrar errores de validación del servidor
+                    if (result.detalles && Object.keys(result.detalles).length > 0) {
+                        mostrarErrores(result.detalles);
+                        
+                        // Mostrar alerta de error general
+                        const alertHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-circle"></i> <strong>Error de Validación</strong>
+                                <p class="mb-0">Por favor, revisa los errores indicados abajo.</p>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `;
+                        document.getElementById('alertContainer').innerHTML = alertHTML;
+                    } else {
+                        alert('Error: ' + (result.error || 'Intenta de nuevo'));
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al enviar cotización: ' + error.message);
+            } finally {
+                document.getElementById('btnEnviar').disabled = false;
+                document.getElementById('btnText').style.display = 'inline';
+                document.getElementById('btnSpinner').style.display = 'none';
+            }
+        });
+
+        // Cargar carrito al iniciar
+        cargarCarrito();
+
+        // Botón cancelar
+        document.getElementById('btnCancelar').addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que deseas cancelar la cotización y vaciar el carrito?')) {
+                localStorage.removeItem('carritoCotizaciones');
+                document.getElementById('formularioCotizacion').reset();
+                mostrarErrores({});
+                cargarCarrito();
+                actualizarBadgeCarrito();
+                
+                const alertHTML = `
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="bi bi-x-circle"></i> <strong>Cotización Cancelada</strong>
+                        <p class="mb-0">Tu carrito ha sido vaciado.</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                document.getElementById('alertContainer').innerHTML = alertHTML;
+            }
+        });
+    </script>
+</body>
+
+</html>

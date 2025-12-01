@@ -72,8 +72,8 @@
           </ul>
 
           <!-- Carrito -->
-          <a class="btn btn-outline-warning rounded-pill ms-lg-3" href="#">
-            <i class="bi bi-cart me-1"></i> Carrito
+          <a class="btn btn-outline-warning rounded-pill ms-lg-3" href="/carrito/cotizaciones">
+            <i class="bi bi-cart me-1"></i> Carrito de Cotización <span class="badge bg-danger" id="cartBadge" style="display: none;">0</span>
           </a>
         </div>
       </div>
@@ -254,64 +254,26 @@
           </div>
         </div>
 
-        <!-- Formulario de Contacto -->
+        <!-- Contacto por teléfono -->
         <div class="col-lg-8">
           <div class="contact-form">
-            <h3 class="mb-4">Envíanos un Mensaje</h3>
-            <form id="contactForm">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="nombre" placeholder="Nombre completo" required />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <input type="email" class="form-control" id="email" placeholder="Correo electrónico" required />
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <input type="tel" class="form-control" id="telefono" placeholder="Número de teléfono" />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <select class="form-control" id="asunto" required>
-                      <option value="" disabled selected>
-                        Selecciona un asunto
-                      </option>
-                      <option value="consulta">Consulta general</option>
-                      <option value="cotizacion">
-                        Solicitud de cotización
-                      </option>
-                      <option value="garantia">
-                        Consulta sobre garantía
-                      </option>
-                      <option value="queja">Queja o reclamo</option>
-                      <option value="otros">Otros</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <textarea class="form-control" id="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..."
-                  required></textarea>
-              </div>
-
-              <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="acepto" required />
-                <label class="form-check-label" for="acepto">Acepto la política de privacidad y términos de uso</label>
-              </div>
-
-              <button type="submit" class="btn btn-primary">
-                Enviar Mensaje
-              </button>
-            </form>
+            <h3 class="mb-4">¿Necesitas Más Información?</h3>
+            <p>Para consultas, cotizaciones o cualquier duda sobre nuestros productos, contáctanos directamente:</p>
+            <ul class="list-unstyled mt-4">
+              <li class="mb-3">
+                <i class="bi bi-telephone-fill text-warning me-2"></i>
+                <strong>Teléfono:</strong> (01) 471-5877
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-whatsapp text-success me-2"></i>
+                <strong>WhatsApp:</strong> +51 987 654 321
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-envelope text-danger me-2"></i>
+                <strong>Email:</strong> info@colchonesdencanto.com
+              </li>
+            </ul>
+            <p class="mt-4 text-muted">Nuestro equipo de atención al cliente está disponible de lunes a sábado, de 9:00 am a 8:00 pm. ¡Estamos aquí para ayudarte!</p>
           </div>
         </div>
       </div>
@@ -370,7 +332,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/scriptUbicanos.js"></script>
-
+  <script src="/js/carrito.js"></script>
 </body>
 
 </html>

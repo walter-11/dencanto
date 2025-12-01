@@ -123,7 +123,7 @@
                   <div class="card shadow stats-card">
                     <div class="card-body py-4 text-center">
                       <h6 class="mb-2 fw-bold">Total</h6>
-                      <p class="fw-bold mb-2 fs-3 text-primary">48</p>
+                      <p class="fw-bold mb-2 fs-3 text-primary" id="totalCotizaciones">0</p>
                       <div class="mb-0">
                         <span class="fw-bold text-muted">Cotizaciones</span>
                       </div>
@@ -134,7 +134,7 @@
                   <div class="card shadow stats-card">
                     <div class="card-body py-4 text-center">
                       <h6 class="mb-2 fw-bold">Pendientes</h6>
-                      <p class="fw-bold mb-2 fs-3 text-warning">12</p>
+                      <p class="fw-bold mb-2 fs-3 text-warning" id="cotizacionesPendientes">0</p>
                       <div class="mb-0">
                         <span class="fw-bold text-muted">Por asignar</span>
                       </div>
@@ -145,7 +145,7 @@
                   <div class="card shadow stats-card">
                     <div class="card-body py-4 text-center">
                       <h6 class="mb-2 fw-bold">En Proceso</h6>
-                      <p class="fw-bold mb-2 fs-3 text-info">18</p>
+                      <p class="fw-bold mb-2 fs-3 text-info" id="cotizacionesEnProceso">0</p>
                       <div class="mb-0">
                         <span class="fw-bold text-muted">Activas</span>
                       </div>
@@ -156,7 +156,7 @@
                   <div class="card shadow stats-card">
                     <div class="card-body py-4 text-center">
                       <h6 class="mb-2 fw-bold">Contactadas</h6>
-                      <p class="fw-bold mb-2 fs-3 text-primary">8</p>
+                      <p class="fw-bold mb-2 fs-3 text-primary" id="cotizacionesContactadas">0</p>
                       <div class="mb-0">
                         <span class="fw-bold text-muted">En seguimiento</span>
                       </div>
@@ -167,20 +167,9 @@
                   <div class="card shadow stats-card">
                     <div class="card-body py-4 text-center">
                       <h6 class="mb-2 fw-bold">Cerradas</h6>
-                      <p class="fw-bold mb-2 fs-3 text-success">7</p>
+                      <p class="fw-bold mb-2 fs-3 text-success" id="cotizacionesCerradas">0</p>
                       <div class="mb-0">
                         <span class="fw-bold text-muted">Convertidas</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 col-md-2">
-                  <div class="card shadow stats-card">
-                    <div class="card-body py-4 text-center">
-                      <h6 class="mb-2 fw-bold">Tasa Conversión</h6>
-                      <p class="fw-bold mb-2 fs-3 text-success">14.6%</p>
-                      <div class="mb-0">
-                        <span class="fw-bold text-muted">Éxito</span>
                       </div>
                     </div>
                   </div>
@@ -191,35 +180,23 @@
               <div class="row mb-4">
                 <div class="col-md-4">
                   <div class="search-container">
-                    <input type="text" class="form-control" placeholder="Buscar cotizaciones...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar cotizaciones...">
                     <i class="bx bx-search search-icon"></i>
                   </div>
                 </div>
                 <div class="col-md-3">
-                  <select class="form-select">
-                    <option selected>Estado: Todos</option>
-                    <option>Pendiente</option>
-                    <option>En Proceso</option>
-                    <option>Contactado</option>
-                    <option>Cerrada</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <select class="form-select">
-                    <option selected>Vendedor: Todos</option>
-                    <option>Fabrizio Bustamante</option>
-                    <option>Shayuri Garcia</option>
-                    <option>Walter Mantari</option>
-                    <option>Sin asignar</option>
+                  <select class="form-select" id="filterEstado">
+                    <option value="">Estado: Todos</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En Proceso">En Proceso</option>
+                    <option value="Contactado">Contactado</option>
+                    <option value="Cerrada">Cerrada</option>
                   </select>
                 </div>
                 <div class="col-md-2">
-                  <select class="form-select">
-                    <option selected>Prioridad: Todas</option>
-                    <option>Alta</option>
-                    <option>Media</option>
-                    <option>Baja</option>
-                  </select>
+                  <button class="btn btn-primary w-100" id="btnRefresh" onclick="cargarCotizaciones()">
+                    <i class="bx bx-refresh me-2"></i>Actualizar
+                  </button>
                 </div>
               </div>
               
@@ -232,206 +209,24 @@
                         <tr class="highlight">
                           <th scope="col">ID</th>
                           <th scope="col">Cliente</th>
-                          <th scope="col">Productos</th>
+                          <th scope="col">Email</th>
                           <th scope="col">Total</th>
-                          <th scope="col">Vendedor</th>
                           <th scope="col">Estado</th>
-                          <th scope="col">Prioridad</th>
                           <th scope="col">Fecha</th>
                           <th scope="col">Acciones</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <!-- Cotización 1 -->
-                        <tr class="quote-item priority-high">
-                          <th scope="row">COT-001</th>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div>
-                                <div class="fw-bold">Carlos López</div>
-                                <small class="text-muted">carlos.lopez@email.com</small>
-                              </div>
+                      <tbody id="cotizacionesBody">
+                        <tr class="text-center">
+                          <td colspan="7">
+                            <div class="spinner-border text-primary" role="status">
+                              <span class="visually-hidden">Cargando...</span>
                             </div>
-                          </td>
-                          <td>
-                            <span class="fw-bold">Colchón King Size</span>
-                            <br>
-                          </td>
-                          <td>
-                            <span class="fw-bold">S/ 2,150.00</span>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <span>Fabrizio Bustamante</span>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="badge badge-pendiente status-badge">En Proceso</span>
-                          </td>
-                          <td>
-                            <span class="badge bg-danger">Alta</span>
-                          </td>
-                          <td>14/01/2025</td>
-                          <td class="action-buttons">
-                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#changeStatusModal">
-                              <i class="bx bx-refresh"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#viewQuoteModal">
-                              <i class="bx bx-show"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#reassignModal">
-                              <i class="bx bx-transfer"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        <!-- Cotización 2 -->
-                        <tr class="quote-item priority-medium">
-                          <th scope="row">COT-002</th>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div>
-                                <div class="fw-bold">María Rodríguez</div>
-                                <small class="text-muted">maria.rodriguez@email.com</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="fw-bold">Colchón King Size + Base</span>
-                            <br>
-                          </td>
-                          <td>
-                            <span class="fw-bold">S/ 1,850.00</span>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <span>Daniel Ore</span>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="badge badge-en-proceso status-badge">Pendiente</span>
-                          </td>
-                          <td>
-                            <span class="badge bg-warning">Media</span>
-                          </td>
-                          <td>14/01/2025</td>
-                          <td class="action-buttons">
-                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#changeStatusModal">
-                              <i class="bx bx-refresh"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#viewQuoteModal">
-                              <i class="bx bx-show"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#reassignModal">
-                              <i class="bx bx-transfer"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        
-                        
-                        
-                        <!-- Cotización 3 -->
-                        <tr class="quote-item priority-low">
-                          <th scope="row">COT-003</th>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div>
-                                <div class="fw-bold">Ana Martínez</div>
-                                <small class="text-muted">ana.martinez@email.com</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="fw-bold">Almohadas Viscoelásticas</span>
-                            <br>
-                          </td>
-                          <td>
-                            <span class="fw-bold">S/ 480.00</span>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <span>Shayuri García</span>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="badge badge-contactado status-badge">Contactado</span>
-                          </td>
-                          <td>
-                            <span class="badge bg-success">Baja</span>
-                          </td>
-                          <td>13/01/2025</td>
-                          <td class="action-buttons">
-                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#changeStatusModal">
-                              <i class="bx bx-refresh"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#viewQuoteModal">
-                              <i class="bx bx-show"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#reassignModal">
-                              <i class="bx bx-transfer"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        
-                        <!-- Cotización 4 -->
-                        <tr class="quote-item">
-                          <th scope="row">COT-004</th>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div>
-                                <div class="fw-bold">Roberto Silva</div>
-                                <small class="text-muted">roberto.silva@email.com</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="fw-bold">Colchón Twin + Protector</span>
-                            <br>
-                          </td>
-                          <td>
-                            <span class="fw-bold">S/ 950.00</span>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <span>Walter Mantari</span>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="badge badge-cerrada status-badge">Cerrada</span>
-                          </td>
-                          <td>
-                            <span class="badge bg-success">Baja</span>
-                          </td>
-                          <td>12/01/2025</td>
-                          <td class="action-buttons">
-                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#changeStatusModal">
-                              <i class="bx bx-refresh"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#viewQuoteModal">
-                              <i class="bx bx-show"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#reassignModal">
-                              <i class="bx bx-transfer"></i>
-                            </button>
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  
-                  <!-- Paginación -->
-                  <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center mt-4">
-                      <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-                      </li>
-                      <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">Siguiente</a>
-                      </li>
-                    </ul>
-                  </nav>
                 </div>
               </div>
             </div>
@@ -558,33 +353,33 @@
     <div class="modal fade" id="changeStatusModal" tabindex="-1" aria-labelledby="changeStatusModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="changeStatusModalLabel">Cambiar Estado</h5>
+          <div class="modal-header bg-light">
+            <h5 class="modal-title" id="changeStatusModalLabel"><i class="bx bx-refresh me-2"></i>Cambiar Estado</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p><strong>Cotización:</strong> COT-001 - Carlos López</p>
-            <p><strong>Estado actual:</strong> <span class="badge badge-en-proceso">En Proceso</span></p>
-            
+            <div class="alert alert-info mb-3">
+              <strong>Cotización:</strong> <span id="statusQuoteId">#-</span> - <span id="statusQuoteName">-</span>
+            </div>
             <div class="mb-3">
-              <label for="newStatus" class="form-label">Nuevo Estado</label>
-              <select class="form-select" id="newStatus">
-                <option value="pendiente">Pendiente</option>
-                <option value="en-proceso" selected>En Proceso</option>
-                <option value="contactado">Contactado</option>
-                <option value="cerrada">Cerrada</option>
-                <option value="rechazada">Rechazada</option>
+              <label for="newStatus" class="form-label"><strong>Nuevo Estado</strong></label>
+              <select class="form-select form-select-lg" id="newStatus">
+                <option value="Pendiente">⏱️ Pendiente - Esperando acción</option>
+                <option value="En Proceso">🔄 En Proceso - En revisión</option>
+                <option value="Contactado">📞 Contactado - Cliente contactado</option>
+                <option value="Cerrada">✅ Cerrada - Finalizada/Convertida</option>
               </select>
             </div>
-            
             <div class="mb-3">
-              <label for="statusNotes" class="form-label">Comentarios</label>
-              <textarea class="form-control" id="statusNotes" rows="3" placeholder="Agregar comentarios sobre el cambio de estado..."></textarea>
+              <label for="statusNotes" class="form-label">Comentarios (Opcional)</label>
+              <textarea class="form-control" id="statusNotes" rows="3" placeholder="Agregar notas sobre el cambio de estado..."></textarea>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary">Actualizar Estado</button>
+            <button type="button" class="btn btn-primary">
+              <i class="bx bx-check me-2"></i>Actualizar Estado
+            </button>
           </div>
         </div>
       </div>
@@ -631,6 +426,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="/js/authUtils.js"></script>
-    <script src="/js/scriptCotizaciones.js"></script>
+    <script src="/js/cotizaciones.js"></script>
   </body>
 </html>
