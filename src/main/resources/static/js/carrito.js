@@ -89,19 +89,55 @@ function actualizarCantidad(productoId, nuevaCantidad) {
 }
 
 /**
- * Calcula el total del carrito
+ * Calcula el total del carrito desde API
  */
-function calcularTotal() {
-    const carrito = obtenerCarrito();
-    return carrito.reduce((total, p) => total + (p.precio * p.cantidad), 0);
+async function calcularTotal() {
+    try {
+        const carrito = obtenerCarrito();
+        const response = await fetch('/api/carrito/calcular-total', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: carrito })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            return result.total;
+        }
+        // Fallback local
+        return carrito.reduce((total, p) => total + (p.precio * p.cantidad), 0);
+    } catch (error) {
+        console.error('Error calculando total:', error);
+        // Fallback local
+        const carrito = obtenerCarrito();
+        return carrito.reduce((total, p) => total + (p.precio * p.cantidad), 0);
+    }
 }
 
 /**
- * Obtiene la cantidad de items en el carrito
+ * Obtiene la cantidad de items en el carrito desde API
  */
-function obtenerCantidadItems() {
-    const carrito = obtenerCarrito();
-    return carrito.reduce((total, p) => total + p.cantidad, 0);
+async function obtenerCantidadItems() {
+    try {
+        const carrito = obtenerCarrito();
+        const response = await fetch('/api/carrito/contar-items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: carrito })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            return result.total;
+        }
+        // Fallback local
+        return carrito.reduce((total, p) => total + p.cantidad, 0);
+    } catch (error) {
+        console.error('Error contando items:', error);
+        // Fallback local
+        const carrito = obtenerCarrito();
+        return carrito.reduce((total, p) => total + p.cantidad, 0);
+    }
 }
 
 /**

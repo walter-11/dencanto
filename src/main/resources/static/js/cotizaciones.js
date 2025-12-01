@@ -70,37 +70,67 @@ function mostrarCotizaciones(cotizaciones) {
   });
 }
 
-// Obtener badge de estado con colores apropiados
-function getEstatusBadge(estado) {
-  const statusMap = {
-    'Pendiente': { class: 'badge-warning', texto: 'Pendiente' },
-    'En Proceso': { class: 'badge-info', texto: 'En Proceso' },
-    'Contactado': { class: 'badge-primary', texto: 'Contactado' },
-    'Cerrada': { class: 'badge-success', texto: 'Cerrada' }
-  };
-  const status = statusMap[estado] || { class: 'badge-secondary', texto: estado };
-  return `<span class="badge ${status.class}" style="font-size: 0.9rem; padding: 0.5rem 0.75rem;">${status.texto}</span>`;
+// Obtener badge de estado desde API
+async function getEstatusBadge(estado) {
+  try {
+    const response = await fetch(`/api/util/estado-badge/${estado}`);
+    const result = await response.json();
+    
+    if (result.success) {
+      const status = result.data;
+      return `<span class="badge ${status.class}" style="font-size: 0.9rem; padding: 0.5rem 0.75rem;">${status.texto}</span>`;
+    }
+    return `<span class="badge badge-secondary">${estado}</span>`;
+  } catch (error) {
+    console.error('Error obteniendo badge:', error);
+    return `<span class="badge badge-secondary">${estado}</span>`;
+  }
 }
 
-// Formatear fecha
-function formatearFecha(fechaString) {
-  const fecha = new Date(fechaString);
-  return fecha.toLocaleDateString('es-PE');
+// Formatear fecha desde API
+async function formatearFecha(fechaString) {
+  try {
+    const response = await fetch('/api/util/formatear-fecha', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fecha: fechaString })
+    });
+    const result = await response.json();
+    
+    if (result.success) {
+      return result.data;
+    }
+    // Fallback local si falla la API
+    const fecha = new Date(fechaString);
+    return fecha.toLocaleDateString('es-PE');
+  } catch (error) {
+    console.error('Error formateando fecha:', error);
+    const fecha = new Date(fechaString);
+    return fecha.toLocaleDateString('es-PE');
+  }
 }
 
-// Actualizar estadísticas
-function actualizarEstadisticas(cotizaciones) {
-  const total = cotizaciones.length;
-  const pendientes = cotizaciones.filter(c => c.estado === 'Pendiente').length;
-  const enProceso = cotizaciones.filter(c => c.estado === 'En Proceso').length;
-  const contactadas = cotizaciones.filter(c => c.estado === 'Contactado').length;
-  const cerradas = cotizaciones.filter(c => c.estado === 'Cerrada').length;
-
-  document.getElementById('totalCotizaciones').textContent = total;
-  document.getElementById('cotizacionesPendientes').textContent = pendientes;
-  document.getElementById('cotizacionesEnProceso').textContent = enProceso;
-  document.getElementById('cotizacionesContactadas').textContent = contactadas;
-  document.getElementById('cotizacionesCerradas').textContent = cerradas;
+// Actualizar estadísticas desde API
+async function actualizarEstadisticas(cotizaciones) {
+  try {
+    const response = await fetch('/api/util/calcular-estadisticas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cotizaciones: cotizaciones })
+    });
+    
+    const result = await response.json();
+    if (result.success) {
+      const stats = result.data;
+      document.getElementById('totalCotizaciones').textContent = stats.total;
+      document.getElementById('cotizacionesPendientes').textContent = stats.pendientes;
+      document.getElementById('cotizacionesEnProceso').textContent = stats.enProceso;
+      document.getElementById('cotizacionesContactadas').textContent = stats.contactadas;
+      document.getElementById('cotizacionesCerradas').textContent = stats.cerradas;
+    }
+  } catch (error) {
+    console.error('Error actualizando estadísticas:', error);
+  }
 }
 
 // Ver detalle de cotización
@@ -241,29 +271,71 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Búsqueda en tiempo real
+  // Búsqueda en tiempo real con API
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
-    searchInput.addEventListener('keyup', function() {
-      const termino = this.value.toLowerCase();
-      const filtradas = cotizacionesGlobales.filter(c => 
-        c.nombreCliente.toLowerCase().includes(termino) || 
-        c.email.toLowerCase().includes(termino)
-      );
-      mostrarCotizaciones(filtradas);
+    searchInput.addEventListener('keyup', async function() {
+      const termino = this.value;
+      const estado = document.getElementById('filterEstado')?.value || '';
+      
+      try {
+        const response = await fetch('/api/util/filtrar-cotizaciones', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cotizaciones: cotizacionesGlobales,
+            termino: termino,
+            estado: estado
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          mostrarCotizaciones(result.data);
+        }
+      } catch (error) {
+        console.error('Error en búsqueda:', error);
+        // Fallback local
+        const filtradas = cotizacionesGlobales.filter(c => 
+          c.nombreCliente.toLowerCase().includes(termino.toLowerCase()) || 
+          c.email.toLowerCase().includes(termino.toLowerCase())
+        );
+        mostrarCotizaciones(filtradas);
+      }
     });
   }
 
-  // Filtro por estado en tiempo real
+  // Filtro por estado en tiempo real con API
   const filterEstado = document.getElementById('filterEstado');
   if (filterEstado) {
-    filterEstado.addEventListener('change', function() {
+    filterEstado.addEventListener('change', async function() {
       const estado = this.value;
-      if (!estado) {
-        mostrarCotizaciones(cotizacionesGlobales);
-      } else {
-        const filtradas = cotizacionesGlobales.filter(c => c.estado === estado);
-        mostrarCotizaciones(filtradas);
+      const termino = document.getElementById('searchInput')?.value || '';
+      
+      try {
+        const response = await fetch('/api/util/filtrar-cotizaciones', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cotizaciones: cotizacionesGlobales,
+            termino: termino,
+            estado: estado
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          mostrarCotizaciones(result.data);
+        }
+      } catch (error) {
+        console.error('Error en filtrado:', error);
+        // Fallback local
+        if (!estado) {
+          mostrarCotizaciones(cotizacionesGlobales);
+        } else {
+          const filtradas = cotizacionesGlobales.filter(c => c.estado === estado);
+          mostrarCotizaciones(filtradas);
+        }
       }
     });
   }
