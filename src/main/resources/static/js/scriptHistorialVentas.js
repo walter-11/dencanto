@@ -758,3 +758,117 @@ function actualizarGraficoBarras(ventas) {
     chartInstances.salesChart.data.datasets[0].data = montos;
     chartInstances.salesChart.update();
 }
+
+// ============ EXPORTAR PDF ============
+async function exportarHistorialPDF() {
+    console.log('📄 Exportando historial de ventas a PDF...');
+    
+    const token = getToken();
+    if (!token) {
+        mostrarAlertaError('Error', 'No hay sesión activa. Por favor, inicie sesión nuevamente.');
+        return;
+    }
+    
+    // Obtener valores de filtros actuales
+    const fechaDesde = document.getElementById('filtroFechaDesde')?.value || '';
+    const fechaHasta = document.getElementById('filtroFechaHasta')?.value || '';
+    const estado = document.getElementById('filtroEstado')?.value || '';
+    const metodoPago = document.getElementById('filtroMetodoPago')?.value || '';
+    
+    // Construir URL con parámetros
+    let url = '/intranet/api/ventas/exportar-pdf?';
+    const params = new URLSearchParams();
+    
+    if (fechaDesde) params.append('fechaDesde', fechaDesde);
+    if (fechaHasta) params.append('fechaHasta', fechaHasta);
+    if (estado) params.append('estado', estado);
+    if (metodoPago) params.append('metodoPago', metodoPago);
+    
+    url += params.toString();
+    
+    console.log('📥 Descargando PDF desde:', url);
+    
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error ${response.status}: ${errorText}`);
+        }
+        
+        // Descargar el archivo
+        const blob = await response.blob();
+        const urlBlob = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = urlBlob;
+        
+        // Nombre del archivo
+        const fecha = new Date().toISOString().split('T')[0];
+        a.download = `historial_ventas_${fecha}.pdf`;
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(urlBlob);
+        
+        mostrarAlertaExito('PDF Generado', 'El historial de ventas se ha exportado correctamente.');
+        
+    } catch (error) {
+        console.error('❌ Error al exportar PDF:', error);
+        mostrarAlertaError('Error al exportar', 'No se pudo generar el PDF: ' + error.message);
+    }
+}
+
+async function descargarPdfVenta() {
+    console.log('📄 Descargando PDF de venta individual...');
+    
+    if (!detalleVentaActual || !detalleVentaActual.id) {
+        mostrarAlertaError('Error', 'No hay venta seleccionada para exportar.');
+        return;
+    }
+    
+    const ventaId = detalleVentaActual.id;
+    const token = getToken();
+    
+    if (!token) {
+        mostrarAlertaError('Error', 'No hay sesión activa. Por favor, inicie sesión nuevamente.');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/intranet/api/ventas/${ventaId}/pdf`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error ${response.status}: ${errorText}`);
+        }
+        
+        // Descargar el archivo
+        const blob = await response.blob();
+        const urlBlob = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = urlBlob;
+        a.download = `venta_${ventaId}.pdf`;
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(urlBlob);
+        
+        mostrarAlertaExito('PDF Generado', `La venta #${ventaId} se ha exportado correctamente.`);
+        
+    } catch (error) {
+        console.error('❌ Error al descargar PDF:', error);
+        mostrarAlertaError('Error al descargar', 'No se pudo generar el PDF: ' + error.message);
+    }
+}

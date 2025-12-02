@@ -547,6 +547,7 @@ function processSale() {
   };
 
   console.log('📤 Enviando venta:', ventaData);
+  console.log('📤 JSON:', JSON.stringify(ventaData, null, 2));
   
   fetchWithAuth('/intranet/api/ventas/registrar', {
     method: 'POST',
@@ -555,12 +556,11 @@ function processSale() {
   })
   .then(r => {
     console.log('📊 Respuesta POST:', r.status);
-    if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-    return r.json();
+    return r.json().then(data => ({ status: r.status, data }));
   })
-  .then(data => {
-    console.log('✅ Venta registrada:', data);
-    if (data.success || data.ventaId) {
+  .then(({ status, data }) => {
+    console.log('📊 Data recibida:', data);
+    if (status === 200 && (data.success || data.ventaId)) {
       mostrarModalExito(data);
     } else {
       mostrarAlerta('danger', '❌ ' + (data.error || 'Error al registrar venta'));

@@ -159,6 +159,9 @@
                   <button id="btnLimpiarFiltros" class="btn btn-outline-secondary">
                     <i class="bx bx-reset"></i> Limpiar
                   </button>
+                  <button id="btnExportarPDF" class="btn btn-danger" onclick="exportarHistorialPDF()">
+                    <i class="bx bxs-file-pdf"></i> Exportar PDF
+                  </button>
                 </div>
               </div>
             </div>
@@ -364,6 +367,9 @@
           </div>
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnDescargarPdfVenta" onclick="descargarPdfVenta()">
+            <i class="bx bxs-file-pdf"></i> Descargar PDF
+          </button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Cerrar
           </button>

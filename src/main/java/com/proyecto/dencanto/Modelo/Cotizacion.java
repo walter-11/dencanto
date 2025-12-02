@@ -54,6 +54,9 @@ public class Cotizacion {
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
     
+    @Column(name = "fecha_cierre")
+    private LocalDateTime fechaCierre;
+    
     // Getters y Setters
     public Integer getId() {
         return id;
@@ -141,6 +144,14 @@ public class Cotizacion {
     
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
+    }
+    
+    public LocalDateTime getFechaCierre() {
+        return fechaCierre;
+    }
+    
+    public void setFechaCierre(LocalDateTime fechaCierre) {
+        this.fechaCierre = fechaCierre;
     }
     
     // Constructor

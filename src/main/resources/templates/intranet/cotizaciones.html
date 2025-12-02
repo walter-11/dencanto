@@ -198,6 +198,11 @@
                     <i class="bx bx-refresh me-2"></i>Actualizar
                   </button>
                 </div>
+                <div class="col-md-3">
+                  <button class="btn btn-danger w-100" id="btnExportarPDF" onclick="exportarListadoPDF()">
+                    <i class="bx bxs-file-pdf me-2"></i>Exportar PDF
+                  </button>
+                </div>
               </div>
               
               <!-- Tabla de cotizaciones -->
@@ -339,9 +344,9 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <!-- OPCIONAL IMPRIMIR 
-            <button type="button" class="btn btn-primary">Imprimir Cotización</button>
-            -->
+            <button type="button" class="btn btn-danger" id="btnDescargarPdfCotizacion" onclick="descargarPdfCotizacion()">
+              <i class="bx bxs-file-pdf me-2"></i>Descargar PDF
+            </button>
           </div>
         </div>
       </div>
@@ -364,10 +369,10 @@
             <div class="mb-3">
               <label for="newStatus" class="form-label"><strong>Nuevo Estado</strong></label>
               <select class="form-select form-select-lg" id="newStatus">
-                <option value="Pendiente">⏱️ Pendiente - Esperando acción</option>
-                <option value="En Proceso">🔄 En Proceso - En revisión</option>
-                <option value="Contactado">📞 Contactado - Cliente contactado</option>
-                <option value="Cerrada">✅ Cerrada - Finalizada/Convertida</option>
+                <option value="Pendiente">Pendiente - Esperando acción</option>
+                <option value="En Proceso">En Proceso - En revisión</option>
+                <option value="Contactado">Contactado - Cliente contactado</option>
+                <option value="Cerrada">Cerrada - Finalizada/Convertida</option>
               </select>
             </div>
             <div class="mb-3">

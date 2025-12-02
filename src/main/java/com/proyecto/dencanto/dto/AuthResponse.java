@@ -1,35 +1,57 @@
 package com.proyecto.dencanto.dto;
 
-import java.util.Collection;
+import java.util.List;
 
+/**
+ * DTO para la respuesta de autenticación exitosa
+ */
 public class AuthResponse {
+
     private String token;
     private String username;
     private String rol;
-    private Collection<String> roles;
+    private List<String> authorities;
 
+    // Constructores
     public AuthResponse() {}
 
-    public AuthResponse(String token) { 
-        this.token = token; 
-    }
-
-    public AuthResponse(String token, String username, String rol, Collection<String> roles) {
+    public AuthResponse(String token, String username, String rol, List<String> authorities) {
         this.token = token;
         this.username = username;
         this.rol = rol;
-        this.roles = roles;
+        this.authorities = authorities;
     }
 
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
+    // Getters y Setters
+    public String getToken() {
+        return token;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+    public String getUsername() {
+        return username;
+    }
 
-    public Collection<String> getRoles() { return roles; }
-    public void setRoles(Collection<String> roles) { this.roles = roles; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public List<String> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<String> authorities) {
+        this.authorities = authorities;
+    }
 }

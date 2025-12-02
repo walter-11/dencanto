@@ -1,21 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Intranet - Historial</title>
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
+    <title>Intranet - Dashboard</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .kpi-card {
+        border-radius: 10px;
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      }
+      .kpi-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+      .kpi-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+      .chart-container {
+        position: relative;
+        height: 280px;
+      }
+      .section-title {
+        color: #344767;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 0.5rem;
+      }
+      .table-dashboard th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #344767;
+      }
+      .welcome-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+    </style>
   </head>
 
   <body>
@@ -31,15 +70,15 @@
           </button>
         </div>
         <ul class="sidebar-nav">
-          <!-- PERFIL (ADMIN/USUARIO)-->
+          <!-- DASHBOARD -->
           <li class="sidebar-item">
-            <a href="/intranet/dashboard" class="sidebar-link">
-              <i class="bx bx-history"></i>
-              <span>Historial</span>
+            <a href="/intranet/dashboard" class="sidebar-link active">
+              <i class="bx bxs-dashboard"></i>
+              <span>Dashboard</span>
             </a>
           </li>
           <!-- MENU PARA ADMIN -->
-           <li id="adminMenu" class="sidebar-item" style="display: none;">
+          <li id="adminMenu" class="sidebar-item" style="display: none;">
             <a href="/intranet/reportes" class="sidebar-link">
               <i class="bx bxs-report"></i>
               <span>Generar Reportes</span>
@@ -93,7 +132,7 @@
 
       <!-- CONTENIDO -->
       <div class="main">
-        <!-- ROL -->
+        <!-- NAV -->
         <nav class="navbar navbar-expand px-4 py-3">
           <div class="navbar-collapse collapse">
             <ul class="navbar-nav ms-auto">
@@ -114,120 +153,260 @@
 
         <main class="content px-3 py-4">
           <div class="container-fluid">
-            <div class="mb-3">
-              <h3 class="fw-bold fs-4 mb-3">Historial</h3>
-              <div class="row">
-                <!-- CARD SOLO PARA ADMIN 1-->
-                <div id="cardAdmin1" class="col-12 col-md-4" style="display: none;">
-                  <div class="card shadow">
-                    <div class="card-body py-4">
-                      <h6 class="mb-2 fw-bold">Ventas Totales</h6>
-                      <p class="fw-bold mb-2 text-primary">S/ 45,680.00</p>
-                      <div class="mb-0">
-                        <span class="fw-bold text-success"> Ingresos del mes </span>
-                      </div>
-                    </div>
-                  </div>    
-                </div>
-                <!-- CARD SOLO PARA ADMIN 2-->
-                <div id="cardAdmin2" class="col-12 col-md-4" style="display: none;">
-                  <div class="card shadow">
-                    <div class="card-body py-4">
-                      <h6 class="mb-2 fw-bold">Total de Usuarios</h6>
-                      <p class="fw-bold mb-2 text-info">24</p>
-                      <div class="mb-0">
-                        <span class="fw-bold text-success"> ¡Nuevos Usuarios! </span>
-                      </div>
-                    </div>
-                  </div>    
-                </div>
-                <!-- CARD SOLO PARA ADMIN 3-->
-                <div id="cardAdmin3" class="col-12 col-md-4" style="display: none;">
-                  <div class="card shadow">
-                    <div class="card-body py-4">
-                      <h6 class="mb-2 fw-bold">Cotizaciones</h6>
-                      <p class="fw-bold mb-2 text-danger">48</p>
-                      <div class="mb-0">
-                        <span class="fw-bold text-success"> ¡Éxito! </span>
-                      </div>
-                    </div>
-                  </div>    
-                </div>
+            
+            <!-- ========== DASHBOARD ADMIN ========== -->
+            <div id="dashboardAdmin" style="display: none;">
+              <!-- Banner de bienvenida -->
+              <div class="welcome-banner">
+                <h3 class="mb-1"><i class="bx bxs-crown"></i> Panel de Administración</h3>
+                <p class="mb-0 opacity-75">Bienvenido al centro de control de Colchones D'Encanto</p>
+              </div>
 
-                <!-- CARD SOLO PARA VENDEDOR -->
-                <div id="cardVend" class="col-12 col-md-4" style="display: none;">
-                  <div class="card shadow">
-                    <div class="card-body py-4">
-                      <h6 class="mb-2 fw-bold">Ventas del Mes</h6>
-                      <p class="fw-bold mb-2">S/ 1,250.00</p>
-                      <div class="mb-0">
-                        <span class="badge text-success me-2"> +9.0% </span>
-                        <span class="fw-bold"> Since Last Month </span>
+              <!-- KPIs Admin -->
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-primary bg-opacity-10 text-primary me-3">
+                        <i class="bx bx-dollar-circle"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Ventas del Mes</p>
+                        <p class="kpi-value text-primary mb-0" id="kpiVentasMes">S/ 0.00</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-info bg-opacity-10 text-info me-3">
+                        <i class="bx bx-user"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Total Usuarios</p>
+                        <p class="kpi-value text-info mb-0" id="kpiTotalUsuarios">0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-warning bg-opacity-10 text-warning me-3">
+                        <i class="bx bx-file"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Cotizaciones Pendientes</p>
+                        <p class="kpi-value text-warning mb-0" id="kpiCotizacionesPendientes">0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-danger bg-opacity-10 text-danger me-3">
+                        <i class="bx bx-error-circle"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Productos Stock Bajo</p>
+                        <p class="kpi-value text-danger mb-0" id="kpiProductosStockBajo">0</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              <!-- TABLA Y REPORTES -->
-              <div class="row">
-                <div class="col-12 col-md-7">
-                  <h3 id="tableTitle" class="fw-bold fs-4 my-3">Personal</h3>
-                    
-                  <table class="table table-striped">
-                    <thead>
-                      <tr class="highlight">
-                        <th scope="col">#</th>
-                        <th scope="col">Nombres</th>
-                        <th scope="col">Apellidos</th>
-                        <th scope="col">Rol</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Fabrizio Alessandro</td>
-                        <td>Bustamante Soria</td>
-                        <td>Administrador</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Shayuri Kiara</td>
-                        <td>García Ortega</td>
-                        <td>Vendedora</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">3</th>
-                        <td>Walter Isaac</td>
-                        <td>Mantari Licapa</td>
-                        <td>Vendedor</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">4</th>
-                        <td>Juan Daniel</td>
-                        <td>Ore Ramos</td>
-                        <td>Vendedor</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">5</th>
-                        <td>Marcela Natalie</td>
-                        <td>Rodriguez Munaylla</td>
-                        <td>Vendedora</td>
-                      </tr>
-                    </tbody>
-                  </table>
+
+              <!-- Gráficos Admin -->
+              <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-8">
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-bar-chart-alt-2"></i> Ventas por Mes</h5>
+                      <div class="chart-container">
+                        <canvas id="chartVentasMes"></canvas>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <!-- GRAFICO DE BARRAS -->
-                <div class="col-12 col-md-5">
-                  <h3 id="chartTitle" class="fw-bold fs-4 my-3">Reporte General de Ventas</h3>
-                  <canvas
-                    id="bar-chart-grouped"
-                    width="800"
-                    height="450"
-                  ></canvas>
+                <div class="col-12 col-lg-4">
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-pie-chart-alt"></i> Estado de Ventas</h5>
+                      <div class="chart-container">
+                        <canvas id="chartEstado"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tablas y Top Vendedores -->
+              <div class="row g-4">
+                <div class="col-12 col-lg-7">
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-group"></i> Usuarios del Sistema</h5>
+                      <div class="table-responsive">
+                        <table class="table table-dashboard table-hover">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Nombres</th>
+                              <th>Apellidos</th>
+                              <th>Rol</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tablaUsuarios">
+                            <tr>
+                              <td colspan="4" class="text-center text-muted">Cargando...</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-trophy"></i> Top Vendedores del Mes</h5>
+                      <div id="topVendedoresContainer">
+                        <p class="text-muted text-center">Cargando...</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-error"></i> Alertas de Stock</h5>
+                      <div id="alertasStockContainer" style="max-height: 200px; overflow-y: auto;">
+                        <p class="text-muted text-center">Cargando...</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <!-- ========== DASHBOARD VENDEDOR ========== -->
+            <div id="dashboardVendedor" style="display: none;">
+              <!-- Banner de bienvenida -->
+              <div class="welcome-banner" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <h3 class="mb-1"><i class="bx bxs-store"></i> Mi Dashboard de Ventas</h3>
+                <p class="mb-0 opacity-75">Revisa tu rendimiento y estadísticas personales</p>
+              </div>
+
+              <!-- KPIs Vendedor -->
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-success bg-opacity-10 text-success me-3">
+                        <i class="bx bx-dollar-circle"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Mis Ventas del Mes</p>
+                        <p class="kpi-value text-success mb-0" id="kpiMisVentas">S/ 0.00</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-primary bg-opacity-10 text-primary me-3">
+                        <i class="bx bx-cart"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Cantidad de Ventas</p>
+                        <p class="kpi-value text-primary mb-0" id="kpiCantidadVentas">0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-info bg-opacity-10 text-info me-3">
+                        <i class="bx bx-money"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Mis Comisiones (10%)</p>
+                        <p class="kpi-value text-info mb-0" id="kpiComisiones">S/ 0.00</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="card kpi-card shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="kpi-icon bg-warning bg-opacity-10 text-warning me-3">
+                        <i class="bx bx-time"></i>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0 small">Ventas Pendientes</p>
+                        <p class="kpi-value text-warning mb-0" id="kpiVentasPendientes">0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gráficos Vendedor -->
+              <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-8">
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-line-chart"></i> Mi Rendimiento Semanal</h5>
+                      <div class="chart-container">
+                        <canvas id="chartRendimiento"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-pie-chart-alt"></i> Mis Ventas por Estado</h5>
+                      <div class="chart-container">
+                        <canvas id="chartEstadoVendedor"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tabla de últimas ventas -->
+              <div class="row">
+                <div class="col-12">
+                  <div class="card shadow-sm">
+                    <div class="card-body">
+                      <h5 class="section-title"><i class="bx bx-history"></i> Mis Últimas Ventas</h5>
+                      <div class="table-responsive">
+                        <table class="table table-dashboard table-hover">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Cliente</th>
+                              <th>Total</th>
+                              <th>Estado</th>
+                              <th>Fecha</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tablaUltimasVentas">
+                            <tr>
+                              <td colspan="5" class="text-center text-muted">Cargando...</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </main>
 
@@ -245,31 +424,15 @@
         </footer>
       </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="/js/authUtils.js"></script>
     <script src="/js/script.js"></script>
+    <script src="/js/scriptDashboard.js"></script>
     <script>
-      // Validar autenticación antes de mostrar el dashboard
-      document.addEventListener('DOMContentLoaded', function() {
-        const userInfo = getUserInfo();
-        if (!userInfo || !getToken()) {
-          // Si no hay token o info del usuario, redirigir al login
-          console.warn('No autenticado, redirigiendo al login...');
-          window.location.href = '/intranet/login';
-          return;
-        }
-        
-        renderMenuByRole();
-      });
-
-      // Función para mostrar/ocultar menú según el rol
+      // Función para mostrar/ocultar menú y dashboard según el rol
       function renderMenuByRole() {
         const userInfo = getUserInfo();
         if (!userInfo) {
@@ -287,37 +450,22 @@
           document.getElementById('adminMenu3').style.display = 'list-item';
           document.getElementById('adminMenu4').style.display = 'list-item';
 
-          // Mostrar cards de admin
-          document.getElementById('cardAdmin1').style.display = 'block';
-          document.getElementById('cardAdmin2').style.display = 'block';
-          document.getElementById('cardAdmin3').style.display = 'block';
+          // Mostrar dashboard de admin
+          document.getElementById('dashboardAdmin').style.display = 'block';
+          document.getElementById('dashboardVendedor').style.display = 'none';
 
-          // Actualizar títulos
-          if (document.getElementById('tableTitle')) {
-            document.getElementById('tableTitle').textContent = 'Usuarios del Sistema';
-          }
-          if (document.getElementById('chartTitle')) {
-            document.getElementById('chartTitle').textContent = 'Reporte General de Ventas';
-          }
         } else if (rol === 'VENDEDOR') {
           // Mostrar menú de vendedor
           document.getElementById('vendMenu').style.display = 'list-item';
           document.getElementById('vendMenu2').style.display = 'list-item';
           document.getElementById('vendMenu3').style.display = 'list-item';
 
-          // Mostrar card de vendedor
-          document.getElementById('cardVend').style.display = 'block';
-
-          // Actualizar títulos
-          if (document.getElementById('tableTitle')) {
-            document.getElementById('tableTitle').textContent = 'Resumen de Mis Ventas';
-          }
-          if (document.getElementById('chartTitle')) {
-            document.getElementById('chartTitle').textContent = 'Mi Rendimiento de Ventas';
-          }
+          // Mostrar dashboard de vendedor
+          document.getElementById('dashboardAdmin').style.display = 'none';
+          document.getElementById('dashboardVendedor').style.display = 'block';
         }
-        
-        console.log('Menu renderizado para rol:', rol);
+
+        console.log('Menu y dashboard renderizado para rol:', rol);
       }
 
       // Confirmar logout

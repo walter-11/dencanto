@@ -2,16 +2,23 @@ package com.proyecto.dencanto.controller;
 
 import com.proyecto.dencanto.Modelo.*;
 import com.proyecto.dencanto.Service.VentaService;
+import com.proyecto.dencanto.Service.VentaPdfService;
 import com.proyecto.dencanto.Service.ProductoService;
 import com.proyecto.dencanto.Repository.UsuarioRepository;
 import com.proyecto.dencanto.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -29,6 +36,9 @@ public class VentaController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private VentaPdfService ventaPdfService;
 
     /**
      * Obtiene el usuario autenticado actual
@@ -64,6 +74,13 @@ public class VentaController {
 
             // Establecer vendedor
             ventaRequest.setVendedor(vendedor);
+
+            // IMPORTANTE: Establecer la referencia de venta en cada detalle
+            if (ventaRequest.getDetalles() != null) {
+                for (DetalleVenta detalle : ventaRequest.getDetalles()) {
+                    detalle.setVenta(ventaRequest);
+                }
+            }
 
             // Llamar al servicio con TODAS las validaciones (100% Java)
             Venta ventaRegistrada = ventaService.registrarVenta(ventaRequest);
@@ -294,6 +311,164 @@ public class VentaController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of("error", "Estado inválido: " + estado));
+        }
+    }
+
+    /**
+     * GET /intranet/api/ventas/{id}/pdf
+     * Genera PDF de comprobante de una venta específica
+     */
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<?> generarPdfVenta(@PathVariable Long id) {
+        try {
+            Optional<Venta> ventaOpt = ventaService.obtenerPorId(id);
+            
+            if (!ventaOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Venta venta = ventaOpt.get();
+            
+            // Generar PDF
+            byte[] pdfBytes = ventaPdfService.generarPdfVenta(venta);
+            
+            // Nombre del archivo
+            String nombreArchivo = String.format("Comprobante_Venta_%06d.pdf", venta.getId());
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", nombreArchivo);
+            headers.setContentLength(pdfBytes.length);
+            
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+                
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Error al generar PDF: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * GET /intranet/api/ventas/exportar-pdf
+     * Genera PDF del historial de ventas del vendedor
+     */
+    @GetMapping("/exportar-pdf")
+    public ResponseEntity<?> exportarHistorialPdf(
+            @RequestParam(required = false) String fechaDesde,
+            @RequestParam(required = false) String fechaHasta,
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) String metodoPago) {
+        try {
+            Usuario vendedor = getCurrentUser();
+            if (vendedor == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Usuario no autenticado"));
+            }
+            
+            // Obtener ventas del vendedor
+            List<Venta> ventasOriginales = ventaService.obtenerPorVendedor(vendedor);
+            if (ventasOriginales == null) {
+                ventasOriginales = new ArrayList<>();
+            }
+            
+            // Aplicar filtros
+            List<Venta> ventasFiltradas = new ArrayList<>();
+            for (Venta v : ventasOriginales) {
+                // Filtro por fecha desde
+                if (fechaDesde != null && !fechaDesde.isEmpty()) {
+                    LocalDateTime desde = LocalDate.parse(fechaDesde).atStartOfDay();
+                    if (v.getFechaCreacion() != null && v.getFechaCreacion().isBefore(desde)) {
+                        continue;
+                    }
+                }
+                
+                // Filtro por fecha hasta
+                if (fechaHasta != null && !fechaHasta.isEmpty()) {
+                    LocalDateTime hasta = LocalDate.parse(fechaHasta).atTime(23, 59, 59);
+                    if (v.getFechaCreacion() != null && v.getFechaCreacion().isAfter(hasta)) {
+                        continue;
+                    }
+                }
+                
+                // Filtro por estado
+                if (estado != null && !estado.isEmpty()) {
+                    if (v.getEstado() == null || !v.getEstado().name().equals(estado)) {
+                        continue;
+                    }
+                }
+                
+                // Filtro por método de pago
+                if (metodoPago != null && !metodoPago.isEmpty()) {
+                    if (v.getMetodoPago() == null || !v.getMetodoPago().name().equals(metodoPago)) {
+                        continue;
+                    }
+                }
+                
+                ventasFiltradas.add(v);
+            }
+            
+            // Convertir a Map para el PDF
+            List<Map<String, Object>> ventasMap = new ArrayList<>();
+            double totalVentas = 0;
+            
+            for (Venta venta : ventasFiltradas) {
+                Map<String, Object> ventaData = new HashMap<>();
+                ventaData.put("id", venta.getId());
+                ventaData.put("cliente", venta.getClienteNombre());
+                ventaData.put("montoTotal", venta.getTotal());
+                ventaData.put("metodoPago", venta.getMetodoPago() != null ? venta.getMetodoPago().name() : "N/A");
+                ventaData.put("estado", venta.getEstado() != null ? venta.getEstado().name() : "PENDIENTE");
+                ventaData.put("fechaCreacion", venta.getFechaCreacion());
+                
+                // Detalles de productos
+                List<Map<String, Object>> detalles = new ArrayList<>();
+                if (venta.getDetalles() != null) {
+                    for (DetalleVenta detalle : venta.getDetalles()) {
+                        Map<String, Object> detalleData = new HashMap<>();
+                        detalleData.put("cantidad", detalle.getCantidad());
+                        if (detalle.getProducto() != null) {
+                            Map<String, Object> productoData = new HashMap<>();
+                            productoData.put("nombre", detalle.getProducto().getNombre());
+                            detalleData.put("producto", productoData);
+                        }
+                        detalles.add(detalleData);
+                    }
+                }
+                ventaData.put("detalles", detalles);
+                
+                ventasMap.add(ventaData);
+                totalVentas += venta.getTotal() != null ? venta.getTotal() : 0;
+            }
+            
+            // Calcular estadísticas
+            Map<String, Object> estadisticas = new HashMap<>();
+            estadisticas.put("totalVentas", totalVentas);
+            estadisticas.put("cantidadVentas", ventasFiltradas.size());
+            estadisticas.put("promedioVenta", ventasFiltradas.size() > 0 ? totalVentas / ventasFiltradas.size() : 0);
+            estadisticas.put("comisiones", totalVentas * 0.10); // 10% de comisión
+            
+            // Generar PDF
+            byte[] pdfBytes = ventaPdfService.generarPdfHistorialVentas(
+                ventasMap, estadisticas, vendedor.getNombreCompleto(), fechaDesde, fechaHasta);
+            
+            // Nombre del archivo
+            String nombreArchivo = String.format("Historial_Ventas_%s.pdf", 
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", nombreArchivo);
+            headers.setContentLength(pdfBytes.length);
+            
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+                
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Error al generar PDF: " + e.getMessage()));
         }
     }
 }

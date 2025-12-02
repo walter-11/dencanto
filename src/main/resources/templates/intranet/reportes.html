@@ -118,10 +118,7 @@
               <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold fs-4 mb-0">Reportes</h3>
                 <div class="export-buttons">
-                  <button class="btn btn-outline-success">
-                    <i class="bx bx-download"></i> Exportar Excel
-                  </button>
-                  <button class="btn btn-outline-danger">
+                  <button id="btnGenerarPDF" class="btn btn-outline-danger">
                     <i class="bx bx-file"></i> Generar PDF
                   </button>
                 </div>
@@ -130,48 +127,25 @@
               <!-- Filtros de reportes -->
               <div class="filter-section">
                 <div class="row g-3">
-                  <div class="col-md-3">
-                    <label class="form-label">Rango de Fechas</label>
-                    <select class="form-select">
-                      <option selected>Enero 2025</option>
-                      <option>Diciembre 2024</option>
-                      <option>Noviembre 2024</option>
-                      
-                    </select>
+                  <div class="col-md-4">
+                    <label class="form-label">Fecha Inicio</label>
+                    <input type="date" id="filtroFechaInicio" class="form-control">
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label">Tipo de Reporte</label>
-                    <select class="form-select">
-                      <option selected>Ventas</option>
-                      <option>Cotizaciones</option>
-                      <option>Productos</option>
-                      <option>Vendedores</option>
-                    </select>
+                  <div class="col-md-4">
+                    <label class="form-label">Fecha Fin</label>
+                    <input type="date" id="filtroFechaFin" class="form-control">
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label">Vendedor</label>
-                    <select class="form-select">
-                      <option selected>Todos los vendedores</option>
-                      <option>Fabrizio Bustamante</option>
-                      <option>Shayuri Garcia</option>
-                      <option>Walter Mantari</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
+                  <div class="col-md-4">
                     <label class="form-label">Categoría</label>
-                    <select class="form-select">
-                      <option selected>Todas las categorías</option>
-                      <option>Colchones</option>
-                      <option>Base Cama</option>
-                      <option>Almohadas</option>
-                      <option>Protectores</option>
+                    <select id="filtroCategoria" class="form-select">
+                      <option value="">Todas las categorías</option>
                     </select>
                   </div>
                   <div class="col-12">
-                    <button class="btn btn-primary">
+                    <button id="btnActualizarReporte" class="btn btn-primary">
                       <i class="bx bx-refresh"></i> Actualizar Reporte
                     </button>
-                    <button class="btn btn-outline-secondary">
+                    <button id="btnRestablecerFiltros" class="btn btn-outline-secondary">
                       <i class="bx bx-reset"></i> Restablecer Filtros
                     </button>
                   </div>
@@ -182,30 +156,26 @@
               <div class="row mb-4">
                 <div class="col-12 col-md-3">
                   <div class="card kpi-card stats-card">
-                    <div class="kpi-value text-primary">S/ 45,680.00</div>
+                    <div id="kpiVentasTotales" class="kpi-value text-primary">S/ 0.00</div>
                     <div class="kpi-label">Ventas Totales</div>
-
                   </div>
                 </div>
                 <div class="col-12 col-md-3">
                   <div class="card kpi-card stats-card">
-                    <div class="kpi-value text-success">48</div>
+                    <div id="kpiCotizaciones" class="kpi-value text-success">0</div>
                     <div class="kpi-label">Cotizaciones</div>
-
                   </div>
                 </div>
                 <div class="col-12 col-md-3">
                   <div class="card kpi-card stats-card">
-                    <div class="kpi-value text-info">14.6%</div>
+                    <div id="kpiTasaConversion" class="kpi-value text-info">0%</div>
                     <div class="kpi-label">Tasa de Conversión</div>
-
                   </div>
                 </div>
                 <div class="col-12 col-md-3">
                   <div class="card kpi-card stats-card">
-                    <div class="kpi-value text-warning">7.2</div>
+                    <div id="kpiDiasPromedio" class="kpi-value text-warning">0</div>
                     <div class="kpi-label">Días Promedio Cierre</div>
-
                   </div>
                 </div>
               </div>
@@ -261,84 +231,12 @@
                   <div class="card shadow">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                       <h6 class="mb-0 fw-bold">Top 5 Productos Más Vendidos</h6>
-                      <span class="badge bg-primary">Enero 2024</span>
+                      <span id="badgeMesActual" class="badge bg-primary"></span>
                     </div>
                     <div class="card-body">
-                      <ul class="top-products-list">
-                        <li>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                              <strong>Colchón Queen Size Memory Foam</strong>
-                              <div class="text-muted small">Categoría: Colchones</div>
-                            </div>
-                            <div class="text-end">
-                              <div class="fw-bold">S/ 18,750.00</div>
-                              <div class="text-muted small">15 unidades</div>
-                            </div>
-                          </div>
-                          <div class="progress progress-thin mt-2">
-                            <div class="progress-bar bg-success" style="width: 100%"></div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                              <strong>Base Cama King Size Ajustable</strong>
-                              <div class="text-muted small">Categoría: Base Cama</div>
-                            </div>
-                            <div class="text-end">
-                              <div class="fw-bold">S/ 12,450.00</div>
-                              <div class="text-muted small">14 unidades</div>
-                            </div>
-                          </div>
-                          <div class="progress progress-thin mt-2">
-                            <div class="progress-bar bg-info" style="width: 80%"></div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                              <strong>Almohada Viscoelástica Premium</strong>
-                              <div class="text-muted small">Categoría: Almohadas</div>
-                            </div>
-                            <div class="text-end">
-                              <div class="fw-bold">S/ 8,400.00</div>
-                              <div class="text-muted small">70 unidades</div>
-                            </div>
-                          </div>
-                          <div class="progress progress-thin mt-2">
-                            <div class="progress-bar bg-warning" style="width: 65%"></div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                              <strong>Protector Impermeable Queen</strong>
-                              <div class="text-muted small">Categoría: Protectores</div>
-                            </div>
-                            <div class="text-end">
-                              <div class="fw-bold">S/ 4,250.00</div>
-                              <div class="text-muted small">50 unidades</div>
-                            </div>
-                          </div>
-                          <div class="progress progress-thin mt-2">
-                            <div class="progress-bar bg-danger" style="width: 45%"></div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                              <strong>Colchón Twin Size Resortes</strong>
-                              <div class="text-muted small">Categoría: Colchones</div>
-                            </div>
-                            <div class="text-end">
-                              <div class="fw-bold">S/ 3,750.00</div>
-                              <div class="text-muted small">5 unidades</div>
-                            </div>
-                          </div>
-                          <div class="progress progress-thin mt-2">
-                            <div class="progress-bar bg-secondary" style="width: 35%"></div>
-                          </div>
+                      <ul id="topProductosList" class="top-products-list">
+                        <li class="text-center text-muted">
+                          <i class="bx bx-loader-alt bx-spin"></i> Cargando productos...
                         </li>
                       </ul>
                     </div>
@@ -347,86 +245,30 @@
 
                 
 
-              <!-- Reporte detallado de vendedores -->
+              <!-- Reporte detallado de productos vendidos -->
               <div class="row mt-4">
                 <div class="col-12">
                   <div class="card shadow">
-                    <div class="card-header bg-white">
-                      <h6 class="mb-0 fw-bold">Reporte Detallado por Vendedor</h6>
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                      <h6 class="mb-0 fw-bold">Reporte Detallado de Productos Vendidos</h6>
+                      <span class="badge bg-success" id="badgeTotalProductos">0 productos</span>
                     </div>
                     <div class="card-body">
                       <div class="table-responsive">
                         <table class="table table-hover">
                           <thead>
                             <tr class="highlight">
-                              <th>Vendedor</th>
+                              <th>Producto</th>
+                              <th>Categoría</th>
+                              <th>Cantidad Vendida</th>
+                              <th>Precio Unitario</th>
                               <th>Total Ventas</th>
-                              <th>Cotizaciones</th>
-                              <th>Conversión</th>
-                              <th>Venta Promedio</th>
-                              <th>Clientes Contactados</th>
-                              <th>Eficiencia</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody id="tablaProductosVendidos">
                             <tr>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <span>Fabrizio Bustamante</span>
-                                </div>
-                              </td>
-                              <td class="fw-bold">S/ 18,250.00</td>
-                              <td>22</td>
-                              <td>
-                                <span class="badge bg-success">18.2%</span>
-                              </td>
-                              <td>S/ 2,281.25</td>
-                              <td>35</td>
-                              <td>
-                                <div class="progress progress-thin" style="width: 100px;">
-                                  <div class="progress-bar bg-success" style="width: 85%"></div>
-                                </div>
-                                <small class="text-muted">85%</small>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <span>Shayuri Garcia</span>
-                                </div>
-                              </td>
-                              <td class="fw-bold">S/ 15,800.00</td>
-                              <td>18</td>
-                              <td>
-                                <span class="badge bg-warning">16.7%</span>
-                              </td>
-                              <td>S/ 1,975.00</td>
-                              <td>28</td>
-                              <td>
-                                <div class="progress progress-thin" style="width: 100px;">
-                                  <div class="progress-bar bg-info" style="width: 78%"></div>
-                                </div>
-                                <small class="text-muted">78%</small>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <span>Walter Mantari</span>
-                                </div>
-                              </td>
-                              <td class="fw-bold">S/ 11,630.00</td>
-                              <td>15</td>
-                              <td>
-                                <span class="badge bg-danger">13.3%</span>
-                              </td>
-                              <td>S/ 1,453.75</td>
-                              <td>25</td>
-                              <td>
-                                <div class="progress progress-thin" style="width: 100px;">
-                                  <div class="progress-bar bg-warning" style="width: 65%"></div>
-                                </div>
-                                <small class="text-muted">65%</small>
+                              <td colspan="5" class="text-center text-muted">
+                                <i class="bx bx-loader-alt bx-spin"></i> Cargando productos vendidos...
                               </td>
                             </tr>
                           </tbody>
