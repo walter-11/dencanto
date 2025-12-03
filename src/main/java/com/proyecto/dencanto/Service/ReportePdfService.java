@@ -17,9 +17,12 @@ import java.util.Map;
 @Service
 public class ReportePdfService {
 
-    private static final Color COLOR_PRIMARIO = new Color(13, 110, 253); // Azul Bootstrap
-    private static final Color COLOR_HEADER = new Color(33, 37, 41); // Gris oscuro
-    private static final Color COLOR_EXITO = new Color(25, 135, 84); // Verde
+    // Colores corporativos - Paleta: Negro, Dorado/Mostaza, Blanco
+    private static final Color COLOR_PRIMARIO = new Color(212, 165, 40);    // Dorado principal #D4A528
+    private static final Color COLOR_DORADO_OSCURO = new Color(184, 148, 31); // Dorado hover #B8941F
+    private static final Color COLOR_NEGRO = new Color(26, 26, 26);         // Negro principal #1a1a1a
+    private static final Color COLOR_HEADER = new Color(26, 26, 26);        // Negro para headers
+    private static final Color COLOR_EXITO = new Color(40, 167, 69);        // Verde (para estados)
 
     /**
      * Genera el PDF completo del reporte de ventas
