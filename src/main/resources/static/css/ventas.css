@@ -1,24 +1,34 @@
-/* ===== COLORES DEL SISTEMA ===== */
+/* ===== COLORES DEL SISTEMA - Paleta D'Encanto ===== */
 :root {
-    --primary: #021c30;
-    --secondary: #150435;
-    --success: #0c396d;
-    --danger: #da1212;
+    /* Paleta Principal */
+    --negro-principal: #1a1a1a;
+    --negro-secundario: #2d2d2d;
+    --dorado-principal: #D4A528;
+    --dorado-hover: #B8941F;
+    --dorado-claro: #F5E6B8;
+    --blanco: #FFFFFF;
+    --gris-claro: #F5F5F5;
+    --gris-borde: #E0E0E0;
+    
+    /* Colores de estado (mantener) */
+    --success: #198754;
+    --danger: #dc3545;
+    --warning: #ffc107;
 }
 
 body {
-    background-color: #f8f9fa;
+    background-color: var(--gris-claro);
 }
 
 .content {
-    background-color: #f8f9fa;
+    background-color: var(--gris-claro);
     min-height: 100vh;
     padding: 2rem;
 }
 
 /* ===== STEP INDICATOR ===== */
 .steps-container {
-    background: white;
+    background: var(--blanco);
     border-radius: 8px;
     padding: 2rem;
     margin-bottom: 2rem;
@@ -38,7 +48,7 @@ body {
     left: 0;
     right: 0;
     height: 2px;
-    background: #dee2e6;
+    background: var(--gris-borde);
     z-index: 0;
 }
 
@@ -49,15 +59,15 @@ body {
 }
 
 .step-item.active:not(:last-child)::after {
-    background: var(--success);
+    background: var(--dorado-principal);
 }
 
 .step-circle {
     width: 50px;
     height: 50px;
     margin: 0 auto 10px;
-    background: #e9ecef;
-    border: 2px solid #dee2e6;
+    background: var(--gris-claro);
+    border: 2px solid var(--gris-borde);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -70,16 +80,16 @@ body {
 }
 
 .step-item.active .step-circle {
-    background: var(--secondary);
-    border-color: var(--secondary);
-    color: white;
-    box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
+    background: var(--dorado-principal);
+    border-color: var(--dorado-principal);
+    color: var(--negro-principal);
+    box-shadow: 0 0 0 4px rgba(212, 165, 40, 0.2);
 }
 
 .step-item.completed .step-circle {
     background: var(--success);
     border-color: var(--success);
-    color: white;
+    color: var(--blanco);
 }
 
 .step-label {
@@ -89,7 +99,7 @@ body {
 }
 
 .step-item.active .step-label {
-    color: var(--secondary);
+    color: var(--dorado-principal);
 }
 
 .step-item.completed .step-label {
@@ -108,7 +118,7 @@ body {
 }
 
 .form-title {
-    color: var(--primary);
+    color: var(--negro-principal);
     font-weight: 700;
     margin-bottom: 1.5rem;
     display: flex;
@@ -119,7 +129,7 @@ body {
 
 .form-title i {
     font-size: 1.5rem;
-    color: var(--secondary);
+    color: var(--dorado-principal);
 }
 
 /* ===== PRODUCT GRID ===== */
@@ -130,15 +140,15 @@ body {
 
 .product-search input {
     border-radius: 8px;
-    border: 2px solid #dee2e6;
+    border: 2px solid var(--gris-borde);
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
     transition: border-color 0.3s ease;
 }
 
 .product-search input:focus {
-    border-color: var(--secondary);
-    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    border-color: var(--dorado-principal);
+    box-shadow: 0 0 0 0.2rem rgba(212, 165, 40, 0.25);
     outline: none;
 }
 
@@ -150,23 +160,23 @@ body {
 }
 
 .product-card {
-    border: 2px solid #dee2e6;
+    border: 2px solid var(--gris-borde);
     border-radius: 8px;
     padding: 1.25rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: white;
+    background: var(--blanco);
 }
 
 .product-card:hover {
-    border-color: var(--secondary);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+    border-color: var(--dorado-principal);
+    box-shadow: 0 4px 12px rgba(212, 165, 40, 0.15);
     transform: translateY(-2px);
 }
 
 .product-name {
     font-weight: 600;
-    color: var(--primary);
+    color: var(--negro-principal);
     margin-bottom: 0.5rem;
     font-size: 1rem;
 }
@@ -180,13 +190,13 @@ body {
 .product-price {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--secondary);
+    color: var(--dorado-principal);
     margin: 0.75rem 0;
 }
 
 .product-stock {
     display: inline-block;
-    background: #e9ecef;
+    background: var(--gris-claro);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.75rem;
@@ -209,7 +219,7 @@ body {
 .product-quantity input {
     width: 60px;
     padding: 0.5rem;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--gris-borde);
     border-radius: 4px;
     text-align: center;
     font-weight: 600;
@@ -217,8 +227,8 @@ body {
 
 .btn-add-product {
     width: 100%;
-    background: var(--secondary);
-    color: white;
+    background: var(--dorado-principal);
+    color: var(--negro-principal);
     border: none;
     padding: 0.65rem;
     border-radius: 6px;
@@ -229,21 +239,21 @@ body {
 }
 
 .btn-add-product:hover {
-    background: #070341;
+    background: var(--dorado-hover);
     transform: scale(1.02);
 }
 
 /* ===== CART SUMMARY ===== */
 .cart-summary {
-    background: white;
+    background: var(--blanco);
     border-radius: 8px;
     padding: 1.5rem;
-    border-left: 4px solid var(--secondary);
+    border-left: 4px solid var(--dorado-principal);
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
 .cart-summary h5 {
-    color: var(--primary);
+    color: var(--negro-principal);
     font-weight: 700;
     margin-bottom: 1rem;
 }
@@ -253,7 +263,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 0;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid var(--gris-borde);
 }
 
 .cart-item:last-child {
@@ -266,7 +276,7 @@ body {
 
 .item-name {
     font-weight: 600;
-    color: var(--primary);
+    color: var(--negro-principal);
 }
 
 .item-qty {
@@ -276,7 +286,7 @@ body {
 
 .item-price {
     font-weight: 700;
-    color: var(--secondary);
+    color: var(--dorado-principal);
 }
 
 .btn-remove-item {
@@ -292,7 +302,7 @@ body {
 .cart-totals {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 2px solid #dee2e6;
+    border-top: 2px solid var(--gris-borde);
 }
 
 .total-row {
@@ -304,9 +314,9 @@ body {
 
 .total-row.final {
     font-size: 1.2rem;
-    color: var(--secondary);
+    color: var(--dorado-principal);
     padding-top: 0.5rem;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--gris-borde);
 }
 
 /* ===== FORM SECTIONS ===== */
@@ -337,7 +347,7 @@ body {
 
 .form-group label {
     font-weight: 600;
-    color: var(--primary);
+    color: var(--negro-principal);
     margin-bottom: 0.5rem;
     display: block;
 }
@@ -347,7 +357,7 @@ body {
 .form-group textarea {
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #dee2e6;
+    border: 2px solid var(--gris-borde);
     border-radius: 6px;
     font-size: 0.95rem;
     font-family: inherit;
@@ -357,8 +367,8 @@ body {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: var(--secondary);
-    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    border-color: var(--dorado-principal);
+    box-shadow: 0 0 0 0.2rem rgba(212, 165, 40, 0.25);
     outline: none;
 }
 
@@ -380,6 +390,7 @@ body {
 .radio-option input[type="radio"] {
     margin: 0;
     cursor: pointer;
+    accent-color: var(--dorado-principal);
 }
 
 .radio-option label {
@@ -390,7 +401,7 @@ body {
 
 /* ===== PAYMENT METHODS ===== */
 .payment-method-box {
-    background: #f8f9fa;
+    background: var(--gris-claro);
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -401,10 +412,10 @@ body {
 }
 
 .payment-fields {
-    background: #f8f9fa;
+    background: var(--gris-claro);
     border-radius: 8px;
     padding: 1.5rem;
-    border: 2px dashed #dee2e6;
+    border: 2px dashed var(--gris-borde);
     margin-top: 1rem;
 }
 
@@ -413,7 +424,7 @@ body {
 }
 
 .payment-fields h6 {
-    color: var(--primary);
+    color: var(--negro-principal);
     font-weight: 700;
     margin-bottom: 1rem;
 }
@@ -437,35 +448,36 @@ body {
 }
 
 .btn-prev {
-    background: #e9ecef;
-    color: var(--primary);
+    background: var(--gris-claro);
+    color: var(--negro-principal);
+    border: 2px solid var(--gris-borde);
 }
 
 .btn-prev:hover {
-    background: #dee2e6;
+    background: var(--gris-borde);
 }
 
 .btn-next {
-    background: var(--secondary);
-    color: white;
+    background: var(--dorado-principal);
+    color: var(--negro-principal);
     flex: 1;
 }
 
 .btn-next:hover {
-    background: #e55a2b;
+    background: var(--dorado-hover);
 }
 
 .btn-submit {
     background: var(--success);
-    color: white;
+    color: var(--blanco);
     flex: 1;
 }
 
 .btn-submit:hover {
-    background: #218838;
+    background: #146c43;
 }
 
-/* ===== ALERTS ===== */
+/* ===== ALERTS (Mantener colores de estado) ===== */
 .alert-custom {
     border-radius: 8px;
     padding: 1rem;
@@ -509,10 +521,11 @@ body {
 }
 
 .modal-header {
-    background: var(--success);
-    color: white;
+    background: linear-gradient(135deg, var(--negro-principal) 0%, var(--negro-secundario) 100%);
+    color: var(--blanco);
     border: none;
     border-radius: 8px 8px 0 0;
+    border-bottom: 3px solid var(--dorado-principal);
 }
 
 .modal-header .btn-close {

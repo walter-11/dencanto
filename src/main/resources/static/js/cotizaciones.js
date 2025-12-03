@@ -1,3 +1,31 @@
+// Toggle del menú lateral
+document.addEventListener('DOMContentLoaded', function() {
+  const hamburger = document.querySelector(".toggle-btn");
+  const toggler = document.querySelector("#icon");
+
+  if (hamburger) {
+    hamburger.addEventListener("click", function () {
+      document.querySelector("#sidebar").classList.toggle("expand");
+      if (toggler) {
+        toggler.classList.toggle("bxs-chevrons-right");
+        toggler.classList.toggle("bxs-chevrons-left");
+      }
+    });
+  }
+  
+  // Cargar cotizaciones al cargar la página
+  cargarCotizaciones();
+});
+
+// Confirmar logout
+function confirmLogout() {
+  if (confirm('¿Deseas cerrar sesión?')) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userInfo');
+    window.location.href = '/intranet/login';
+  }
+}
+
 let cotizacionesGlobales = [];
 let cotizacionActualId = null;
 

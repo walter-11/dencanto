@@ -1,10 +1,8 @@
-// ========== INICIALIZACIÓN ========== 
+﻿// ========== INICIALIZACIÓN ========== 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('📱 Inicializando página de Productos...');
     
     // Caché de todos los productos
     const allProducts = Array.from(document.querySelectorAll('[data-product-id]'));
-    console.log(`📦 Total de productos cargados: ${allProducts.length}`);
     
     // Referencias a elementos del DOM
     const searchInput = document.getElementById('searchInput');
@@ -26,14 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // ========== APLICAR FILTROS ========== 
     function applyFilters() {
-        console.log('🔍 Aplicando filtros...');
         
         const searchTerm = searchInput?.value.toLowerCase() || '';
         const selectedCategory = categoryFilter?.value || '';
         const maxPrice = parseInt(priceFilter?.value) || 5000;
         const selectedStatus = statusFilter?.value || '';
-        
-        console.log(`Filtros: búsqueda='${searchTerm}', categoría='${selectedCategory}', precio=${maxPrice}, estado='${selectedStatus}'`);
         
         let visibleCount = 0;
         
@@ -66,8 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             emptyState.style.display = 'none';
         }
-        
-        console.log(`✅ Filtrado completado: ${visibleCount} productos visibles`);
     }
     
     // ========== EVENT LISTENERS PARA FILTROS ========== 
@@ -94,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // ========== LIMPIAR FILTROS ========== 
     if (clearFiltersBtn) {
         clearFiltersBtn.addEventListener('click', function () {
-            console.log('🔄 Limpiando filtros...');
             
             if (searchInput) searchInput.value = '';
             if (categoryFilter) categoryFilter.value = '';
@@ -109,8 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
             allProducts.forEach(product => {
                 product.style.display = '';
             });
-            
-            console.log('✅ Filtros limpiados');
         });
     }
     
@@ -131,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 allImages.forEach(img => {
                     img.style.transform = `scale(${zoomLevels[productoId]})`;
                 });
-                console.log(`🔍 Zoom in producto ${productoId}: ${(zoomLevels[productoId] * 100).toFixed(0)}%`);
+.toFixed(0)}%`);
             }
         });
     });
@@ -147,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 allImages.forEach(img => {
                     img.style.transform = `scale(${zoomLevels[productoId]})`;
                 });
-                console.log(`🔍 Zoom out producto ${productoId}: ${(zoomLevels[productoId] * 100).toFixed(0)}%`);
+.toFixed(0)}%`);
             }
         });
     });
@@ -165,14 +155,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 allImages.forEach(i => {
                     i.style.transform = 'scale(1.5)';
                 });
-                console.log(`🔍 Zoom click en producto ${productoId}: 150%`);
             } else {
                 zoomLevels[productoId] = 1;
                 const allImages = document.querySelectorAll(`#carouselProducto${productoId} .carousel-image`);
                 allImages.forEach(i => {
                     i.style.transform = 'scale(1)';
                 });
-                console.log(`🔍 Zoom click en producto ${productoId}: 100%`);
             }
         });
     });
@@ -201,8 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Agregar al carrito
             agregarAlCarrito(producto, cantidad);
-            
-            console.log(`✅ Producto agregado: ${nombre} (Cantidad: ${cantidad})`);
+`);
         });
     });
 });

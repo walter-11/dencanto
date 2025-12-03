@@ -18,14 +18,17 @@ import java.util.Map;
 @Service
 public class VentaPdfService {
 
-    // Colores corporativos
-    private static final Color COLOR_PRIMARIO = new Color(0, 123, 255);     // Azul
-    private static final Color COLOR_EXITO = new Color(40, 167, 69);        // Verde
-    private static final Color COLOR_ADVERTENCIA = new Color(255, 193, 7);  // Amarillo
-    private static final Color COLOR_PELIGRO = new Color(220, 53, 69);      // Rojo
-    private static final Color COLOR_INFO = new Color(23, 162, 184);        // Cyan
-    private static final Color COLOR_HEADER = new Color(33, 37, 41);        // Gris oscuro
-    private static final Color COLOR_FONDO = new Color(248, 249, 250);      // Gris claro
+    // Colores corporativos - Paleta: Negro, Dorado/Mostaza, Blanco
+    private static final Color COLOR_PRIMARIO = new Color(212, 165, 40);    // Dorado principal #D4A528
+    private static final Color COLOR_DORADO_OSCURO = new Color(184, 148, 31); // Dorado hover #B8941F
+    private static final Color COLOR_NEGRO = new Color(26, 26, 26);         // Negro principal #1a1a1a
+    private static final Color COLOR_NEGRO_SECUNDARIO = new Color(45, 45, 45); // Negro secundario #2d2d2d
+    private static final Color COLOR_EXITO = new Color(40, 167, 69);        // Verde (para estados)
+    private static final Color COLOR_ADVERTENCIA = new Color(255, 193, 7);  // Amarillo (para estados)
+    private static final Color COLOR_PELIGRO = new Color(220, 53, 69);      // Rojo (para estados)
+    private static final Color COLOR_INFO = new Color(23, 162, 184);        // Cyan (para estados)
+    private static final Color COLOR_HEADER = new Color(26, 26, 26);        // Negro para headers
+    private static final Color COLOR_FONDO = new Color(245, 245, 245);      // Gris muy claro
 
     /**
      * Genera PDF de una venta individual (comprobante/boleta)
@@ -100,32 +103,32 @@ public class VentaPdfService {
      * Encabezado para comprobante de venta individual
      */
     private void agregarEncabezadoVenta(Document document, Venta venta) throws DocumentException {
-        // Título empresa
-        Font fontEmpresa = new Font(Font.HELVETICA, 22, Font.BOLD, COLOR_PRIMARIO);
+        // Título empresa - Negro con estilo elegante
+        Font fontEmpresa = new Font(Font.HELVETICA, 22, Font.BOLD, COLOR_NEGRO);
         Paragraph empresa = new Paragraph("COLCHONES D'ENCANTO", fontEmpresa);
         empresa.setAlignment(Element.ALIGN_CENTER);
         document.add(empresa);
         
-        // Subtítulo
-        Font fontSub = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.GRAY);
+        // Subtítulo en dorado
+        Font fontSub = new Font(Font.HELVETICA, 10, Font.ITALIC, COLOR_PRIMARIO);
         Paragraph subtitulo = new Paragraph("Tu descanso, nuestro compromiso", fontSub);
         subtitulo.setAlignment(Element.ALIGN_CENTER);
         document.add(subtitulo);
         
         document.add(new Paragraph(" "));
         
-        // Línea decorativa
+        // Línea decorativa dorada
         agregarLineaDecorativa(document, COLOR_PRIMARIO);
         
         document.add(new Paragraph(" "));
         
-        // Título del documento
-        Font fontTitulo = new Font(Font.HELVETICA, 16, Font.BOLD, COLOR_HEADER);
+        // Título del documento en negro
+        Font fontTitulo = new Font(Font.HELVETICA, 16, Font.BOLD, COLOR_NEGRO);
         Paragraph titulo = new Paragraph("COMPROBANTE DE VENTA", fontTitulo);
         titulo.setAlignment(Element.ALIGN_CENTER);
         document.add(titulo);
         
-        // Número de venta
+        // Número de venta en dorado
         Font fontNumero = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_PRIMARIO);
         Paragraph numero = new Paragraph("N° " + String.format("%06d", venta.getId()), fontNumero);
         numero.setAlignment(Element.ALIGN_CENTER);
@@ -148,8 +151,8 @@ public class VentaPdfService {
      * Información del cliente
      */
     private void agregarInfoCliente(Document document, Venta venta) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_PRIMARIO);
-        Font fontLabel = new Font(Font.HELVETICA, 9, Font.BOLD, Color.DARK_GRAY);
+        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_NEGRO);
+        Font fontLabel = new Font(Font.HELVETICA, 9, Font.BOLD, COLOR_PRIMARIO);
         Font fontValor = new Font(Font.HELVETICA, 9, Font.NORMAL, Color.BLACK);
         
         Paragraph tituloCliente = new Paragraph("DATOS DEL CLIENTE", fontSeccion);
@@ -176,8 +179,8 @@ public class VentaPdfService {
      * Información de la venta
      */
     private void agregarInfoVenta(Document document, Venta venta) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_PRIMARIO);
-        Font fontLabel = new Font(Font.HELVETICA, 9, Font.BOLD, Color.DARK_GRAY);
+        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_NEGRO);
+        Font fontLabel = new Font(Font.HELVETICA, 9, Font.BOLD, COLOR_PRIMARIO);
         Font fontValor = new Font(Font.HELVETICA, 9, Font.NORMAL, Color.BLACK);
         
         Paragraph tituloVenta = new Paragraph("INFORMACIÓN DE LA VENTA", fontSeccion);
@@ -207,7 +210,7 @@ public class VentaPdfService {
      * Tabla de productos de la venta
      */
     private void agregarTablaProductos(Document document, Venta venta) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_PRIMARIO);
+        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_NEGRO);
         Font fontHeader = new Font(Font.HELVETICA, 9, Font.BOLD, Color.WHITE);
         Font fontCelda = new Font(Font.HELVETICA, 9, Font.NORMAL, Color.BLACK);
         
@@ -274,7 +277,7 @@ public class VentaPdfService {
     private void agregarDesgloseMontos(Document document, Venta venta) throws DocumentException {
         Font fontLabel = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.DARK_GRAY);
         Font fontValor = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
-        Font fontTotal = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_PRIMARIO);
+        Font fontTotal = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_NEGRO);
         
         PdfPTable tablaMontos = new PdfPTable(2);
         tablaMontos.setWidthPercentage(40);
@@ -305,20 +308,21 @@ public class VentaPdfService {
                 fontLabel, fontValor);
         }
         
-        // Total
+        // Total con línea dorada decorativa
         PdfPCell cellLabelTotal = new PdfPCell(new Phrase("TOTAL:", fontTotal));
         cellLabelTotal.setBorderWidth(0);
         cellLabelTotal.setBorderWidthTop(2);
-        cellLabelTotal.setBorderColorTop(COLOR_PRIMARIO);
+        cellLabelTotal.setBorderColorTop(COLOR_PRIMARIO); // Línea dorada
         cellLabelTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cellLabelTotal.setPaddingTop(10);
         tablaMontos.addCell(cellLabelTotal);
         
+        Font fontTotalValor = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_PRIMARIO); // Valor en dorado
         PdfPCell cellValorTotal = new PdfPCell(new Phrase(
-            String.format("S/ %.2f", venta.getTotal() != null ? venta.getTotal() : 0.0), fontTotal));
+            String.format("S/ %.2f", venta.getTotal() != null ? venta.getTotal() : 0.0), fontTotalValor));
         cellValorTotal.setBorderWidth(0);
         cellValorTotal.setBorderWidthTop(2);
-        cellValorTotal.setBorderColorTop(COLOR_PRIMARIO);
+        cellValorTotal.setBorderColorTop(COLOR_PRIMARIO); // Línea dorada
         cellValorTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cellValorTotal.setPaddingTop(10);
         tablaMontos.addCell(cellValorTotal);
@@ -331,12 +335,12 @@ public class VentaPdfService {
      * Encabezado para historial de ventas
      */
     private void agregarEncabezadoHistorial(Document document, String vendedor) throws DocumentException {
-        Font fontEmpresa = new Font(Font.HELVETICA, 20, Font.BOLD, COLOR_PRIMARIO);
+        Font fontEmpresa = new Font(Font.HELVETICA, 20, Font.BOLD, COLOR_NEGRO);
         Paragraph empresa = new Paragraph("COLCHONES D'ENCANTO", fontEmpresa);
         empresa.setAlignment(Element.ALIGN_CENTER);
         document.add(empresa);
         
-        Font fontTitulo = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_HEADER);
+        Font fontTitulo = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_PRIMARIO);
         Paragraph titulo = new Paragraph("Historial de Ventas", fontTitulo);
         titulo.setAlignment(Element.ALIGN_CENTER);
         document.add(titulo);
@@ -502,10 +506,10 @@ public class VentaPdfService {
      */
     private void agregarPiePagina(Document document) throws DocumentException {
         document.add(new Paragraph(" "));
-        agregarLineaDecorativa(document, COLOR_PRIMARIO);
+        agregarLineaDecorativa(document, COLOR_PRIMARIO); // Línea dorada
         document.add(new Paragraph(" "));
         
-        Font fontGracias = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_PRIMARIO);
+        Font fontGracias = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_NEGRO);
         Paragraph gracias = new Paragraph("¡Gracias por su compra!", fontGracias);
         gracias.setAlignment(Element.ALIGN_CENTER);
         document.add(gracias);

@@ -8,78 +8,82 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/intranet-common.css" />
+  <link rel="stylesheet" href="/css/usuarios.css" />
 </head>
 
 <body>
   <div class="wrapper">
     <!-- MENÚ LATERAL -->
-    <aside id="sidebar">
-      <div class="d-flex justify-content-between p-4">
-        <div class="sidebar-logo">
-          <a href="#">Colchones D'<br />Encanto</a>
-        </div>
-        <button class="toggle-btn border-0" type="button">
-          <i id="icon" class="bx bxs-chevrons-right"></i>
-        </button>
-      </div>
-      <ul class="sidebar-nav">
-        <li class="sidebar-item">
-          <a th:href="@{/intranet/dashboard}" class="sidebar-link">
-            <i class="bx bx-history"></i>
-            <span>Historial</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a th:href="@{/intranet/reportes}" class="sidebar-link">
-            <i class="bx bxs-report"></i>
-            <span>Generar Reportes</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a th:href="@{/intranet/productos}" class="sidebar-link">
-            <i class="bx bxs-box"></i>
-            <span>Gestión de Productos</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a th:href="@{/intranet/usuarios}" class="sidebar-link">
-            <i class="bx bxs-user-account"></i>
-            <span>Gestión de Usuarios</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a th:href="@{/intranet/cotizaciones}" class="sidebar-link">
-            <i class="bx bxs-food-menu"></i>
-            <span>Visualizar Cotizaciones</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-          <a th:href="@{/intranet/revisarCotizaciones}" class="sidebar-link">
-            <i class="bx bxs-file"></i>
-            <span>Revisar Cotizaciones</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-          <a th:href="@{/intranet/registrarVentas}" class="sidebar-link">
-            <i class="bx bxs-cart"></i>
-            <span>Registrar Ventas</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-          <a th:href="@{/intranet/historialVentas}" class="sidebar-link">
-            <i class="bx bxs-car"></i>
-            <span>Historial de Ventas</span>
-          </a>
-        </li>
-      </ul>/
-      <div class="sidebar-footer">
-        <a th:href="@{/intranet/login}" class="sidebar-link"
-          onclick="return confirm('¿Está seguro de que desea cerrar sesión?')">
-          <i class="bx bx-log-out"></i>
-          <span>Cerrar Sesión</span>
-        </a>
-      </div>
-    </aside>
+        <aside id="sidebar" class="">
+            <div class="d-flex justify-content-between p-4">
+                <div class="sidebar-logo">
+                    <a href="#">Colchones D'<br />Encanto</a>
+                </div>
+                <button class="toggle-btn border-0" type="button">
+                    <i id="icon" class="bx bxs-chevrons-right"></i>
+                </button>
+            </div>
+            <ul class="sidebar-nav">
+                <!-- PERFIL (ADMIN/USUARIO)-->
+                <li class="sidebar-item">
+                    <a href="/intranet/dashboard" class="sidebar-link">
+                        <i class="bx bx-history"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <!-- MENU PARA ADMIN -->
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/reportes" class="sidebar-link">
+                        <i class="bx bxs-report"></i>
+                        <span>Generar Reportes</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/productos" class="sidebar-link">
+                        <i class="bx bxs-box"></i>
+                        <span>Gestión de Productos</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/usuarios" class="sidebar-link">
+                        <i class="bx bxs-user-account"></i>
+                        <span>Gestión de Usuarios</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/cotizaciones" class="sidebar-link">
+                        <i class="bx bxs-food-menu"></i>
+                        <span>Visualizar Cotizaciones</span>
+                    </a>
+                </li>
+                <!-- MENU PARA VENDEDORES -->
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/revisarCotizaciones" class="sidebar-link">
+                        <i class="bx bxs-file"></i>
+                        <span>Revisar Cotizaciones</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/ventas" class="sidebar-link">
+                        <i class="bx bxs-cart"></i>
+                        <span>Registrar Ventas</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/historialVentas" class="sidebar-link">
+                        <i class="bx bx-search-alt-2"></i>
+                        <span>Historial de Ventas</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
+                    <i class="bx bx-log-out"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
 
     <!-- CONTENIDO -->
     <div class="main">
@@ -203,32 +207,47 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <!-- FORMULARIO CORREGIDO - SIN th:object -->
-        <form th:action="@{/intranet/usuarios/agregar}" method="POST">
+        <form th:action="@{/intranet/usuarios/agregar}" method="POST" id="formAgregarUsuario" novalidate>
           <div class="modal-body">
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="nombreUsuario" class="form-label">Nombre de Usuario *</label>
-                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" required>
+                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" 
+                       required minlength="5" maxlength="80" pattern="^[a-zA-Z0-9_]+$">
+                <span class="validation-error" id="errorNombreUsuario"></span>
+                <small class="input-hint">5-80 caracteres, solo letras, números y guión bajo</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="nombreCompleto" class="form-label">Nombre Completo *</label>
-                <input type="text" class="form-control" id="nombreCompleto" name="nombreCompleto" required>
+                <input type="text" class="form-control" id="nombreCompleto" name="nombreCompleto" 
+                       required minlength="3" maxlength="150">
+                <span class="validation-error" id="errorNombreCompleto"></span>
+                <small class="input-hint">3-150 caracteres</small>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="correo" class="form-label">Email *</label>
-                <input type="email" class="form-control" id="correo" name="correo" required>
+                <input type="email" class="form-control" id="correo" name="correo" 
+                       required maxlength="150">
+                <span class="validation-error" id="errorCorreo"></span>
+                <small class="input-hint">Formato: ejemplo@correo.com</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="telefono" class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" id="telefono" name="telefono">
+                <input type="tel" class="form-control" id="telefono" name="telefono" 
+                       maxlength="15" pattern="^[0-9]{7,15}$">
+                <span class="validation-error" id="errorTelefono"></span>
+                <small class="input-hint">7-15 dígitos numéricos</small>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="contrasenaHash" class="form-label">Contraseña *</label>
-                <input type="password" class="form-control" id="contrasenaHash" name="contrasenaHash" required>
+                <input type="password" class="form-control" id="contrasenaHash" name="contrasenaHash" 
+                       required minlength="6" maxlength="100">
+                <span class="validation-error" id="errorContrasena"></span>
+                <small class="input-hint">Mínimo 6 caracteres</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="rolId" class="form-label">Rol *</label>
@@ -236,6 +255,7 @@
                   <option value="">Seleccionar rol</option>
                   <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}"></option>
                 </select>
+                <span class="validation-error" id="errorRol"></span>
               </div>
             </div>
           </div>
@@ -256,41 +276,55 @@
           <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form th:action="@{/intranet/usuarios/editar}" method="POST">
+        <form th:action="@{/intranet/usuarios/editar}" method="POST" id="formEditarUsuario" novalidate>
           <input type="hidden" name="id" id="editUserId">
           <div class="modal-body">
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="editNombreUsuario" class="form-label">Nombre de Usuario *</label>
-                <input type="text" class="form-control" id="editNombreUsuario" name="nombreUsuario" required>
+                <input type="text" class="form-control" id="editNombreUsuario" name="nombreUsuario" 
+                       required minlength="5" maxlength="80" pattern="^[a-zA-Z0-9_]+$">
+                <span class="validation-error" id="errorEditNombreUsuario"></span>
+                <small class="input-hint">5-80 caracteres, solo letras, números y guión bajo</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="editNombreCompleto" class="form-label">Nombre Completo *</label>
-                <input type="text" class="form-control" id="editNombreCompleto" name="nombreCompleto" required>
+                <input type="text" class="form-control" id="editNombreCompleto" name="nombreCompleto" 
+                       required minlength="3" maxlength="150">
+                <span class="validation-error" id="errorEditNombreCompleto"></span>
+                <small class="input-hint">3-150 caracteres</small>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="editCorreo" class="form-label">Email *</label>
-                <input type="email" class="form-control" id="editCorreo" name="correo" required>
+                <input type="email" class="form-control" id="editCorreo" name="correo" 
+                       required maxlength="150">
+                <span class="validation-error" id="errorEditCorreo"></span>
+                <small class="input-hint">Formato: ejemplo@correo.com</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="editTelefono" class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" id="editTelefono" name="telefono">
+                <input type="tel" class="form-control" id="editTelefono" name="telefono" 
+                       maxlength="15" pattern="^[0-9]{7,15}$">
+                <span class="validation-error" id="errorEditTelefono"></span>
+                <small class="input-hint">7-15 dígitos numéricos</small>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="editContrasenaHash" class="form-label">Nueva Contraseña (dejar vacío para mantener la
-                  actual)</label>
+                <label for="editContrasenaHash" class="form-label">Nueva Contraseña (dejar vacío para mantener)</label>
                 <input type="password" class="form-control" id="editContrasenaHash" name="contrasenaHash"
-                  placeholder="Dejar vacío para no cambiar">
+                  placeholder="Dejar vacío para no cambiar" minlength="6" maxlength="100">
+                <span class="validation-error" id="errorEditContrasena"></span>
+                <small class="input-hint">Mínimo 6 caracteres (si desea cambiar)</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="editRolId" class="form-label">Rol *</label>
                 <select class="form-select" id="editRolId" name="rolId" required>
                   <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}"></option>
                 </select>
+                <span class="validation-error" id="errorEditRol"></span>
               </div>
             </div>
           </div>
@@ -304,59 +338,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
- 
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      console.log('Página de usuarios cargada');
-
-      // Cargar datos en modal de edición
-      const editButtons = document.querySelectorAll('.edit-btn');
-      editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          const id = this.getAttribute('data-id');
-          const nombreUsuario = this.getAttribute('data-nombreusuario');
-          const nombreCompleto = this.getAttribute('data-nombrecompleto');
-          const correo = this.getAttribute('data-correo');
-          const telefono = this.getAttribute('data-telefono');
-          const rolId = this.getAttribute('data-rolid');
-
-          console.log('Cargando datos para editar usuario:');
-          console.log('- ID:', id);
-          console.log('- Usuario:', nombreUsuario);
-          console.log('- Rol ID:', rolId);
-
-          // Llenar el formulario de edición
-          document.getElementById('editUserId').value = id;
-          document.getElementById('editNombreUsuario').value = nombreUsuario || '';
-          document.getElementById('editNombreCompleto').value = nombreCompleto || '';
-          document.getElementById('editCorreo').value = correo || '';
-          document.getElementById('editTelefono').value = telefono || '';
-          document.getElementById('editRolId').value = rolId || '';
-          document.getElementById('editContrasenaHash').value = ''; // Limpiar campo de contraseña
-        });
-      });
-
-      // Confirmación para reset password
-      document.querySelectorAll('a[href*="reset-password"]').forEach(link => {
-        link.addEventListener('click', function (e) {
-          if (!confirm('¿Está seguro de resetear la contraseña? Se establecerá a "123456"')) {
-            e.preventDefault();
-          }
-        });
-      });
-
-      // Recargar página si hay mensaje de éxito
-      const successMessage = document.querySelector('.alert-success');
-      if (successMessage) {
-        console.log('Mensaje de éxito detectado, recargando página...');
-        setTimeout(() => {
-          location.reload();
-        }, 1500);
-      }
-    });
-  </script>
+  <script src="/js/authUtils.js"></script>
+  <script src="/js/scriptIntranetCommon.js"></script>
+  <script src="/js/scriptUsuarios.js"></script>
 </body>
 
 </html>

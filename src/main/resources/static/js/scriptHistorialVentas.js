@@ -1,4 +1,4 @@
-const hamburger = document.querySelector(".toggle-btn");
+﻿const hamburger = document.querySelector(".toggle-btn");
 const toggler = document.querySelector("#icon");
 
 // Variables globales
@@ -9,7 +9,6 @@ let chartInstances = {}; // Guardar instancias de gráficos para destruir despu�
 
 // Inicializar cuando la página carga
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📱 Inicializando página de Historial de Ventas...');
     
     cargarVentas();
     configurarFiltros();
@@ -40,7 +39,6 @@ hamburger.addEventListener("click", function () {
 
 // ============ CONFIGURAR FILTROS ============
 function configurarFiltros() {
-    console.log('⚙️ Configurando filtros...');
     
     const btnAplicar = document.getElementById('btnAplicarFiltros');
     const btnLimpiar = document.getElementById('btnLimpiarFiltros');
@@ -66,7 +64,6 @@ function configurarFiltros() {
 }
 
 function aplicarFiltros() {
-    console.log('🔍 Aplicando filtros...');
     
     // Obtener valores de filtros con IDs específicos
     const fechaDesde = document.getElementById('filtroFechaDesde')?.value;
@@ -74,8 +71,6 @@ function aplicarFiltros() {
     const estado = document.getElementById('filtroEstado')?.value;
     const metodoPago = document.getElementById('filtroMetodoPago')?.value;
     const ordenar = document.getElementById('filtroOrdenamiento')?.value || 'reciente';
-    
-    console.log('📋 Filtros aplicados:', { fechaDesde, fechaHasta, estado, metodoPago, ordenar });
     
     // Filtrar ventas
     let ventasFiltradas = [...ventasCache];
@@ -126,8 +121,6 @@ function aplicarFiltros() {
         default:
             ventasFiltradas.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
     }
-    
-    console.log(`✅ Ventas filtradas: ${ventasFiltradas.length} de ${ventasCache.length}`);
     llenarTablaVentas(ventasFiltradas);
     actualizarKPIs(ventasFiltradas);
     actualizarGraficoBarras(ventasFiltradas);
@@ -135,7 +128,6 @@ function aplicarFiltros() {
 }
 
 function limpiarFiltros() {
-    console.log('🔄 Limpiando filtros...');
     
     // Resetear todos los inputs
     document.getElementById('filtroFechaDesde').value = '';
@@ -153,7 +145,6 @@ function limpiarFiltros() {
 
 // ============ ACTUALIZAR KPIs ============
 function actualizarKPIs(ventas) {
-    console.log('📊 Actualizando KPIs...');
     
     if (!ventas || ventas.length === 0) {
         // Si no hay ventas, mostrar 0 en los KPIs
@@ -178,18 +169,10 @@ function actualizarKPIs(ventas) {
         kpiValues[2].textContent = `S/ ${promedioPorVenta.toFixed(2)}`;
         kpiValues[3].textContent = `S/ ${comisiones.toFixed(2)}`;
     }
-    
-    console.log('✅ KPIs actualizados:', {
-        totalVentas,
-        cantidadVentas,
-        promedioPorVenta,
-        comisiones
-    });
 }
 
 // ============ ACTUALIZAR GRÁFICOS ============
 function actualizarGraficos(ventas) {
-    console.log('📈 Actualizando gráficos...');
     
     if (!ventas || ventas.length === 0) {
         console.warn('⚠️ Sin ventas para gráficos');
@@ -225,15 +208,12 @@ function actualizarGraficos(ventas) {
 async function cargarVentas() {
     try {
         const token = getToken();
-        console.log('🔑 Token obtenido:', token ? '✓' : '✗');
         
         if (!token) {
             console.error("❌ No hay token JWT");
             mostrarAlertaError('Error', 'No hay token JWT. Por favor, inicie sesión nuevamente.');
             return;
         }
-
-        console.log('📡 Llamando a GET /intranet/api/ventas...');
         
         const response = await fetch('/intranet/api/ventas', {
             method: 'GET',
@@ -244,8 +224,6 @@ async function cargarVentas() {
             },
             credentials: 'include'
         });
-
-        console.log('🔄 Response status:', response.status);
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -254,7 +232,6 @@ async function cargarVentas() {
         }
 
         const ventas = await response.json();
-        console.log(`✅ Ventas cargadas: ${ventas.length} registros`);
         
         // Guardar en caché
         ventasCache = ventas;
@@ -286,11 +263,9 @@ function llenarTablaVentas(ventas) {
     tbody.innerHTML = '';
 
     if (!ventas || ventas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No hay ventas registradas</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">No hay ventas registradas</td></tr>';
         return;
     }
-
-    console.log(`📝 Llenando tabla con ${ventas.length} ventas...`);
 
     // Agregar cada venta
     ventas.forEach(venta => {
@@ -351,6 +326,9 @@ function crearFilaVenta(venta) {
             </div>
         </td>
         <td>
+            <div class="fw-bold text-primary">${venta.vendedor || 'Sin asignar'}</div>
+        </td>
+        <td>
             <div>${productosHtml}</div>
         </td>
         <td>
@@ -393,7 +371,6 @@ function obtenerBadgeMetodoPago(metodo) {
 
 // ============ CANCELACIÓN DE VENTA ============
 function confirmarCancelacion(ventaId) {
-    console.log('📌 Cancelar venta:', ventaId);
     ventaIdSeleccionada = ventaId;
     
     // Mostrar venta ID en modal
@@ -412,8 +389,6 @@ async function cancelarVentaConfirmado() {
         alert('❌ Error: No hay venta seleccionada');
         return;
     }
-
-    console.log('🔄 Cancelando venta:', ventaIdSeleccionada);
     
     // Obtener token JWT
     const token = getToken();
@@ -436,7 +411,6 @@ async function cancelarVentaConfirmado() {
         const data = await response.json();
 
         if (response.ok && data.success) {
-            console.log('✅ Venta cancelada:', data);
             
             // Cerrar modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('cancelarVentaModal'));
@@ -461,7 +435,6 @@ async function cancelarVentaConfirmado() {
 }
 
 function verDetalles(ventaId) {
-    console.log('👀 Ver detalles de venta:', ventaId);
     
     // Buscar la venta en el caché primero
     const ventaEnCache = ventasCache.find(v => v.id === ventaId);
@@ -491,7 +464,6 @@ function verDetalles(ventaId) {
 }
 
 function llenarModalDetalles(venta) {
-    console.log('📋 Llenando modal con detalles completos...');
     
     // ===== INFORMACIÓN BÁSICA =====
     document.getElementById('ventaIdDetail').textContent = venta.id;
@@ -546,13 +518,10 @@ function llenarModalDetalles(venta) {
     document.getElementById('igvDetail').textContent = `S/ ${(venta.igv || 0).toFixed(2)}`;
     document.getElementById('costoDeliveryDetail').textContent = `S/ ${(venta.costoDelivery || 0).toFixed(2)}`;
     document.getElementById('totalDetail').textContent = `S/ ${(venta.montoTotal || 0).toFixed(2)}`;
-    
-    console.log('✅ Modal completamente actualizado con todos los datos');
 }
 
 // ============ COMPLETAR VENTA ============
 function confirmarCompletacion(ventaId) {
-    console.log('✅ Completar venta:', ventaId);
     if (confirm('¿Está seguro de que desea marcar esta venta como completada?')) {
         completarVenta(ventaId);
     }
@@ -567,7 +536,6 @@ async function completarVenta(ventaId) {
     }
 
     try {
-        console.log('📤 Enviando petición de completación...');
         
         // Cambiar estado a COMPLETADA
         const response = await fetch(`/intranet/api/ventas/${ventaId}/estado`, {
@@ -582,7 +550,6 @@ async function completarVenta(ventaId) {
         const data = await response.json();
 
         if (response.ok && data.success) {
-            console.log('✅ Venta completada:', data);
             mostrarAlertaExito('Venta completada', 'La venta #' + ventaId + ' ha sido marcada como completada.');
             
             setTimeout(() => {
@@ -641,7 +608,6 @@ function mostrarAlertaError(titulo, mensaje) {
 
 // ============ GRÁFICOS CON CHART.JS ============
 function initializeCharts() {
-    console.log('📊 Inicializando gráficos...');
     
     // Gráfico de ventas mensuales personales (Bar Chart)
     const salesCtx = document.getElementById('salesChart');
@@ -720,14 +686,11 @@ function initializeCharts() {
                 }
             }
         });
-        
-        console.log('✅ Gráficos inicializados correctamente');
     }
 }
 
 // Función para actualizar el gráfico de barras con datos reales
 function actualizarGraficoBarras(ventas) {
-    console.log('📊 Actualizando gráfico de barras con datos reales...');
     
     if (!ventas || ventas.length === 0 || !chartInstances.salesChart) {
         console.warn('⚠️ Sin datos o gráfico no inicializado');
@@ -751,8 +714,6 @@ function actualizarGraficoBarras(ventas) {
     const meses = Object.keys(ventasPorMes);
     const montos = Object.values(ventasPorMes);
     
-    console.log('📈 Datos del gráfico:', { meses, montos });
-    
     // Actualizar gráfico
     chartInstances.salesChart.data.labels = meses;
     chartInstances.salesChart.data.datasets[0].data = montos;
@@ -761,7 +722,6 @@ function actualizarGraficoBarras(ventas) {
 
 // ============ EXPORTAR PDF ============
 async function exportarHistorialPDF() {
-    console.log('📄 Exportando historial de ventas a PDF...');
     
     const token = getToken();
     if (!token) {
@@ -785,8 +745,6 @@ async function exportarHistorialPDF() {
     if (metodoPago) params.append('metodoPago', metodoPago);
     
     url += params.toString();
-    
-    console.log('📥 Descargando PDF desde:', url);
     
     try {
         const response = await fetch(url, {
@@ -825,7 +783,6 @@ async function exportarHistorialPDF() {
 }
 
 async function descargarPdfVenta() {
-    console.log('📄 Descargando PDF de venta individual...');
     
     if (!detalleVentaActual || !detalleVentaActual.id) {
         mostrarAlertaError('Error', 'No hay venta seleccionada para exportar.');

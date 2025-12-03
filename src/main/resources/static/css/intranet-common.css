@@ -1,0 +1,357 @@
+/**
+ * ESTILOS COMUNES PARA INTRANET - Colchones D'Encanto
+ * Este archivo contiene estilos reutilizables en todas las páginas de la intranet
+ * 
+ * PALETA DE COLORES:
+ * --negro-principal: #1a1a1a
+ * --negro-secundario: #2d2d2d
+ * --dorado-principal: #D4A528
+ * --dorado-hover: #B8941F
+ * --dorado-claro: #F5E6B8
+ * --blanco: #FFFFFF
+ * --gris-claro: #F5F5F5
+ * --gris-borde: #E0E0E0
+ */
+
+:root {
+  /* Paleta Principal */
+  --negro-principal: #1a1a1a;
+  --negro-secundario: #2d2d2d;
+  --dorado-principal: #D4A528;
+  --dorado-hover: #B8941F;
+  --dorado-claro: #F5E6B8;
+  --blanco: #FFFFFF;
+  --gris-claro: #F5F5F5;
+  --gris-borde: #E0E0E0;
+  --gris-texto: #6c757d;
+}
+
+/* ==================== VALIDACIONES ==================== */
+.validation-error {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid,
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+  border-color: #dc3545 !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-valid,
+.form-select.is-valid,
+input.is-valid,
+select.is-valid,
+textarea.is-valid {
+  border-color: #198754 !important;
+}
+
+.input-hint {
+  color: var(--gris-texto);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+/* ==================== BADGES Y ESTADOS ==================== */
+.role-badge {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.estado-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.85rem;
+}
+
+/* ==================== CARDS ==================== */
+.card-intranet {
+  border-radius: 10px;
+  border: none;
+  background: var(--blanco);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-intranet:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== KPIs / DASHBOARD ==================== */
+.kpi-card {
+  border-radius: 10px;
+  border: none;
+  background: var(--blanco);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--dorado-claro);
+  color: var(--dorado-principal);
+}
+
+.kpi-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--negro-principal);
+}
+
+/* ==================== GRÁFICOS ==================== */
+.chart-container {
+  position: relative;
+  height: 280px;
+}
+
+/* ==================== SECCIONES ==================== */
+.section-title {
+  color: var(--negro-principal);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--dorado-principal);
+  padding-bottom: 0.5rem;
+}
+
+/* ==================== TABLAS ==================== */
+.table-dashboard th,
+.table-intranet th {
+  background-color: var(--negro-principal);
+  font-weight: 600;
+  color: var(--blanco);
+}
+
+.table-intranet .action-buttons {
+  white-space: nowrap;
+}
+
+.table-intranet .action-buttons .btn {
+  margin-right: 0.25rem;
+}
+
+/* ==================== BANNERS ==================== */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--negro-principal) 0%, var(--negro-secundario) 100%);
+  color: var(--blanco);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 5px solid var(--dorado-principal);
+}
+
+.welcome-banner-vendedor {
+  background: linear-gradient(135deg, var(--negro-secundario) 0%, #3d3d3d 100%);
+  border-left: 5px solid var(--dorado-principal);
+}
+
+/* ==================== FILTROS ==================== */
+.filter-section {
+  background: var(--gris-claro);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border-left: 4px solid var(--dorado-principal);
+}
+
+/* ==================== IMÁGENES ==================== */
+.user-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.producto-imagen {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: var(--gris-claro);
+}
+
+.imagen-preview {
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+
+.imagen-input-group {
+  border: 2px dashed var(--dorado-principal);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.imagen-input-group:hover {
+  background: var(--dorado-claro);
+}
+
+/* ==================== PRECIOS ==================== */
+.product-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--dorado-principal);
+}
+
+/* ==================== FICHA TÉCNICA ==================== */
+.ficha-tecnica-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.ficha-item {
+  background: var(--gris-claro);
+  padding: 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--dorado-principal);
+}
+
+.ficha-item label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--negro-principal);
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* ==================== ESTADOS VACÍOS ==================== */
+.no-resultados {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gris-texto);
+}
+
+.no-resultados i {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  color: var(--dorado-principal);
+}
+
+/* ==================== UTILIDADES ==================== */
+.hidden {
+  display: none !important;
+}
+
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ==================== LOADING ==================== */
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--gris-claro);
+  border-top: 2px solid var(--dorado-principal);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==================== ALERTAS PERSONALIZADAS ==================== */
+.alert-floating {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 300px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ==================== BOTONES PERSONALIZADOS ==================== */
+.btn-dorado {
+  background-color: var(--dorado-principal);
+  border-color: var(--dorado-principal);
+  color: var(--negro-principal);
+  font-weight: 600;
+}
+
+.btn-dorado:hover {
+  background-color: var(--dorado-hover);
+  border-color: var(--dorado-hover);
+  color: var(--negro-principal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 165, 40, 0.4);
+}
+
+.btn-negro {
+  background-color: var(--negro-principal);
+  border-color: var(--negro-principal);
+  color: var(--blanco);
+}
+
+.btn-negro:hover {
+  background-color: var(--negro-secundario);
+  border-color: var(--negro-secundario);
+  color: var(--dorado-principal);
+}
+
+.btn-outline-dorado {
+  border: 2px solid var(--dorado-principal);
+  color: var(--dorado-principal);
+  background: transparent;
+}
+
+.btn-outline-dorado:hover {
+  background-color: var(--dorado-principal);
+  color: var(--negro-principal);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+  
+  .filter-section .row > div {
+    margin-bottom: 0.5rem;
+  }
+  
+  .chart-container {
+    height: 220px;
+  }
+}

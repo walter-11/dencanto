@@ -535,11 +535,11 @@ public class ReportesApiController {
             Map<Integer, Map<String, Object>> productosAgrupados = new HashMap<>();
             
             // 1. Obtener productos de ventas registradas (detalles de venta)
+            // Incluir PENDIENTE, COMPLETADA y ENTREGADA (todas excepto CANCELADA)
             List<DetalleVenta> detalles = detalleVentaRepository.findAll();
             for (DetalleVenta detalle : detalles) {
                 if (detalle.getVenta() != null && 
-                    (detalle.getVenta().getEstado() == EstadoVenta.COMPLETADA || 
-                     detalle.getVenta().getEstado() == EstadoVenta.ENTREGADA)) {
+                    detalle.getVenta().getEstado() != EstadoVenta.CANCELADA) {
                     
                     // Filtrar por fecha
                     if (inicioFinal != null || finFinal != null) {
@@ -850,11 +850,11 @@ public class ReportesApiController {
         Map<Integer, Map<String, Object>> productosAgrupados = new HashMap<>();
         
         // Productos de ventas registradas
+        // Incluir PENDIENTE, COMPLETADA y ENTREGADA (todas excepto CANCELADA)
         List<DetalleVenta> detalles = detalleVentaRepository.findAll();
         for (DetalleVenta detalle : detalles) {
             if (detalle.getVenta() != null && 
-                (detalle.getVenta().getEstado() == EstadoVenta.COMPLETADA || 
-                 detalle.getVenta().getEstado() == EstadoVenta.ENTREGADA)) {
+                detalle.getVenta().getEstado() != EstadoVenta.CANCELADA) {
                 
                 if (inicioFinal != null || finFinal != null) {
                     LocalDateTime fechaVenta = detalle.getVenta().getFechaCreacion();

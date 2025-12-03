@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SCRIPT PARA REPORTES - Colchones D'Encanto
  * Carga datos dinámicos desde la API y renderiza gráficos con Chart.js
  */
@@ -23,7 +23,6 @@ if (hamburger) {
 // INICIALIZACIÓN
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📊 Inicializando módulo de reportes...');
     
     // Cargar datos iniciales
     cargarMesesDisponibles();
@@ -33,8 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar event listeners
     setupEventListeners();
-    
-    console.log('✅ Módulo de reportes inicializado');
 });
 
 // ============================================
@@ -93,7 +90,6 @@ async function cargarTodosLosDatos() {
         ]);
         
         mostrarLoading(false);
-        console.log('✅ Todos los datos cargados');
     } catch (error) {
         console.error('❌ Error cargando datos:', error);
         mostrarLoading(false);
@@ -500,7 +496,6 @@ async function cargarProductosVendidos(filtros = {}) {
 // ============================================
 async function cargarMesesDisponibles() {
     // Ya no es necesario porque ahora usamos inputs de fecha
-    console.log('ℹ️ Sistema de fechas actualizado a inputs de fecha');
 }
 
 // ============================================

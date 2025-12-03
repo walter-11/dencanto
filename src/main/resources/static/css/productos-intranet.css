@@ -1,0 +1,470 @@
+/**
+ * ESTILOS PARA GESTIÓN DE PRODUCTOS - Colchones D'Encanto
+ * Paleta: Negro, Dorado, Blanco
+ */
+
+/* ========== SECCIÓN DE FILTROS ========== */
+.filters-section {
+  background-color: var(--gris-claro, #F5F5F5);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--dorado-principal, #D4A528);
+}
+
+.filters-section .form-label {
+  font-weight: 600;
+  color: var(--negro-principal, #1a1a1a);
+  margin-bottom: 0.5rem;
+}
+
+.filters-section .form-control,
+.filters-section .form-select {
+  border-radius: 8px;
+  border: 1px solid var(--gris-borde, #E0E0E0);
+  padding: 0.5rem 1rem;
+}
+
+.filters-section .form-control:focus,
+.filters-section .form-select:focus {
+  border-color: var(--dorado-principal, #D4A528);
+  box-shadow: 0 0 0 0.2rem rgba(212, 165, 40, 0.25);
+}
+
+/* Rango de precio */
+.filters-section input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  background: linear-gradient(to right, var(--dorado-principal, #D4A528), var(--dorado-hover, #B8941F));
+  border-radius: 3px;
+  outline: none;
+}
+
+.filters-section input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--dorado-principal, #D4A528);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ========== CARDS DE PRODUCTOS ========== */
+.product-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  height: 100%;
+  background: var(--blanco, #FFFFFF);
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  border: 2px solid var(--dorado-principal, #D4A528);
+}
+
+.product-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.product-card .card-body {
+  padding: 1.25rem;
+}
+
+.product-card .card-title {
+  font-weight: 700;
+  color: var(--negro-principal, #1a1a1a);
+  margin-bottom: 0.5rem;
+}
+
+.product-card .product-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dorado-principal, #D4A528);
+}
+
+.product-card .product-category {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========== ESTADO DEL PRODUCTO (Mantener colores de estado) ========== */
+.badge-disponible {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-agotado {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-descontinuado {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* ========== MODAL DE DETALLES ========== */
+.modal-producto .modal-header {
+  background: linear-gradient(135deg, var(--negro-principal, #1a1a1a) 0%, var(--negro-secundario, #2d2d2d) 100%);
+  color: var(--blanco, #FFFFFF);
+  border-bottom: 3px solid var(--dorado-principal, #D4A528);
+}
+
+.modal-producto .modal-header .btn-close {
+  filter: invert(1);
+}
+
+.modal-producto .modal-body {
+  padding: 2rem;
+}
+
+/* ========== CARRUSEL DE IMÁGENES ========== */
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--gris-claro, #F5F5F5);
+}
+
+.carousel-image {
+  width: 100%;
+  height: 350px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+}
+
+.carousel-zoom-controls {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.carousel-zoom-controls .btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+/* ========== FICHA TÉCNICA ========== */
+.ficha-tecnica {
+  background-color: var(--gris-claro, #F5F5F5);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.ficha-tecnica h5 {
+  color: var(--dorado-principal, #D4A528);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--dorado-principal, #D4A528);
+  padding-bottom: 0.5rem;
+}
+
+.ficha-tecnica-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.ficha-tecnica-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--blanco, #FFFFFF);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-left: 3px solid var(--dorado-principal, #D4A528);
+}
+
+.ficha-tecnica-item i {
+  font-size: 1.2rem;
+  color: var(--dorado-principal, #D4A528);
+  width: 30px;
+  text-align: center;
+}
+
+.ficha-tecnica-item .label {
+  font-weight: 600;
+  color: var(--negro-principal, #1a1a1a);
+  font-size: 0.85rem;
+}
+
+.ficha-tecnica-item .value {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* ========== INPUTS DE IMAGEN ========== */
+.image-input-container {
+  position: relative;
+}
+
+.image-input-container input[type="file"] {
+  padding: 0.5rem;
+  border: 2px dashed var(--gris-borde, #E0E0E0);
+  border-radius: 8px;
+  background-color: var(--gris-claro, #F5F5F5);
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.image-input-container input[type="file"]:hover {
+  border-color: var(--dorado-principal, #D4A528);
+  background-color: var(--dorado-claro, #F5E6B8);
+}
+
+.image-input-container input[type="file"]:focus {
+  border-color: var(--dorado-principal, #D4A528);
+  outline: none;
+}
+
+/* Preview de imágenes */
+.image-preview {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  border: 1px solid var(--gris-borde, #E0E0E0);
+}
+
+.preview-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.preview-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--gris-borde, #E0E0E0);
+}
+
+.preview-item .remove-preview {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== CANTIDAD INPUT ========== */
+.cantidad-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cantidad-control .btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: var(--dorado-principal, #D4A528);
+  border-color: var(--dorado-principal, #D4A528);
+  color: var(--negro-principal, #1a1a1a);
+}
+
+.cantidad-control .btn:hover {
+  background-color: var(--dorado-hover, #B8941F);
+  border-color: var(--dorado-hover, #B8941F);
+}
+
+.cantidad-control .cantidad-input {
+  width: 60px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* ========== BOTONES DE ACCIÓN ========== */
+.btn-ver-detalles {
+  background: linear-gradient(135deg, var(--negro-principal, #1a1a1a) 0%, var(--negro-secundario, #2d2d2d) 100%);
+  border: none;
+  color: var(--blanco, #FFFFFF);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-ver-detalles:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.4);
+  color: var(--dorado-principal, #D4A528);
+}
+
+.btn-agregar-carrito {
+  background: linear-gradient(135deg, var(--dorado-principal, #D4A528) 0%, var(--dorado-hover, #B8941F) 100%);
+  border: none;
+  color: var(--negro-principal, #1a1a1a);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-agregar-carrito:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 165, 40, 0.4);
+  color: var(--negro-principal, #1a1a1a);
+}
+
+/* ========== ESTADO VACÍO ========== */
+#emptyState {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--gris-claro, #F5F5F5);
+  border-radius: 12px;
+}
+
+#emptyState i {
+  font-size: 4rem;
+  color: var(--dorado-principal, #D4A528);
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+#emptyState h5 {
+  color: var(--negro-principal, #1a1a1a);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+  .ficha-tecnica-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-section {
+    padding: 1rem;
+  }
+  
+  .product-card .card-img-top {
+    height: 150px;
+  }
+  
+  .carousel-image {
+    height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  .product-card {
+    margin-bottom: 1rem;
+  }
+  
+  .modal-producto .modal-body {
+    padding: 1rem;
+  }
+}
+
+/* ========== ESTILOS DE VALIDACIÓN ========== */
+.error-producto {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: none;
+}
+
+.error-producto:not(:empty) {
+  display: block;
+}
+
+/* Estilos para campos válidos e inválidos */
+#addProductModal .form-control.is-invalid,
+#addProductModal .form-select.is-invalid,
+#editProductModal .form-control.is-invalid,
+#editProductModal .form-select.is-invalid {
+  border-color: #dc3545;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+#addProductModal .form-control.is-valid,
+#addProductModal .form-select.is-valid,
+#editProductModal .form-control.is-valid,
+#editProductModal .form-select.is-valid {
+  border-color: #198754;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+#addProductModal .form-control.is-invalid:focus,
+#addProductModal .form-select.is-invalid:focus,
+#editProductModal .form-control.is-invalid:focus,
+#editProductModal .form-select.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+#addProductModal .form-control.is-valid:focus,
+#addProductModal .form-select.is-valid:focus,
+#editProductModal .form-control.is-valid:focus,
+#editProductModal .form-select.is-valid:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* Animación para el mensaje de error */
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-producto {
+  animation: fadeInError 0.3s ease-out;
+}

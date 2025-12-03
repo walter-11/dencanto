@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Dashboard Script - Colchones D'Encanto
  * Carga estadísticas dinámicas según el rol del usuario
  */
@@ -10,7 +10,6 @@ let chartMetodoPago = null;
 
 // Inicializar cuando la página carga
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📊 Inicializando Dashboard...');
     
     // Verificar autenticación
     const token = getToken();
@@ -20,12 +19,40 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // Renderizar menú según rol
-    renderMenuByRole();
+    // Mostrar dashboards según rol
+    mostrarDashboardSegunRol();
     
     // Cargar estadísticas
     cargarEstadisticas();
 });
+
+/**
+ * Muestra el dashboard correcto según el rol del usuario
+ */
+function mostrarDashboardSegunRol() {
+    const userInfo = getUserInfo();
+    if (!userInfo) {
+        console.error('No user info available');
+        return;
+    }
+
+    const rol = userInfo.rol;
+    const rolDisplay = document.getElementById('rolDisplay');
+    if (rolDisplay) {
+        rolDisplay.textContent = rol;
+    }
+
+    const dashboardAdmin = document.getElementById('dashboardAdmin');
+    const dashboardVendedor = document.getElementById('dashboardVendedor');
+
+    if (rol === 'ADMIN') {
+        if (dashboardAdmin) dashboardAdmin.style.display = 'block';
+        if (dashboardVendedor) dashboardVendedor.style.display = 'none';
+    } else if (rol === 'VENDEDOR') {
+        if (dashboardAdmin) dashboardAdmin.style.display = 'none';
+        if (dashboardVendedor) dashboardVendedor.style.display = 'block';
+    }
+}
 
 /**
  * Carga las estadísticas desde el backend
@@ -33,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
 async function cargarEstadisticas() {
     try {
         const token = getToken();
-        console.log('📡 Cargando estadísticas del dashboard...');
         
         const response = await fetch('/intranet/api/dashboard/estadisticas', {
             method: 'GET',
@@ -48,7 +74,6 @@ async function cargarEstadisticas() {
         }
         
         const data = await response.json();
-        console.log('✅ Estadísticas cargadas:', data);
         
         // Renderizar según rol
         if (data.rol === 'ADMIN') {
@@ -67,7 +92,6 @@ async function cargarEstadisticas() {
  * Renderiza el dashboard para ADMIN
  */
 function renderizarDashboardAdmin(data) {
-    console.log('👑 Renderizando dashboard de Admin...');
     
     // Actualizar KPIs
     document.getElementById('kpiVentasMes').textContent = `S/ ${formatNumber(data.ventasTotalesMes)}`;
@@ -100,7 +124,6 @@ function renderizarDashboardAdmin(data) {
  * Renderiza el dashboard para VENDEDOR
  */
 function renderizarDashboardVendedor(data) {
-    console.log('🛒 Renderizando dashboard de Vendedor...');
     
     // Actualizar KPIs
     document.getElementById('kpiMisVentas').textContent = `S/ ${formatNumber(data.misVentasMes)}`;

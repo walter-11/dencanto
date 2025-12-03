@@ -30,12 +30,6 @@ public class Homecontroller {
         return "productos";
     }
 
-    @GetMapping("/ofertas")
-    public String mostrarOfertas(Model model) {
-        model.addAttribute("titulo", "Ofertas - Colchones D' Encanto");
-        return "ofertas";
-    }
-
     @GetMapping("/nosotros")
     public String mostrarNosotros(Model model){
         model.addAttribute("titulo", "Nosotros - Colchones D' Encanto");

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SCRIPT PARA GESTIÓN DE VENTAS - 3 PASOS
  * Productos → Cliente → Pago
  * Integración con API Backend Spring Boot + Bootstrap 5
@@ -18,11 +18,9 @@ const PASOS_TOTALES = 3;
 // INICIALIZACIÓN
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 Inicializando módulo de ventas...');
   cargarProductos();
   setupEventListeners();
   setearFechaEntregaPorDefecto();
-  console.log('✅ Módulo de ventas inicializado');
 });
 
 // ============================================
@@ -64,28 +62,97 @@ function setupEventListeners() {
   if (costoDelivery) {
     costoDelivery.addEventListener('input', actualizarResumenPago);
   }
+  
+  // ========== VALIDACIONES EN TIEMPO REAL ==========
+  // Nombre del cliente
+  const clienteName = document.getElementById('clienteName');
+  if (clienteName) {
+    clienteName.addEventListener('input', function() {
+      this.classList.remove('is-invalid', 'is-valid');
+      const errorSpan = document.getElementById('errorClienteName');
+      if (errorSpan) errorSpan.textContent = '';
+    });
+    clienteName.addEventListener('blur', function() {
+      const valor = this.value.trim();
+      const errorSpan = document.getElementById('errorClienteName');
+      if (!valor) {
+        this.classList.add('is-invalid');
+        if (errorSpan) errorSpan.textContent = 'El nombre es obligatorio';
+      } else if (valor.length < 3) {
+        this.classList.add('is-invalid');
+        if (errorSpan) errorSpan.textContent = 'Mínimo 3 caracteres';
+      } else {
+        this.classList.add('is-valid');
+        if (errorSpan) errorSpan.textContent = '';
+      }
+    });
+  }
+  
+  // Teléfono del cliente
+  const clientePhone = document.getElementById('clientePhone');
+  if (clientePhone) {
+    clientePhone.addEventListener('input', function() {
+      this.classList.remove('is-invalid', 'is-valid');
+      const errorSpan = document.getElementById('errorClientePhone');
+      if (errorSpan) errorSpan.textContent = '';
+    });
+    clientePhone.addEventListener('blur', function() {
+      const valor = this.value.trim();
+      const errorSpan = document.getElementById('errorClientePhone');
+      if (!valor) {
+        this.classList.add('is-invalid');
+        if (errorSpan) errorSpan.textContent = 'El teléfono es obligatorio';
+      } else if (!/^\d{9}$/.test(valor)) {
+        this.classList.add('is-invalid');
+        if (errorSpan) errorSpan.textContent = 'Debe tener exactamente 9 dígitos';
+      } else {
+        this.classList.add('is-valid');
+        if (errorSpan) errorSpan.textContent = '';
+      }
+    });
+  }
+  
+  // Email del cliente
+  const clienteEmail = document.getElementById('clienteEmail');
+  if (clienteEmail) {
+    clienteEmail.addEventListener('input', function() {
+      this.classList.remove('is-invalid', 'is-valid');
+      const errorSpan = document.getElementById('errorClienteEmail');
+      if (errorSpan) errorSpan.textContent = '';
+    });
+    clienteEmail.addEventListener('blur', function() {
+      const valor = this.value.trim();
+      const errorSpan = document.getElementById('errorClienteEmail');
+      if (!valor) {
+        this.classList.add('is-invalid');
+        if (errorSpan) errorSpan.textContent = 'El correo es obligatorio';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) {
+        this.classList.add('is-invalid');
+        if (errorSpan) errorSpan.textContent = 'Formato de correo inválido';
+      } else {
+        this.classList.add('is-valid');
+        if (errorSpan) errorSpan.textContent = '';
+      }
+    });
+  }
 }
 
 // ============================================
 // CARGAR PRODUCTOS DEL SERVIDOR
 // ============================================
 function cargarProductos() {
-  console.log('📦 Cargando productos del servidor...');
   
   fetchWithAuth('/intranet/productos/api/filtrar', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   })
   .then(r => {
-    console.log('📊 Respuesta del servidor:', r.status);
     if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
     return r.json();
   })
   .then(data => {
-    console.log('✅ Productos recibidos:', data.length, 'items');
     productosDisponibles = (Array.isArray(data) ? data : [])
       .filter(p => p.estado === 'Disponible' && p.stock > 0);
-    console.log('🛒 Productos disponibles:', productosDisponibles.length);
     mostrarProductosDisponibles(productosDisponibles);
   })
   .catch(e => {
@@ -333,6 +400,45 @@ function updateStepIndicators(activeStep) {
 // ============================================
 // VALIDAR PASO
 // ============================================
+
+// Función auxiliar para mostrar error en campo específico
+function mostrarErrorCampo(inputId, errorSpanId, mensaje) {
+  const input = document.getElementById(inputId);
+  const errorSpan = document.getElementById(errorSpanId);
+  
+  if (input) {
+    input.classList.add('is-invalid');
+    input.classList.remove('is-valid');
+  }
+  if (errorSpan) {
+    errorSpan.textContent = mensaje;
+  }
+}
+
+// Función auxiliar para limpiar error de campo
+function limpiarErrorCampo(inputId, errorSpanId) {
+  const input = document.getElementById(inputId);
+  const errorSpan = document.getElementById(errorSpanId);
+  
+  if (input) {
+    input.classList.remove('is-invalid');
+    input.classList.add('is-valid');
+  }
+  if (errorSpan) {
+    errorSpan.textContent = '';
+  }
+}
+
+// Limpiar todos los errores del paso 2
+function limpiarErroresPaso2() {
+  ['clienteName', 'clientePhone', 'clienteEmail', 'direccion'].forEach(id => {
+    const input = document.getElementById(id);
+    const errorSpan = document.getElementById('error' + id.charAt(0).toUpperCase() + id.slice(1));
+    if (input) input.classList.remove('is-invalid', 'is-valid');
+    if (errorSpan) errorSpan.textContent = '';
+  });
+}
+
 function validarPaso(paso) {
   switch (paso) {
     case 1: // Validar selección de productos
@@ -343,36 +449,70 @@ function validarPaso(paso) {
       return true;
 
     case 2: // Validar datos del cliente
-      // Validar cliente nuevo (siempre)
+      let valido = true;
+      limpiarErroresPaso2();
+      
+      // Validar nombre
       const nombre = document.getElementById('clienteName')?.value.trim();
+      if (!nombre) {
+        mostrarErrorCampo('clienteName', 'errorClienteName', 'El nombre es obligatorio');
+        valido = false;
+      } else if (nombre.length < 3) {
+        mostrarErrorCampo('clienteName', 'errorClienteName', 'Mínimo 3 caracteres');
+        valido = false;
+      } else if (nombre.length > 100) {
+        mostrarErrorCampo('clienteName', 'errorClienteName', 'Máximo 100 caracteres');
+        valido = false;
+      } else {
+        limpiarErrorCampo('clienteName', 'errorClienteName');
+      }
+      
+      // Validar teléfono
       const phone = document.getElementById('clientePhone')?.value.trim();
+      if (!phone) {
+        mostrarErrorCampo('clientePhone', 'errorClientePhone', 'El teléfono es obligatorio');
+        valido = false;
+      } else if (!/^\d{9}$/.test(phone)) {
+        mostrarErrorCampo('clientePhone', 'errorClientePhone', 'Debe tener exactamente 9 dígitos');
+        valido = false;
+      } else {
+        limpiarErrorCampo('clientePhone', 'errorClientePhone');
+      }
+      
+      // Validar email
       const email = document.getElementById('clienteEmail')?.value.trim();
+      if (!email) {
+        mostrarErrorCampo('clienteEmail', 'errorClienteEmail', 'El correo es obligatorio');
+        valido = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        mostrarErrorCampo('clienteEmail', 'errorClienteEmail', 'Formato de correo inválido');
+        valido = false;
+      } else {
+        limpiarErrorCampo('clienteEmail', 'errorClienteEmail');
+      }
+      
+      // Validar tipo de entrega
       const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked')?.value;
-
-      if (!nombre || nombre.length < 3) {
-        mostrarAlerta('warning', '⚠️ Nombre debe tener al menos 3 caracteres');
-        return false;
-      }
-      if (!phone || !/^\d{9}$/.test(phone)) {
-        mostrarAlerta('warning', '⚠️ Teléfono debe tener 9 dígitos');
-        return false;
-      }
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        mostrarAlerta('warning', '⚠️ Email inválido');
-        return false;
-      }
       if (!tipoEntrega) {
         mostrarAlerta('warning', '⚠️ Selecciona tipo de entrega');
-        return false;
+        valido = false;
       }
+      
+      // Validar dirección si es domicilio
       if (tipoEntrega === 'DOMICILIO') {
         const direccion = document.getElementById('direccion')?.value.trim();
         if (!direccion || direccion.length < 10) {
+          const dirInput = document.getElementById('direccion');
+          if (dirInput) dirInput.classList.add('is-invalid');
           mostrarAlerta('warning', '⚠️ Dirección debe tener al menos 10 caracteres');
-          return false;
+          valido = false;
         }
       }
-      return true;
+      
+      if (!valido) {
+        mostrarAlerta('warning', '⚠️ Por favor, corrige los errores en rojo');
+      }
+      return valido;
 
     case 3: // Validar método de pago
       const metodoPago = document.getElementById('paymentMethod')?.value;
@@ -428,7 +568,6 @@ function cargarClientes() {
 
   // Aquí puedes agregar un fetch para cargar clientes del servidor
   // Por ahora, dejamos valores estáticos
-  console.log('ℹ️ Cargar clientes (implementar si es necesario)');
 }
 
 // ============================================
@@ -545,9 +684,6 @@ function processSale() {
       precioUnitario: item.precio
     }))
   };
-
-  console.log('📤 Enviando venta:', ventaData);
-  console.log('📤 JSON:', JSON.stringify(ventaData, null, 2));
   
   fetchWithAuth('/intranet/api/ventas/registrar', {
     method: 'POST',
@@ -555,11 +691,9 @@ function processSale() {
     body: JSON.stringify(ventaData)
   })
   .then(r => {
-    console.log('📊 Respuesta POST:', r.status);
     return r.json().then(data => ({ status: r.status, data }));
   })
   .then(({ status, data }) => {
-    console.log('📊 Data recibida:', data);
     if (status === 200 && (data.success || data.ventaId)) {
       mostrarModalExito(data);
     } else {

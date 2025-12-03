@@ -10,80 +10,81 @@
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/intranet-common.css" />
 </head>
 
 <body>
   <div class="wrapper">
     <!-- MENÚ LATERAL -->
-    <aside id="sidebar">
-      <div class="d-flex justify-content-between p-4">
-        <div class="sidebar-logo">
-          <a href="#">Colchones D'<br />Encanto</a>
-        </div>
-        <button class="toggle-btn border-0" type="button">
-          <i id="icon" class="bx bxs-chevrons-right"></i>
-        </button>
-      </div>
-      <ul class="sidebar-nav">
-        <!-- PERFIL (ADMIN/USUARIO)-->
-        <li class="sidebar-item">
-          <a href="/intranet/dashboard" class="sidebar-link">
-            <i class="bx bx-history"></i>
-            <span>Historial</span>
-          </a>
-        </li>
-        <!-- MENU PARA ADMIN -->
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a href="/intranet/reportes" class="sidebar-link">
-            <i class="bx bxs-report"></i>
-            <span>Generar Reportes</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a href="/intranet/productos" class="sidebar-link">
-            <i class="bx bxs-box"></i>
-            <span>Gestión de Productos</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a href="/intranet/usuarios" class="sidebar-link">
-            <i class="bx bxs-user-account"></i>
-            <span>Gestión de Usuarios</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
-          <a href="/intranet/cotizaciones" class="sidebar-link">
-            <i class="bx bxs-food-menu"></i>
-            <span>Visualizar Cotizaciones</span>
-          </a>
-        </li>
-        <!-- MENU PARA VENDEDORES -->
-        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-          <a href="/intranet/revisarCotizaciones" class="sidebar-link">
-            <i class="bx bxs-file"></i>
-            <span>Revisar Cotizaciones</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-          <a href="/intranet/ventas" class="sidebar-link">
-            <i class="bx bxs-cart"></i>
-            <span>Registrar Ventas</span>
-          </a>
-        </li>
-        <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
-          <a href="/intranet/historialVentas" class="sidebar-link">
-            <i class="bx bx-search-alt-2"></i>
-            <span>Historial de Ventas</span>
-          </a>
-        </li>
-      </ul>
-      <div class="sidebar-footer">
-        <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
-          <i class="bx bx-log-out"></i>
-          <span>Cerrar Sesión</span>
-        </a>
-      </div>
-    </aside>
+        <aside id="sidebar" class="">
+            <div class="d-flex justify-content-between p-4">
+                <div class="sidebar-logo">
+                    <a href="#">Colchones D'<br />Encanto</a>
+                </div>
+                <button class="toggle-btn border-0" type="button">
+                    <i id="icon" class="bx bxs-chevrons-right"></i>
+                </button>
+            </div>
+            <ul class="sidebar-nav">
+                <!-- PERFIL (ADMIN/USUARIO)-->
+                <li class="sidebar-item">
+                    <a href="/intranet/dashboard" class="sidebar-link">
+                        <i class="bx bx-history"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <!-- MENU PARA ADMIN -->
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/reportes" class="sidebar-link">
+                        <i class="bx bxs-report"></i>
+                        <span>Generar Reportes</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/productos" class="sidebar-link">
+                        <i class="bx bxs-box"></i>
+                        <span>Gestión de Productos</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/usuarios" class="sidebar-link">
+                        <i class="bx bxs-user-account"></i>
+                        <span>Gestión de Usuarios</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
+                    <a href="/intranet/cotizaciones" class="sidebar-link">
+                        <i class="bx bxs-food-menu"></i>
+                        <span>Visualizar Cotizaciones</span>
+                    </a>
+                </li>
+                <!-- MENU PARA VENDEDORES -->
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/revisarCotizaciones" class="sidebar-link">
+                        <i class="bx bxs-file"></i>
+                        <span>Revisar Cotizaciones</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/ventas" class="sidebar-link">
+                        <i class="bx bxs-cart"></i>
+                        <span>Registrar Ventas</span>
+                    </a>
+                </li>
+                <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
+                    <a href="/intranet/historialVentas" class="sidebar-link">
+                        <i class="bx bx-search-alt-2"></i>
+                        <span>Historial de Ventas</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="/intranet/login" class="sidebar-link" onclick="confirmLogout()">
+                    <i class="bx bx-log-out"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
 
     <!-- CONTENIDO -->
     <div class="main">
@@ -227,6 +228,7 @@
                       <tr class="highlight">
                         <th scope="col">ID Venta</th>
                         <th scope="col">Cliente</th>
+                        <th scope="col">Vendedor</th>
                         <th scope="col">Productos</th>
                         <th scope="col">Total</th>
                         <th scope="col">Método Pago</th>
@@ -382,6 +384,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
   <script src="/js/authUtils.js"></script>
+  <script src="/js/scriptIntranetCommon.js"></script>
   <script src="/js/scriptHistorialVentas.js"></script>
 
   <!-- MODAL: CONFIRMACIÓN DE CANCELACIÓN DE VENTA -->

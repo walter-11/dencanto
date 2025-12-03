@@ -101,18 +101,27 @@ public class VentaController {
 
     /**
      * GET /intranet/api/ventas
-     * Obtiene todas las ventas del usuario vendedor
+     * Obtiene las ventas - ADMIN ve todas, VENDEDOR ve solo las suyas
      */
     @GetMapping
     public ResponseEntity<?> obtenerVentas() {
         try {
-            Usuario vendedor = getCurrentUser();
-            if (vendedor == null) {
+            Usuario usuario = getCurrentUser();
+            if (usuario == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Usuario no autenticado"));
             }
 
-            List<Venta> ventas = ventaService.obtenerPorVendedor(vendedor);
+            List<Venta> ventas;
+            
+            // Si es ADMIN, obtener TODAS las ventas
+            if (usuario.getRol() != null && "ADMIN".equalsIgnoreCase(usuario.getRol().getNombre())) {
+                ventas = ventaService.obtenerTodas();
+            } else {
+                // VENDEDOR solo ve sus ventas
+                ventas = ventaService.obtenerPorVendedor(usuario);
+            }
+            
             if (ventas == null) {
                 ventas = new ArrayList<>();
             }
@@ -129,6 +138,17 @@ public class VentaController {
                 ventaData.put("metodoPago", venta.getMetodoPago() != null ? venta.getMetodoPago().name() : "N/A");
                 ventaData.put("estado", venta.getEstado().name());
                 ventaData.put("fechaCreacion", venta.getFechaCreacion());
+                
+                // Agregar información del vendedor
+                if (venta.getVendedor() != null) {
+                    ventaData.put("vendedor", venta.getVendedor().getNombreCompleto() != null 
+                        ? venta.getVendedor().getNombreCompleto() 
+                        : venta.getVendedor().getNombreUsuario());
+                    ventaData.put("vendedorId", venta.getVendedor().getId());
+                } else {
+                    ventaData.put("vendedor", "Sin asignar");
+                    ventaData.put("vendedorId", null);
+                }
                 
                 // Detalles de productos
                 List<Map<String, Object>> detalles = new ArrayList<>();

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * authUtils.js - Utilidades para gestión de JWT en el frontend
  * Funciona como una librería centralizada para autenticación con tokens JWT
  */
@@ -261,6 +261,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cargar información del usuario si está disponible
     const userInfo = getUserInfo();
     if (userInfo) {
-        console.log('Usuario autenticado:', userInfo.username, 'Rol:', userInfo.rol);
     }
 });

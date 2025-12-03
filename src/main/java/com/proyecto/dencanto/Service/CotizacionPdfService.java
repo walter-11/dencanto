@@ -18,13 +18,15 @@ import java.util.Map;
 @Service
 public class CotizacionPdfService {
 
-    // Colores corporativos
-    private static final Color COLOR_PRIMARIO = new Color(75, 0, 130);      // Índigo
-    private static final Color COLOR_SECUNDARIO = new Color(138, 43, 226);  // Violeta
-    private static final Color COLOR_HEADER = new Color(245, 245, 250);     // Gris claro
-    private static final Color COLOR_EXITO = new Color(40, 167, 69);        // Verde
-    private static final Color COLOR_ADVERTENCIA = new Color(255, 193, 7);  // Amarillo
-    private static final Color COLOR_INFO = new Color(23, 162, 184);        // Cyan
+    // Colores corporativos - Paleta: Negro, Dorado/Mostaza, Blanco
+    private static final Color COLOR_PRIMARIO = new Color(212, 165, 40);    // Dorado principal #D4A528
+    private static final Color COLOR_DORADO_OSCURO = new Color(184, 148, 31); // Dorado hover #B8941F
+    private static final Color COLOR_NEGRO = new Color(26, 26, 26);         // Negro principal #1a1a1a
+    private static final Color COLOR_NEGRO_SECUNDARIO = new Color(45, 45, 45); // Negro secundario #2d2d2d
+    private static final Color COLOR_HEADER = new Color(245, 245, 245);     // Gris muy claro para filas
+    private static final Color COLOR_EXITO = new Color(40, 167, 69);        // Verde (para estados)
+    private static final Color COLOR_ADVERTENCIA = new Color(255, 193, 7);  // Amarillo (para estados)
+    private static final Color COLOR_INFO = new Color(23, 162, 184);        // Cyan (para estados)
 
     /**
      * Genera PDF de una cotización individual
@@ -90,34 +92,34 @@ public class CotizacionPdfService {
      * Encabezado para cotización individual
      */
     private void agregarEncabezado(Document document, Cotizacion cotizacion) throws DocumentException {
-        // Logo/Título de la empresa
-        Font fontEmpresa = new Font(Font.HELVETICA, 24, Font.BOLD, COLOR_PRIMARIO);
+        // Logo/Título de la empresa - Negro elegante
+        Font fontEmpresa = new Font(Font.HELVETICA, 24, Font.BOLD, COLOR_NEGRO);
         Paragraph empresa = new Paragraph("COLCHONES D'ENCANTO", fontEmpresa);
         empresa.setAlignment(Element.ALIGN_CENTER);
         document.add(empresa);
         
-        // Subtítulo
-        Font fontSub = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.GRAY);
+        // Subtítulo en dorado
+        Font fontSub = new Font(Font.HELVETICA, 10, Font.ITALIC, COLOR_PRIMARIO);
         Paragraph subtitulo = new Paragraph("Tu descanso, nuestro compromiso", fontSub);
         subtitulo.setAlignment(Element.ALIGN_CENTER);
         document.add(subtitulo);
         
         document.add(new Paragraph(" "));
         
-        // Línea decorativa
+        // Línea decorativa dorada
         PdfPTable lineaTop = new PdfPTable(1);
         lineaTop.setWidthPercentage(100);
         PdfPCell celdaLinea = new PdfPCell();
         celdaLinea.setBorderWidth(0);
         celdaLinea.setBorderWidthBottom(2);
-        celdaLinea.setBorderColorBottom(COLOR_PRIMARIO);
+        celdaLinea.setBorderColorBottom(COLOR_PRIMARIO); // Línea dorada
         celdaLinea.setFixedHeight(5);
         lineaTop.addCell(celdaLinea);
         document.add(lineaTop);
         
         document.add(new Paragraph(" "));
         
-        // Título de cotización
+        // Título de cotización en dorado
         Font fontTitulo = new Font(Font.HELVETICA, 18, Font.BOLD, COLOR_PRIMARIO);
         Paragraph titulo = new Paragraph("COTIZACIÓN #" + cotizacion.getId(), fontTitulo);
         titulo.setAlignment(Element.ALIGN_CENTER);
@@ -140,8 +142,8 @@ public class CotizacionPdfService {
      * Información del cliente
      */
     private void agregarInfoCliente(Document document, Cotizacion cotizacion) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_PRIMARIO);
-        Font fontLabel = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
+        Font fontSeccion = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_NEGRO);
+        Font fontLabel = new Font(Font.HELVETICA, 10, Font.BOLD, COLOR_PRIMARIO);
         Font fontValor = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
         
         Paragraph tituloCliente = new Paragraph("DATOS DEL CLIENTE", fontSeccion);
@@ -171,8 +173,8 @@ public class CotizacionPdfService {
      * Información de la cotización
      */
     private void agregarInfoCotizacion(Document document, Cotizacion cotizacion) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_PRIMARIO);
-        Font fontLabel = new Font(Font.HELVETICA, 10, Font.BOLD, Color.DARK_GRAY);
+        Font fontSeccion = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_NEGRO);
+        Font fontLabel = new Font(Font.HELVETICA, 10, Font.BOLD, COLOR_PRIMARIO);
         Font fontValor = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
         
         Paragraph tituloCot = new Paragraph("INFORMACIÓN DE LA COTIZACIÓN", fontSeccion);
@@ -202,10 +204,10 @@ public class CotizacionPdfService {
      * Tabla de productos
      */
     private void agregarTablaProductos(Document document, List<Map<String, Object>> productos, Double total) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_PRIMARIO);
+        Font fontSeccion = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_NEGRO);
         Font fontHeader = new Font(Font.HELVETICA, 10, Font.BOLD, Color.WHITE);
         Font fontCelda = new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
-        Font fontTotal = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_PRIMARIO);
+        Font fontTotal = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_PRIMARIO); // Total en dorado
         
         Paragraph tituloProductos = new Paragraph("PRODUCTOS COTIZADOS", fontSeccion);
         document.add(tituloProductos);
@@ -217,11 +219,11 @@ public class CotizacionPdfService {
         tabla.setWidthPercentage(100);
         tabla.setWidths(new float[]{0.5f, 2.5f, 1f, 1f, 1f});
         
-        // Headers
+        // Headers con fondo negro
         String[] headers = {"#", "Producto", "Cantidad", "P. Unitario", "Subtotal"};
         for (String header : headers) {
             PdfPCell cell = new PdfPCell(new Phrase(header, fontHeader));
-            cell.setBackgroundColor(COLOR_PRIMARIO);
+            cell.setBackgroundColor(COLOR_NEGRO); // Header negro
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPadding(8);
@@ -315,7 +317,7 @@ public class CotizacionPdfService {
      * Notas y condiciones
      */
     private void agregarNotasCondiciones(Document document) throws DocumentException {
-        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_PRIMARIO);
+        Font fontSeccion = new Font(Font.HELVETICA, 11, Font.BOLD, COLOR_NEGRO);
         Font fontNota = new Font(Font.HELVETICA, 9, Font.NORMAL, Color.DARK_GRAY);
         
         Paragraph tituloNotas = new Paragraph("TÉRMINOS Y CONDICIONES", fontSeccion);
@@ -344,12 +346,12 @@ public class CotizacionPdfService {
      * Encabezado para listado de cotizaciones
      */
     private void agregarEncabezadoListado(Document document) throws DocumentException {
-        Font fontEmpresa = new Font(Font.HELVETICA, 22, Font.BOLD, COLOR_PRIMARIO);
+        Font fontEmpresa = new Font(Font.HELVETICA, 22, Font.BOLD, COLOR_NEGRO);
         Paragraph empresa = new Paragraph("COLCHONES D'ENCANTO", fontEmpresa);
         empresa.setAlignment(Element.ALIGN_CENTER);
         document.add(empresa);
         
-        Font fontTitulo = new Font(Font.HELVETICA, 16, Font.BOLD, COLOR_SECUNDARIO);
+        Font fontTitulo = new Font(Font.HELVETICA, 16, Font.BOLD, COLOR_PRIMARIO);
         Paragraph titulo = new Paragraph("Listado de Cotizaciones", fontTitulo);
         titulo.setAlignment(Element.ALIGN_CENTER);
         document.add(titulo);
@@ -415,11 +417,11 @@ public class CotizacionPdfService {
         tabla.setWidthPercentage(100);
         tabla.setWidths(new float[]{0.5f, 1.5f, 1.5f, 1f, 0.8f, 1f, 1f});
         
-        // Headers
+        // Headers con fondo negro
         String[] headers = {"ID", "Cliente", "Email", "Teléfono", "Total", "Estado", "Fecha"};
         for (String header : headers) {
             PdfPCell cell = new PdfPCell(new Phrase(header, fontHeader));
-            cell.setBackgroundColor(COLOR_PRIMARIO);
+            cell.setBackgroundColor(COLOR_NEGRO); // Header negro
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPadding(6);
@@ -479,13 +481,13 @@ public class CotizacionPdfService {
     private void agregarPiePagina(Document document) throws DocumentException {
         document.add(new Paragraph(" "));
         
-        // Línea separadora
+        // Línea separadora dorada
         PdfPTable lineaBottom = new PdfPTable(1);
         lineaBottom.setWidthPercentage(100);
         PdfPCell celdaLinea = new PdfPCell();
         celdaLinea.setBorderWidth(0);
         celdaLinea.setBorderWidthTop(1);
-        celdaLinea.setBorderColorTop(COLOR_PRIMARIO);
+        celdaLinea.setBorderColorTop(COLOR_PRIMARIO); // Línea dorada
         celdaLinea.setFixedHeight(5);
         lineaBottom.addCell(celdaLinea);
         document.add(lineaBottom);
@@ -494,7 +496,7 @@ public class CotizacionPdfService {
         
         // Información de contacto
         Font fontContacto = new Font(Font.HELVETICA, 9, Font.NORMAL, Color.DARK_GRAY);
-        Font fontContactoBold = new Font(Font.HELVETICA, 9, Font.BOLD, COLOR_PRIMARIO);
+        Font fontContactoBold = new Font(Font.HELVETICA, 9, Font.BOLD, COLOR_NEGRO);
         
         PdfPTable tablaContacto = new PdfPTable(3);
         tablaContacto.setWidthPercentage(100);

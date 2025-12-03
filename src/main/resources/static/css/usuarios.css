@@ -1,0 +1,91 @@
+/**
+ * ESTILOS PARA GESTIÓN DE USUARIOS - Colchones D'Encanto
+ * Paleta: Negro, Dorado, Blanco
+ */
+
+/* Tabla de usuarios */
+#tablaUsuarios {
+  font-size: 0.9rem;
+}
+
+#tablaUsuarios th {
+  background-color: var(--negro-principal, #1a1a1a);
+  color: var(--blanco, #FFFFFF);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#tablaUsuarios td {
+  vertical-align: middle;
+}
+
+/* Badge de rol */
+.badge-admin {
+  background-color: var(--dorado-principal, #D4A528);
+  color: var(--negro-principal, #1a1a1a);
+}
+
+.badge-vendedor {
+  background-color: var(--negro-secundario, #2d2d2d);
+  color: var(--blanco, #FFFFFF);
+}
+
+/* Formularios de usuario */
+#formAgregarUsuario .form-control,
+#formEditarUsuario .form-control,
+#formAgregarUsuario .form-select,
+#formEditarUsuario .form-select {
+  padding: 0.5rem 0.75rem;
+}
+
+/* Botones de acción */
+#tablaUsuarios .btn-group .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Modal de usuarios */
+.modal-usuario .modal-header {
+  background: linear-gradient(135deg, var(--negro-principal, #1a1a1a) 0%, var(--negro-secundario, #2d2d2d) 100%);
+  color: var(--blanco, #FFFFFF);
+  border-bottom: 3px solid var(--dorado-principal, #D4A528);
+}
+
+.modal-usuario .modal-header .btn-close {
+  filter: invert(1);
+}
+
+/* Estado activo/inactivo */
+.usuario-activo {
+  color: #198754;
+}
+
+.usuario-inactivo {
+  color: #dc3545;
+}
+
+/* Filtros de usuario */
+.filtros-usuarios {
+  background-color: var(--gris-claro, #F5F5F5);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--dorado-principal, #D4A528);
+}
+
+.filtros-usuarios .form-control,
+.filtros-usuarios .form-select {
+  font-size: 0.9rem;
+}
+
+/* Responsive para tabla */
+@media (max-width: 768px) {
+  #tablaUsuarios {
+    font-size: 0.8rem;
+  }
+  
+  #tablaUsuarios .btn-group .btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+  }
+}

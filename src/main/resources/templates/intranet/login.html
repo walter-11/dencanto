@@ -9,29 +9,106 @@
     <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
+    <!-- Enlace a página pública -->
+    <a href="/" class="back-to-public">
+        <i class='bx bx-arrow-back'></i>
+        <span>Volver a la tienda</span>
+    </a>
+
     <div class="login-container">
+        <!-- Panel izquierdo - Branding -->
+        <div class="login-left d-none d-md-flex">
+            <div class="brand-content">
+                <div class="brand-logo">
+                    <i class='bx bxs-bed'></i>
+                    <span>D'Encanto</span>
+                </div>
+                <h3 class="welcome-title">Bienvenido al Sistema</h3>
+                <p class="welcome-text">
+                    Accede a la intranet para gestionar productos, ventas, cotizaciones y más.
+                </p>
+                <ul class="feature-list">
+                    <li>
+                        <i class='bx bx-package'></i>
+                        <span>Gestión de Inventario</span>
+                    </li>
+                    <li>
+                        <i class='bx bx-cart'></i>
+                        <span>Control de Ventas</span>
+                    </li>
+                    <li>
+                        <i class='bx bx-file'></i>
+                        <span>Cotizaciones</span>
+                    </li>
+                    <li>
+                        <i class='bx bx-bar-chart-alt-2'></i>
+                        <span>Reportes y Estadísticas</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="brand-footer">
+                <small>© 2024 Colchones D'Encanto - Todos los derechos reservados</small>
+            </div>
+        </div>
+
+        <!-- Panel derecho - Formulario -->
         <div class="login-right">
             <div class="login-form">
-                <h2>Intranet - Colchones D'Encanto</h2>
+                <!-- Logo móvil -->
+                <div class="mobile-logo d-md-none text-center mb-4">
+                    <i class='bx bxs-bed'></i>
+                    <span>D'Encanto</span>
+                </div>
+
+                <h2 class="text-center">Iniciar Sesión</h2>
+                <p class="login-subtitle text-center">Ingresa tus credenciales para acceder</p>
                 
                 <form id="loginForm">
                     <div class="form-group">
-                        <label for="username" class="form-label">Usuario</label>
-                        <input type="text" id="username" class="form-control" placeholder="Ingresa tu usuario" required>
+                        <label for="username" class="form-label">
+                            <i class='bx bx-user'></i> Usuario
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class='bx bx-user'></i>
+                            </span>
+                            <input type="text" id="username" class="form-control" placeholder="Ingresa tu usuario" required>
+                        </div>
                         <div class="invalid-feedback" id="usernameError"></div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" id="password" class="form-control" placeholder="************" required>
+                        <label for="password" class="form-label">
+                            <i class='bx bx-lock-alt'></i> Contraseña
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class='bx bx-lock-alt'></i>
+                            </span>
+                            <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                            <button class="btn btn-outline-secondary password-toggle-btn" type="button" onclick="togglePassword()">
+                                <i class='bx bx-show' id="toggleIcon"></i>
+                            </button>
+                        </div>
                         <div class="invalid-feedback" id="passwordError"></div>
                     </div>
                     
-                    <div id="authenticationError" class="alert alert-danger" style="display: none; margin-top: 15px;"></div>
+                    <div id="authenticationError" class="alert alert-danger" style="display: none;">
+                        <i class='bx bx-error-circle'></i>
+                        <span id="authErrorText"></span>
+                    </div>
                     
                     <button type="submit" class="btn-login">
-                        <i class='bx bxs-check-circle'></i> Iniciar
+                        <i class='bx bx-log-in'></i> Iniciar Sesión
                     </button>
+
+                    <div class="divider">
+                        <span>o</span>
+                    </div>
+
+                    <a href="/" class="btn-public">
+                        <i class='bx bx-store'></i> Ir a la Tienda
+                    </a>
                 </form>        
             </div>
         </div>
@@ -39,159 +116,55 @@
 
     <!-- Modal éxito -->
     <div class="modal" id="successModal">
-        <div class="modal-content">
+        <div class="modal-content success-modal">
             <div class="modal-icon success">
-                <i class='bx bx-check-circle'></i>
+                <i class='bx bx-check-circle bx-tada'></i>
             </div>
-            <h3 class="success">Acceso Concedido</h3>
+            <h3 class="success">¡Acceso Concedido!</h3>
             <p id="welcomeMessage"></p>
-            <p id="roleMessage"></p>
-            <div class="spinner-border text-success mt-3" role="status">
-                <span class="visually-hidden">Cargando...</span>
+            <p id="roleMessage" class="role-badge"></p>
+            <div class="loading-container mt-3">
+                <div class="spinner-border spinner-dorado" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="small mt-2 text-muted">Redirigiendo al dashboard...</p>
             </div>
-            <p class="small mt-2">Redirigiendo al dashboard...</p>
         </div>
     </div>
 
     <!-- Modal error -->
     <div class="modal" id="errorModal">
-        <div class="modal-content">
+        <div class="modal-content error-modal">
             <div class="modal-icon error">
-                <i class='bx bx-x-circle'></i>
+                <i class='bx bx-x-circle bx-shake'></i>
             </div>
             <h3 class="error">Error de Autenticación</h3>
             <p id="errorMessage">Usuario y/o contraseña incorrectos</p>
-            <button class="btn btn-secondary mt-3" onclick="closeModal()">Reintentar</button>
+            <button class="btn btn-retry mt-3" onclick="closeModal()">
+                <i class='bx bx-refresh'></i> Reintentar
+            </button>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/authUtils.js"></script>
+    <script src="/js/scriptLogin.js"></script>
     <script>
-        // Limpiar mensajes de error al escribir en los campos
-        document.getElementById('username').addEventListener('input', function() {
-            document.getElementById('usernameError').textContent = '';
-            this.classList.remove('is-invalid');
-        });
-
-        document.getElementById('password').addEventListener('input', function() {
-            document.getElementById('passwordError').textContent = '';
-            this.classList.remove('is-invalid');
-        });
-
-        // Manejar el formulario de login
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            // Limpiar errores previos
-            document.getElementById('usernameError').textContent = '';
-            document.getElementById('passwordError').textContent = '';
-            document.getElementById('authenticationError').style.display = 'none';
-            document.getElementById('username').classList.remove('is-invalid');
-            document.getElementById('password').classList.remove('is-invalid');
-
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-
-            // Validaciones del lado del cliente
-            let hasErrors = false;
-
-            if (!username) {
-                document.getElementById('usernameError').textContent = 'El usuario es requerido';
-                document.getElementById('username').classList.add('is-invalid');
-                hasErrors = true;
-            } else if (username.length < 3) {
-                document.getElementById('usernameError').textContent = 'El usuario debe tener al menos 3 caracteres';
-                document.getElementById('username').classList.add('is-invalid');
-                hasErrors = true;
-            }
-
-            if (!password) {
-                document.getElementById('passwordError').textContent = 'La contraseña es requerida';
-                document.getElementById('password').classList.add('is-invalid');
-                hasErrors = true;
-            } else if (password.length < 4) {
-                document.getElementById('passwordError').textContent = 'La contraseña debe tener al menos 4 caracteres';
-                document.getElementById('password').classList.add('is-invalid');
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                return;
-            }
-
-            // Mostrar loading
-            document.querySelector('.btn-login').disabled = true;
-            document.querySelector('.btn-login').innerHTML = '<i class="bx bx-loader bx-spin"></i> Conectando...';
-
-            try {
-                const result = await loginWithJWT(username, password);
-
-                if (result.success) {
-                    // Mostrar modal de éxito
-                    document.getElementById('welcomeMessage').textContent = 'Bienvenido, ' + result.data.username;
-                    document.getElementById('roleMessage').textContent = 'Rol: ' + result.data.rol;
-                    document.getElementById('successModal').style.display = 'flex';
-
-                    // Esperar 1 segundo y luego redirigir
-                    // El JWT ya está guardado en localStorage y authUtils.js lo usará automáticamente
-                    setTimeout(function() {
-                        // Navegar de forma segura - el JwtFilter validará el JWT en el header
-                        window.location.href = '/intranet/dashboard';
-                    }, 1500);
-                } else {
-                    // Mostrar errores de validación si los hay
-                    if (result.errors && typeof result.errors === 'object') {
-                        if (result.errors.username) {
-                            document.getElementById('usernameError').textContent = result.errors.username;
-                            document.getElementById('username').classList.add('is-invalid');
-                        }
-                        if (result.errors.password) {
-                            document.getElementById('passwordError').textContent = result.errors.password;
-                            document.getElementById('password').classList.add('is-invalid');
-                        }
-                        if (result.errors.authentication) {
-                            document.getElementById('authenticationError').textContent = result.errors.authentication;
-                            document.getElementById('authenticationError').style.display = 'block';
-                        }
-                    } else {
-                        // Mostrar modal de error genérico
-                        document.getElementById('errorMessage').textContent = result.error || 'Usuario y/o contraseña incorrectos';
-                        document.getElementById('errorModal').style.display = 'flex';
-                    }
-                    
-                    // Restaurar botón
-                    document.querySelector('.btn-login').disabled = false;
-                    document.querySelector('.btn-login').innerHTML = '<i class="bx bxs-check-circle"></i> Iniciar';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('authenticationError').textContent = 'Error de conexión. Intenta de nuevo.';
-                document.getElementById('authenticationError').style.display = 'block';
-                
-                // Restaurar botón
-                document.querySelector('.btn-login').disabled = false;
-                document.querySelector('.btn-login').innerHTML = '<i class="bx bxs-check-circle"></i> Iniciar';
-            }
-        });
-
-        // Cerrar modal de error
-        function closeModal() {
-            document.getElementById('errorModal').style.display = 'none';
-        }
-
-        // Cerrar modales si se hace click fuera
-        window.addEventListener('click', function(event) {
-            const successModal = document.getElementById('successModal');
-            const errorModal = document.getElementById('errorModal');
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
             
-            if (event.target === successModal) {
-                successModal.style.display = 'none';
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bx-show');
+                toggleIcon.classList.add('bx-hide');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bx-hide');
+                toggleIcon.classList.add('bx-show');
             }
-            if (event.target === errorModal) {
-                errorModal.style.display = 'none';
-            }
-        });
+        }
     </script>
-
 </body>
 </html>
