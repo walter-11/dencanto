@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 allImages.forEach(img => {
                     img.style.transform = `scale(${zoomLevels[productoId]})`;
                 });
-.toFixed(0)}%`);
             }
         });
     });
@@ -137,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 allImages.forEach(img => {
                     img.style.transform = `scale(${zoomLevels[productoId]})`;
                 });
-.toFixed(0)}%`);
             }
         });
     });
@@ -189,8 +187,6 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Agregar al carrito
             agregarAlCarrito(producto, cantidad);
-`);
         });
     });
 });
-

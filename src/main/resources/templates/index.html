@@ -13,49 +13,35 @@
 
 <body>
   <header>
-    <!-- Barra Superior -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom py-1">
-      <div class="container d-flex justify-content-between">
-        <!-- Links lado derecho -->
-        <div class="collapse navbar-collapse" id="navbarSup">
-          <ul class="navbar-nav ms-auto align-items-center">
-            <li class="nav-item">
-              <a class="nav-link small text-light" th:href="@{/FAQ}">
-                <i class="bi bi-question-circle me-1"></i> Preguntas Frecuentes
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link small text-light" th:href="@{/ubicanos}">
-                <i class="bi bi-geo-alt me-1"></i> Ubícanos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link small text-warning fw-bold" th:href="@{/intranet/login}">
-                <i class="bi bi-person-circle me-1"></i> Intranet
-              </a>
-            </li>
-          </ul>
+      <div class="container">
+        <div class="navbar-nav ms-auto flex-row flex-wrap justify-content-center justify-content-lg-end w-100" id="navbarSup">
+          <a class="nav-link small text-light px-2 px-lg-3" th:href="@{/FAQ}">
+            <i class="bi bi-question-circle me-1 d-none d-sm-inline"></i> FAQ
+          </a>
+          <a class="nav-link small text-light px-2 px-lg-3" th:href="@{/ubicanos}">
+            <i class="bi bi-geo-alt me-1 d-none d-sm-inline"></i> Ubícanos
+          </a>
+          <a class="nav-link small text-warning fw-bold px-2 px-lg-3" th:href="@{/intranet/login}">
+            <i class="bi bi-person-circle me-1"></i> Intranet
+          </a>
         </div>
       </div>
     </nav>
 
-    <!-- Barra Principal -->
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
       <div class="container">
-        <!-- Logo -->
         <a class="navbar-brand fw-bold text-dark" th:href="@{/}">
           <img
             src="https://utp-prd-upload-file-storage.s3.amazonaws.com/pao/content/110ef33b-0246-49d3-bdda-72b3e0ee8b42/LogoEncanto_QCBIJL.png"
-            height="45" class="me-2" />
+            class="img-fluid" alt="Logo D'Encanto" />
         </a>
 
-        <!-- Botón hamburguesa -->
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarInf"
           aria-controls="navbarInf" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Menú -->
         <div class="collapse navbar-collapse" id="navbarInf">
           <ul class="navbar-nav mx-auto">
             <li class="nav-item">
@@ -66,18 +52,15 @@
             </li>
           </ul>
 
-          <!-- Carrito -->
-          <!-- Botón Carrito en el Navbar -->
           <a class="btn btn-outline-warning rounded-pill ms-lg-3" href="/carrito/cotizaciones">
-            <i class="bi bi-cart me-1"></i> Carrito de Cotización <span class="badge bg-danger" id="cartBadge" style="display: none;">0</span>
+            <i class="bi bi-cart me-1"></i> <span class="d-none d-sm-inline">Carrito de </span>Cotización 
+            <span class="badge bg-danger" id="cartBadge" style="display: none;">0</span>
           </a>
         </div>
       </div>
     </nav>
   </header>
-  <!-- Productos destacados -->
   <section class="container my-5">
-    <!-- Carrusel -->
     <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
@@ -100,7 +83,6 @@
     <br>
     <h2 class="text-center mb-5 fw-bold">Nuestros colchones destacados</h2>
     <div class="row g-4">
-      <!-- Producto 1 -->
       <div class="col-md-4">
         <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
           <img src="/img/cama26.jpeg" class="card-img-top img-fluid" alt="Colchón Premium">
@@ -115,7 +97,6 @@
         </div>
       </div>
 
-      <!-- Producto 2 -->
       <div class="col-md-4">
         <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
           <img src="/img/cama3.jpeg" class="card-img-top img-fluid" alt="Colchón Ortopédico">
@@ -129,7 +110,6 @@
         </div>
       </div>
 
-      <!-- Producto 3 -->
       <div class="col-md-4">
         <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
           <img src="/img/cama4.jpeg" class="card-img-top img-fluid" alt="Colchón Económico">
@@ -145,17 +125,12 @@
     </div>
   </section>
 
-  <!-- Estilos extras -->
-
-
   <section class="container my-5">
     <div class="row align-items-center">
-      <!-- Imagen -->
       <div class="col-md-6">
         <img src="/img/ColchonTOP.png" class="img-fluid rounded shadow" alt="Colchón Supreme Deluxe" />
       </div>
 
-      <!-- Descripción -->
       <div class="col-md-6">
         <h2 class="fw-bold">Colchón GOLD VITAL</h2>
         <p class="lead">
@@ -168,34 +143,23 @@
           <li>Tecnología de ventilación 360°</li>
           <li>Garantía de 10 años</li>
         </ul>
-        <!-- Botón para abrir el modal -->
         <button type="button" class="btn btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#colchonModal">
           Ver detalles
         </button>
       </div>
   </section>
 
-
-
-
-  <!-- Modal -->
   <div class="modal fade" id="colchonModal" tabindex="-1" aria-labelledby="colchonModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content shadow-lg border-0 rounded-4">
 
-        <!-- Encabezado -->
-
-
-        <!-- Cuerpo -->
         <div class="modal-body p-4">
           <div class="row">
 
-            <!-- Imagen -->
             <div class="col-md-6 mb-3">
               <img src="/img/ColchonTOP.png" class="img-fluid rounded shadow-sm" alt="Colchón Supreme Deluxe">
             </div>
 
-            <!-- Detalles -->
             <div class="col-md-6">
               <h6 class="fw-bold text-primary">Características del Colchón:</h6>
               <ul class=" ps-3">
@@ -233,7 +197,6 @@
           </div>
         </div>
 
-        <!-- Footer -->
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
           <button type="button" class="btn btn-success fw-bold">
@@ -244,7 +207,6 @@
     </div>
   </div>
 
-  <!----CARUSEL DE FRASES---->
   <section class="container my-5">
     <h2 class="text-center mb-4">Descansa como mereces</h2>
     <div id="carouselFrases" class="carousel slide" data-bs-ride="carousel">
@@ -254,7 +216,7 @@
         <div class="carousel-item"><img src="img/carrusel4.png" class="d-block w-100 rounded" alt="Colchón 2" />
         </div>
       </div>
-      <!-- Controles --><button class="carousel-control-prev" type="button" data-bs-target="#carouselFrases"
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselFrases"
         data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button><button
         class="carousel-control-next" type="button" data-bs-target="#carouselFrases" data-bs-slide="next"><span
           class="carousel-control-next-icon"></span></button>
@@ -263,7 +225,6 @@
   <footer class="bg-dark text-white pt-5">
     <div class="container">
       <div class="row">
-        <!-- Columna 1 -->
         <div class="col-md-3 mb-4">
           <h5 class="fw-bold mb-3">Atención al Cliente</h5>
           <ul class="list-unstyled">
@@ -272,7 +233,6 @@
             <li><a href="#" class="text-white-50 text-decoration-none">Libro de Reclamaciones</a></li>
           </ul>
         </div>
-        <!-- Columna 2 -->
         <div class="col-md-3 mb-4">
           <h5 class="fw-bold mb-3">Nuestra Empresa</h5>
           <ul class="list-unstyled">
@@ -281,7 +241,6 @@
             <li><a href="#" class="text-white-50 text-decoration-none">Trabaja con Nosotros</a></li>
           </ul>
         </div>
-        <!-- Columna 4 -->
         <div class="col-md-3 mb-4">
           <h5 class="fw-bold mb-3">Suscríbete</h5>
           <p class="text-white-50">Recibe nuestras ofertas y novedades directamente en tu correo.</p>
@@ -289,21 +248,17 @@
               placeholder="Tu correo" /><button class="btn btn-warning btn-sm">OK</button></form>
         </div>
       </div>
-      <!-- Redes sociales -->
       <div class="text-center my-4"><a href="#" class="text-white fs-4 me-3 social-link"><i
             class="bi bi-facebook"></i></a><a href="#" class="text-white fs-4 me-3 social-link"><i
             class="bi bi-instagram"></i></a><a href="#" class="text-white fs-4 me-3 social-link"><i
             class="bi bi-whatsapp"></i></a><a href="#" class="text-white fs-4 social-link"><i
             class="bi bi-youtube"></i></a></div>
-      <!-- Derechos reservados -->
       <div class="text-center border-top border-secondary pt-3"><small class="text-white-50">&copy;
           2025 Colchones D'Encanto - Todos los derechos reservados</small>
       </div>
     </div>
   </footer>
-  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/carrito.js"></script>
 </body>

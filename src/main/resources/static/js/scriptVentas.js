@@ -718,6 +718,9 @@ function mostrarModalExito(data) {
 
   const modal = new bootstrap.Modal(document.getElementById('successModal'));
   modal.show();
+  
+  // IMPORTANTE: Recargar productos del servidor para actualizar stock
+  cargarProductos();
 }
 
 // ============================================

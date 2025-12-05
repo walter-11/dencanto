@@ -418,7 +418,176 @@ body {
         transform: translateY(-3px);
     }
 
-/* RESPONSIVE */
+/* ========================================
+   RESPONSIVE - HEADER Y NAVEGACIÓN
+   ======================================== */
+
+/* Barra Superior - Ocultar en móviles pequeños */
+@media (max-width: 575.98px) {
+    .navbar-dark.bg-dark.border-bottom {
+        padding: 0.25rem 0;
+    }
+    
+    .navbar-dark.bg-dark .navbar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.25rem;
+    }
+    
+    .navbar-dark.bg-dark .nav-link {
+        font-size: 0.75rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    
+    .navbar-dark.bg-dark .nav-link i {
+        display: none;
+    }
+}
+
+/* Barra Principal - Responsive */
+@media (max-width: 991.98px) {
+    /* Logo más pequeño en tablets */
+    .navbar-brand img {
+        height: 35px;
+    }
+    
+    /* Menú colapsado - estilos */
+    .navbar-collapse {
+        background-color: #fff;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-collapse .navbar-nav {
+        text-align: center;
+    }
+    
+    .navbar-collapse .nav-link {
+        padding: 0.75rem 1rem !important;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 1rem;
+    }
+    
+    .navbar-collapse .nav-link:last-child {
+        border-bottom: none;
+    }
+    
+    /* Botón carrito en móvil */
+    .navbar-collapse .btn-outline-warning {
+        width: 100%;
+        margin-top: 1rem;
+        margin-left: 0 !important;
+        padding: 0.75rem 1rem;
+    }
+    
+    /* Toggler más visible */
+    .navbar-toggler {
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #333 !important;
+    }
+    
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
+    }
+    
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 575.98px) {
+    .navbar-brand img {
+        height: 30px;
+    }
+    
+    .navbar-collapse {
+        padding: 0.75rem;
+    }
+    
+    .navbar-collapse .nav-link {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    .navbar-collapse .btn-outline-warning {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* Ocultar texto del botón, solo icono */
+    .navbar-collapse .btn-outline-warning .badge {
+        font-size: 0.7rem;
+    }
+}
+
+/* Tablets en landscape */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .navbar-brand img {
+        height: 40px;
+    }
+    
+    .navbar-collapse .navbar-nav {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .navbar-collapse .nav-item {
+        margin: 0 0.5rem;
+    }
+    
+    .navbar-collapse .nav-link {
+        border-bottom: none;
+    }
+}
+
+/* Desktop - estilos normales */
+@media (min-width: 992px) {
+    .navbar-brand img {
+        height: 45px;
+        transition: transform 0.3s ease;
+    }
+    
+    .navbar-brand:hover img {
+        transform: scale(1.05);
+    }
+    
+    .navbar .nav-link {
+        position: relative;
+        transition: color 0.3s ease;
+    }
+    
+    .navbar .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: #ffc107;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+    
+    .navbar .nav-link:hover::after {
+        width: 80%;
+    }
+    
+    .btn-outline-warning {
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+    }
+}
+
+/* Input Group Navbar */
 @media (min-width: 768px) {
     .input-group-navbar .form-control:focus {
         outline: none;

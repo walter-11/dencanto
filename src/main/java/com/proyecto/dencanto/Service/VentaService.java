@@ -88,7 +88,22 @@ public class VentaService {
             venta.setEstado(EstadoVenta.PENDIENTE);
         }
         
-        // 13. Guardar venta
+        // 13. DESCONTAR STOCK de cada producto vendido
+        for (DetalleVenta detalle : venta.getDetalles()) {
+            Producto producto = detalle.getProducto();
+            int nuevoStock = producto.getStock() - detalle.getCantidad();
+            producto.setStock(nuevoStock);
+            
+            // Actualizar estado del producto según stock
+            if (nuevoStock == 0) {
+                producto.setEstado("Agotado");
+            } else if (nuevoStock < 5) {
+                producto.setEstado("Stock Bajo");
+            }
+            productoRepository.save(producto);
+        }
+        
+        // 14. Guardar venta
         return ventaRepository.save(venta);
     }
 
@@ -206,10 +221,20 @@ public class VentaService {
         if (nuevoEstado == EstadoVenta.COMPLETADA && estadoActual == EstadoVenta.PENDIENTE) {
             venta.setFechaPago(LocalDateTime.now());
         } else if (nuevoEstado == EstadoVenta.CANCELADA) {
-            // Restore stock de productos
+            // Restaurar stock de productos al cancelar
             for (DetalleVenta detalle : venta.getDetalles()) {
                 Producto producto = detalle.getProducto();
-                producto.setStock(producto.getStock() + detalle.getCantidad());
+                int nuevoStock = producto.getStock() + detalle.getCantidad();
+                producto.setStock(nuevoStock);
+                
+                // Actualizar estado del producto según stock restaurado
+                if (nuevoStock > 0 && (producto.getEstado().equals("Agotado") || producto.getEstado().equals("Stock Bajo"))) {
+                    if (nuevoStock >= 5) {
+                        producto.setEstado("Disponible");
+                    } else {
+                        producto.setEstado("Stock Bajo");
+                    }
+                }
                 productoRepository.save(producto);
             }
         }

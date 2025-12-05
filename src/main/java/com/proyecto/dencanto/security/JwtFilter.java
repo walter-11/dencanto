@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         final String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
-            logger.info("✅ Token encontrado en header Authorization");
+            logger.info("Token encontrado en header Authorization");
         }
 
         // Si no hay token en el header, intentar obtener de la cookie
@@ -51,12 +51,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 for (Cookie cookie : cookies) {
                     if ("jwt_token".equals(cookie.getName())) {
                         token = cookie.getValue();
-                        logger.info("✅ Token encontrado en cookie jwt_token");
+                        logger.info("Token encontrado en cookie jwt_token");
                         break;
                     }
                 }
             } else {
-                logger.warn("⚠️ No hay cookies en la petición");
+                logger.warn("No hay cookies en la petición");
             }
         }
 
@@ -64,12 +64,12 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 username = jwtUtil.extractUsername(token);
-                logger.info("✅ Token válido para usuario: " + username);
+                logger.info("Token válido para usuario: " + username);
             } catch (Exception e) {
-                logger.warn("❌ JWT inválido: " + e.getMessage());
+                logger.warn("JWT inválido: " + e.getMessage());
             }
         } else {
-            logger.warn("❌ No se encontró token en header ni en cookie");
+            logger.warn("No se encontró token en header ni en cookie");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -81,12 +81,12 @@ public class JwtFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    logger.info("✅ Autenticación establecida para: " + username);
+                    logger.info("Autenticación establecida para: " + username);
                 } else {
-                    logger.warn("❌ Validación de token falló");
+                    logger.warn("Validación de token falló");
                 }
             } catch (Exception e) {
-                logger.error("❌ Error al procesar usuario: " + e.getMessage(), e);
+                logger.error("Error al procesar usuario: " + e.getMessage(), e);
             }
         }
 

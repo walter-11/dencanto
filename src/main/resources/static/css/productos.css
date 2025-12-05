@@ -33,48 +33,117 @@ footer a {
 .filter-section .card {
     border-radius: 15px;
     overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .filter-section .card-header {
     padding: 1rem;
     font-weight: 600;
+    background: linear-gradient(135deg, #212529 0%, #343a40 100%) !important;
+    color: #fff !important;
+}
+
+.filter-section .card-header h5 {
+    color: #ffc107 !important;
+}
+
+.filter-section .card-header i {
+    color: #ffc107;
 }
 
 .filter-section .form-label {
     font-size: 0.95rem;
     color: #333;
+    font-weight: 500;
 }
 
 .filter-section .form-select,
 .filter-section .form-control {
     border-radius: 8px;
     border-color: #e0e0e0;
+    transition: all 0.3s ease;
 }
 
 .filter-section .form-select:focus,
 .filter-section .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
 }
 
+.filter-section .input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+}
+
+/* Rango de precio */
 .form-range {
     height: 6px;
 }
 
 .form-range::-webkit-slider-thumb {
-    background: #007bff;
-    border: none;
+    background: #ffc107;
+    border: 2px solid #212529;
     border-radius: 50%;
-    height: 18px;
-    width: 18px;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    background: #e0a800;
+    transform: scale(1.1);
 }
 
 .form-range::-moz-range-thumb {
-    background: #007bff;
-    border: none;
+    background: #ffc107;
+    border: 2px solid #212529;
     border-radius: 50%;
-    height: 18px;
-    width: 18px;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.form-range::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #ffc107, #212529);
+    border-radius: 5px;
+}
+
+/* Valor del precio */
+#priceValue {
+    color: #ffc107 !important;
+    font-weight: 700;
+}
+
+/* Botones de filtro */
+.filter-section .btn-primary {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    border: none;
+    color: #212529;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.filter-section .btn-primary:hover {
+    background: linear-gradient(135deg, #e0a800 0%, #c69500 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+    color: #212529;
+}
+
+.filter-section .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.filter-section .btn-outline-secondary:hover {
+    background-color: #212529;
+    border-color: #212529;
+    color: #fff;
 }
 
 /* ========== TARJETAS DE PRODUCTOS ========== */

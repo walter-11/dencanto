@@ -16,26 +16,17 @@
   <header>
     <!-- Barra Superior -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom py-1">
-      <div class="container d-flex justify-content-between">
-        <!-- Links lado derecho -->
-        <div class="collapse navbar-collapse" id="navbarSup">
-          <ul class="navbar-nav ms-auto align-items-center">
-            <li class="nav-item">
-              <a class="nav-link small text-light" th:href="@{/FAQ}">
-                <i class="bi bi-question-circle me-1"></i> Preguntas Frecuentes
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link small text-light" th:href="@{/ubicanos}">
-                <i class="bi bi-geo-alt me-1"></i> Ubícanos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link small text-warning fw-bold" th:href="@{/intranet/login}">
-                <i class="bi bi-person-circle me-1"></i> Intranet
-              </a>
-            </li>
-          </ul>
+      <div class="container">
+        <div class="navbar-nav ms-auto flex-row flex-wrap justify-content-center justify-content-lg-end w-100" id="navbarSup">
+          <a class="nav-link small text-light px-2 px-lg-3" th:href="@{/FAQ}">
+            <i class="bi bi-question-circle me-1 d-none d-sm-inline"></i> FAQ
+          </a>
+          <a class="nav-link small text-light px-2 px-lg-3" th:href="@{/ubicanos}">
+            <i class="bi bi-geo-alt me-1 d-none d-sm-inline"></i> Ubícanos
+          </a>
+          <a class="nav-link small text-warning fw-bold px-2 px-lg-3" th:href="@{/intranet/login}">
+            <i class="bi bi-person-circle me-1"></i> Intranet
+          </a>
         </div>
       </div>
     </nav>
@@ -43,20 +34,16 @@
     <!-- Barra Principal -->
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
       <div class="container">
-        <!-- Logo -->
         <a class="navbar-brand fw-bold text-dark" th:href="@{/}">
-          <img
-            src="https://utp-prd-upload-file-storage.s3.amazonaws.com/pao/content/110ef33b-0246-49d3-bdda-72b3e0ee8b42/LogoEncanto_QCBIJL.png"
-            height="45" class="me-2" />
+          <img src="https://utp-prd-upload-file-storage.s3.amazonaws.com/pao/content/110ef33b-0246-49d3-bdda-72b3e0ee8b42/LogoEncanto_QCBIJL.png"
+            class="img-fluid" alt="Logo D'Encanto" />
         </a>
 
-        <!-- Botón hamburguesa -->
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarInf"
           aria-controls="navbarInf" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Menú -->
         <div class="collapse navbar-collapse" id="navbarInf">
           <ul class="navbar-nav mx-auto">
             <li class="nav-item">
@@ -67,9 +54,9 @@
             </li>
           </ul>
 
-          <!-- Carrito -->
           <a class="btn btn-outline-warning rounded-pill ms-lg-3" href="/carrito/cotizaciones">
-            <i class="bi bi-cart me-1"></i> Carrito de Cotización <span class="badge bg-danger" id="cartBadge" style="display: none;">0</span>
+            <i class="bi bi-cart me-1"></i> <span class="d-none d-sm-inline">Carrito de </span>Cotización
+            <span class="badge bg-danger" id="cartBadge" style="display: none;">0</span>
           </a>
         </div>
       </div>
