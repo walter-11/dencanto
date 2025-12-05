@@ -15,7 +15,7 @@
 
 <body>
   <div class="wrapper">
-    <!-- MENÚ LATERAL -->
+    
         <aside id="sidebar" class="">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
@@ -26,14 +26,14 @@
                 </button>
             </div>
             <ul class="sidebar-nav">
-                <!-- PERFIL (ADMIN/USUARIO)-->
+                
                 <li class="sidebar-item">
                     <a href="/intranet/dashboard" class="sidebar-link">
                         <i class="bx bx-history"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <!-- MENU PARA ADMIN -->
+                
                 <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
                     <a href="/intranet/reportes" class="sidebar-link">
                         <i class="bx bxs-report"></i>
@@ -58,7 +58,7 @@
                         <span>Visualizar Cotizaciones</span>
                     </a>
                 </li>
-                <!-- MENU PARA VENDEDORES -->
+                
                 <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
                     <a href="/intranet/revisarCotizaciones" class="sidebar-link">
                         <i class="bx bxs-file"></i>
@@ -86,9 +86,9 @@
             </div>
         </aside>
 
-    <!-- CONTENIDO -->
+    
     <div class="main">
-      <!-- ROL -->
+      
       <nav class="navbar navbar-expand px-4 py-3">
         <div class="navbar-collapse collapse">
           <ul class="navbar-nav ms-auto">
@@ -114,7 +114,7 @@
               <h3 class="fw-bold fs-4 mb-0">Mi Historial de Ventas</h3>
             </div>
 
-            <!-- Filtros -->
+            
             <div class="filter-section">
               <div class="row g-3">
                 <div class="col-md-3">
@@ -167,7 +167,7 @@
               </div>
             </div>
 
-            <!-- KPIs Personales -->
+            
             <div class="row mb-4">
               <div class="col-12 col-md-3">
                 <div class="card kpi-card stats-card">
@@ -195,7 +195,7 @@
               </div>
             </div>
 
-            <!-- Gráficos de rendimiento -->
+            
             <div class="row mb-4">
               <div class="col-12 col-md-6">
                 <div class="card shadow">
@@ -219,7 +219,7 @@
               </div>
             </div>
 
-            <!-- Lista de ventas -->
+            
             <div class="card shadow">
               <div class="card-body">
                 <div class="table-responsive">
@@ -238,14 +238,14 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- Las ventas se cargarán dinámicamente aquí -->
+                      
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
 
-            <!-- Paginación -->
+            
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center mt-4">
                 <li class="page-item disabled">
@@ -282,7 +282,7 @@
     </div>
   </div>
 
-  <!-- Modal de detalle de venta -->
+  
   <div class="modal fade" id="saleDetailModal" tabindex="-1" aria-labelledby="saleDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -293,7 +293,7 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- FILA 1: Información del Cliente -->
+          
           <div class="row mb-4">
             <div class="col-md-6">
               <h6><i class="bx bx-user"></i> Información del Cliente</h6>
@@ -313,7 +313,7 @@
             </div>
           </div>
 
-          <!-- FILA 2: Información de Entrega -->
+          
           <div class="row mb-4">
             <div class="col-md-6">
               <h6><i class="bx bx-box"></i> Tipo de Entrega</h6>
@@ -331,7 +331,7 @@
             </div>
           </div>
 
-          <!-- FILA 3: Detalles de Productos -->
+          
           <h6><i class="bx bx-package"></i> Productos Vendidos</h6>
           <div class="table-responsive">
             <table class="table table-bordered table-sm">
@@ -344,12 +344,12 @@
                 </tr>
               </thead>
               <tbody id="detallesTableBody">
-                <!-- Se llena dinámicamente -->
+                
               </tbody>
             </table>
           </div>
 
-          <!-- FILA 4: Desglose de Montos -->
+          
           <div class="row mb-4">
             <div class="col-md-6">
               <h6><i class="bx bx-calculator"></i> Desglose de Montos</h6>
@@ -387,7 +387,7 @@
   <script src="/js/scriptIntranetCommon.js"></script>
   <script src="/js/scriptHistorialVentas.js"></script>
 
-  <!-- MODAL: CONFIRMACIÓN DE CANCELACIÓN DE VENTA -->
+  
   <div class="modal fade" id="cancelarVentaModal" tabindex="-1" aria-labelledby="cancelarVentaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

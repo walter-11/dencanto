@@ -14,7 +14,7 @@
 
 <body>
   <div class="wrapper">
-    <!-- MENÚ LATERAL -->
+    
         <aside id="sidebar" class="">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
@@ -25,14 +25,14 @@
                 </button>
             </div>
             <ul class="sidebar-nav">
-                <!-- PERFIL (ADMIN/USUARIO)-->
+                
                 <li class="sidebar-item">
                     <a href="/intranet/dashboard" class="sidebar-link">
                         <i class="bx bx-history"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <!-- MENU PARA ADMIN -->
+                
                 <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
                     <a href="/intranet/reportes" class="sidebar-link">
                         <i class="bx bxs-report"></i>
@@ -57,7 +57,7 @@
                         <span>Visualizar Cotizaciones</span>
                     </a>
                 </li>
-                <!-- MENU PARA VENDEDORES -->
+                
                 <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
                     <a href="/intranet/revisarCotizaciones" class="sidebar-link">
                         <i class="bx bxs-file"></i>
@@ -85,7 +85,7 @@
             </div>
         </aside>
 
-    <!-- CONTENIDO -->
+    
     <div class="main">
       <nav class="navbar navbar-expand px-4 py-3">
         <div class="navbar-collapse collapse">
@@ -114,13 +114,13 @@
               </button>
             </div>
 
-            <!-- Mensajes de éxito -->
+            
             <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
               <span th:text="${successMessage}"></span>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <!-- Tabla de usuarios -->
+            
             <div class="card shadow">
               <div class="card-body">
                 <div class="table-responsive">
@@ -138,7 +138,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- Iterar sobre la lista de usuarios -->
+                      
                       <tr th:each="usuario : ${usuarios}">
                         <th scope="row" th:text="${usuario.id}"></th>
                         <td>
@@ -157,7 +157,7 @@
                             class="badge bg-secondary role-badge">Cliente</span>
                         </td>
                         <td class="action-buttons">
-                          <!-- Botón Editar -->
+                          
                           <button class="btn btn-sm btn-outline-primary edit-btn" data-bs-toggle="modal"
                             data-bs-target="#editUserModal" th:data-id="${usuario.id}"
                             th:data-nombreusuario="${usuario.nombreUsuario}"
@@ -166,14 +166,14 @@
                             <i class="bx bx-edit"></i>
                           </button>
 
-                          <!-- Botón Resetear Contraseña -->
+                          
                           <a th:href="@{/intranet/usuarios/reset-password/{id}(id=${usuario.id})}"
                             class="btn btn-sm btn-outline-warning"
                             onclick="return confirm('¿Está seguro de resetear la contraseña de este usuario?')">
                             <i class="bx bx-refresh"></i>
                           </a>
 
-                          <!-- Botón Eliminar -->
+                          
                           <a th:href="@{/intranet/usuarios/eliminar/{id}(id=${usuario.id})}"
                             class="btn btn-sm btn-outline-danger"
                             onclick="return confirm('¿Está seguro de eliminar este usuario?')">
@@ -181,7 +181,7 @@
                           </a>
                         </td>
                       </tr>
-                      <!-- Mensaje si no hay usuarios -->
+                      
                       <tr th:if="${#lists.isEmpty(usuarios)}">
                         <td colspan="8" class="text-center text-muted py-4">
                           No hay usuarios registrados
@@ -198,7 +198,7 @@
     </div>
   </div>
 
-  <!-- Modal para agregar usuario -->
+  
   <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -206,7 +206,7 @@
           <h5 class="modal-title" id="addUserModalLabel">Agregar Nuevo Usuario</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <!-- FORMULARIO CORREGIDO - SIN th:object -->
+        
         <form th:action="@{/intranet/usuarios/agregar}" method="POST" id="formAgregarUsuario" novalidate>
           <div class="modal-body">
             <div class="row">
@@ -268,7 +268,7 @@
     </div>
   </div>
 
-  <!-- Modal para editar usuario - CORREGIDO -->
+  
   <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">

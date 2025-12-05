@@ -21,7 +21,7 @@
 
   <body>
     <div class="wrapper">
-      <!-- MENÚ LATERAL -->
+      
         <aside id="sidebar" class="">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
@@ -32,14 +32,14 @@
                 </button>
             </div>
             <ul class="sidebar-nav">
-                <!-- PERFIL (ADMIN/USUARIO)-->
+                
                 <li class="sidebar-item">
                     <a href="/intranet/dashboard" class="sidebar-link">
                         <i class="bx bx-history"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <!-- MENU PARA ADMIN -->
+                
                 <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
                     <a href="/intranet/reportes" class="sidebar-link">
                         <i class="bx bxs-report"></i>
@@ -64,7 +64,7 @@
                         <span>Visualizar Cotizaciones</span>
                     </a>
                 </li>
-                <!-- MENU PARA VENDEDORES -->
+                
                 <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
                     <a href="/intranet/revisarCotizaciones" class="sidebar-link">
                         <i class="bx bxs-file"></i>
@@ -92,9 +92,9 @@
             </div>
         </aside>
 
-      <!-- CONTENIDO -->
+      
       <div class="main">
-        <!-- ROL -->
+        
         <nav class="navbar navbar-expand px-4 py-3">
           <div class="navbar-collapse collapse">
             <ul class="navbar-nav ms-auto">
@@ -124,7 +124,7 @@
                 </div>
               </div>
 
-              <!-- Filtros de reportes -->
+              
               <div class="filter-section">
                 <div class="row g-3">
                   <div class="col-md-4">
@@ -152,7 +152,7 @@
                 </div>
               </div>
               
-              <!-- KPIs Principales -->
+              
               <div class="row mb-4">
                 <div class="col-12 col-md-3">
                   <div class="card kpi-card stats-card">
@@ -180,7 +180,7 @@
                 </div>
               </div>
 
-              <!-- Gráficos principales -->
+              
               <div class="row mb-4">
                 <div class="col-12">
                   <div class="card shadow">
@@ -197,7 +197,7 @@
                 
               </div>
 
-              <!-- Segunda fila de gráficos -->
+              
               <div class="row mb-4">
                 <div class="col-12 col-md-8">
                   <div class="card shadow">
@@ -225,7 +225,7 @@
                 </div>
               </div>
 
-              <!-- Tablas de datos -->
+              
               <div class="row">
                 <div class="col-12 ">
                   <div class="card shadow">
@@ -245,7 +245,7 @@
 
                 
 
-              <!-- Reporte detallado de productos vendidos -->
+              
               <div class="row mt-4">
                 <div class="col-12">
                   <div class="card shadow">

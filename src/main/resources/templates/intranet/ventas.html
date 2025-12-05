@@ -14,7 +14,7 @@
 
 <body>
   <div class="wrapper">
-    <!-- MENÚ LATERAL -->
+    
         <aside id="sidebar" class="">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
@@ -25,14 +25,14 @@
                 </button>
             </div>
             <ul class="sidebar-nav">
-                <!-- PERFIL (ADMIN/USUARIO)-->
+                
                 <li class="sidebar-item">
                     <a href="/intranet/dashboard" class="sidebar-link">
                         <i class="bx bx-history"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <!-- MENU PARA ADMIN -->
+                
                 <li th:if="${rol} == 'ADMIN'" class="sidebar-item">
                     <a href="/intranet/reportes" class="sidebar-link">
                         <i class="bx bxs-report"></i>
@@ -57,7 +57,7 @@
                         <span>Visualizar Cotizaciones</span>
                     </a>
                 </li>
-                <!-- MENU PARA VENDEDORES -->
+                
                 <li th:if="${rol} == 'VENDEDOR'" class="sidebar-item">
                     <a href="/intranet/revisarCotizaciones" class="sidebar-link">
                         <i class="bx bxs-file"></i>
@@ -85,9 +85,9 @@
             </div>
         </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    
     <div class="main">
-      <!-- NAVBAR -->
+      
       <nav class="navbar navbar-expand px-4 py-3">
         <div class="navbar-collapse collapse">
           <ul class="navbar-nav ms-auto">
@@ -106,10 +106,10 @@
         </div>
       </nav>
 
-      <!-- CONTENIDO -->
+      
       <main class="content">
         <div class="container-fluid">
-          <!-- INDICADORES DE PASOS -->
+          
           <div class="steps-container">
             <div class="steps-indicator">
               <div class="step-item active" id="step1">
@@ -127,12 +127,12 @@
             </div>
           </div>
 
-          <!-- ALERTAS -->
+          
           <div id="alertContainer"></div>
 
-          <!-- FORMULARIO -->
+          
           <form id="ventaForm">
-            <!-- ===== PASO 1: PRODUCTOS ===== -->
+            
             <div class="form-section active" id="step1-content">
               <div class="card">
                 <div class="card-body">
@@ -141,24 +141,24 @@
                     Seleccionar Productos
                   </div>
 
-                  <!-- Buscador -->
+                  
                   <div class="product-search">
                     <i class="bx bx-search-alt" style="position: absolute; left: 15px; top: 12px; color: #6c757d;"></i>
                     <input type="text" id="productSearch" placeholder="Buscar por nombre o categoría...">
                   </div>
 
-                  <!-- Grid de Productos -->
+                  
                   <div class="products-grid" id="products-list">
-                    <!-- Se llena con JavaScript -->
+                    
                   </div>
 
-                  <!-- Resumen Carrito -->
+                  
                   <div class="cart-summary" id="selected-products">
                     <h5><i class="bx bx-cart"></i> Carrito de Compra</h5>
                     <p style="color: #6c757d; margin: 0;">No hay productos seleccionados</p>
                   </div>
 
-                  <!-- Botones Navegación -->
+                  
                   <div class="buttons-container">
                     <button type="button" class="btn-nav btn-prev" id="btnPrev" onclick="previousStep(currentStep)"
                       style="display: none;">
@@ -172,7 +172,7 @@
               </div>
             </div>
 
-            <!-- ===== PASO 2: CLIENTE ===== -->
+            
             <div class="form-section" id="step2-content">
               <div class="card">
                 <div class="card-body">
@@ -181,7 +181,7 @@
                     Información del Cliente
                   </div>
 
-                  <!-- Datos Cliente Nuevo -->
+                  
                   <div id="newClientFields">
                     <div class="form-group">
                       <label for="clienteName">Nombre Completo *</label>
@@ -206,7 +206,7 @@
                     </div>
                   </div>
 
-                  <!-- Tipo de Entrega -->
+                  
                   <div class="form-group">
                     <label>Tipo de Entrega *</label>
                     <div class="delivery-type">
@@ -221,20 +221,20 @@
                     </div>
                   </div>
 
-                  <!-- Dirección Entrega (condicional) -->
+                  
                   <div class="form-group" id="direccionGroup" style="display: none;">
                     <label for="direccion">Dirección de Entrega *</label>
                     <textarea id="direccion" placeholder="Ej: Av. Principal 123, Apto 4B, Lima" rows="3" minlength="10"
                       maxlength="255"></textarea>
                   </div>
 
-                  <!-- Costo Delivery -->
+                  
                   <div class="form-group">
                     <label for="costoDelivery">Costo de Delivery (S/)</label>
                     <input type="number" id="costoDelivery" value="0" min="0" step="0.01">
                   </div>
 
-                  <!-- Botones Navegación -->
+                  
                   <div class="buttons-container">
                     <button type="button" class="btn-nav btn-prev" onclick="previousStep(currentStep)">
                       <i class="bx bx-arrow-back"></i> Anterior
@@ -247,7 +247,7 @@
               </div>
             </div>
 
-            <!-- ===== PASO 3: PAGO ===== -->
+            
             <div class="form-section" id="step3-content">
               <div class="card">
                 <div class="card-body">
@@ -256,7 +256,7 @@
                     Información de Pago
                   </div>
 
-                  <!-- Método de Pago -->
+                  
                   <div class="form-group">
                     <label for="paymentMethod">Método de Pago *</label>
                     <div class="payment-method-box">
@@ -270,8 +270,8 @@
                     </div>
                   </div>
 
-                  <!-- Campos según Método de Pago -->
-                  <!-- EFECTIVO -->
+                  
+                  
                   <div id="cash-payment" class="payment-fields hidden">
                     <h6>Pago en Efectivo</h6>
                     <div class="form-group">
@@ -283,7 +283,7 @@
                       <input type="number" id="changeAmount" readonly value="0.00">
                     </div>
                   </div>
-                  <!-- YAPE/PLIN -->
+                  
                   <div id="yapeplin-payment" class="payment-fields hidden">
                     <h6>Yape/Plin</h6>
                     <p style="color: #6c757d; font-size: 0.9rem;">
@@ -293,7 +293,7 @@
                     </p>
                   </div>
 
-                  <!-- TRANSFERENCIA -->
+                  
                   <div id="bank-transfer-payment" class="payment-fields hidden">
                     <h6>Transferencia Bancaria</h6>
                     <p style="color: #6c757d; font-size: 0.9rem;">
@@ -303,13 +303,13 @@
                     </p>
                   </div>
 
-                  <!-- Fecha de Entrega -->
+                  
                   <div class="form-group">
                     <label for="deliveryDate">Fecha de Entrega *</label>
                     <input type="date" id="deliveryDate" required>
                   </div>
 
-                  <!-- Resumen Final -->
+                  
                   <div class="cart-summary" style="margin-top: 2rem;">
                     <h5>Resumen de Compra</h5>
                     <div class="total-row">
@@ -330,7 +330,7 @@
                     </div>
                   </div>
 
-                  <!-- Botones Navegación -->
+                  
                   <div class="buttons-container">
                     <button type="button" class="btn-nav btn-prev" onclick="previousStep(currentStep)">
                       <i class="bx bx-arrow-back"></i> Anterior
@@ -348,7 +348,7 @@
     </div>
   </div>
 
-  <!-- MODAL ÉXITO -->
+  
   <div class="modal fade" id="successModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -376,7 +376,7 @@
     </div>
   </div>
 
-  <!-- SCRIPTS -->
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/authUtils.js"></script>
   <script src="/js/scriptIntranetCommon.js"></script>
