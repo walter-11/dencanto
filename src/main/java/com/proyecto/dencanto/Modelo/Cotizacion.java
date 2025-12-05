@@ -39,7 +39,7 @@ public class Cotizacion {
     private LocalDate fechaDeseada;
     
     @Column(name = "productos_json", columnDefinition = "JSON")
-    private String productosJson; // Array JSON con productos [{id, nombre, cantidad, precio}]
+    private String productosJson; /// Array JSON con productos [{id, nombre, cantidad, precio}]
     
     @DecimalMin(value = "0.0", message = "El total no puede ser negativo")
     @Column(name = "total", nullable = false)

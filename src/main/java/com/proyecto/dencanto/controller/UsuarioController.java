@@ -4,8 +4,11 @@ import com.proyecto.dencanto.Modelo.Usuario;
 import com.proyecto.dencanto.Modelo.Rol;
 import com.proyecto.dencanto.Service.UsuarioService;
 import com.proyecto.dencanto.Service.RolService;
+import com.proyecto.dencanto.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +27,23 @@ public class UsuarioController {
     @Autowired
     private RolService rolService;
 
+    private void addUserInfoToModel(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+            String rol = userDetails.getAuthorities().stream()
+                    .map(a -> a.getAuthority().replace("ROLE_", ""))
+                    .findFirst()
+                    .orElse("USUARIO");
+            model.addAttribute("usuario", userDetails.getUsername());
+            model.addAttribute("rol", rol);
+        }
+    }
+
     // MOSTRAR LISTA
     @GetMapping
     public String listarUsuarios(Model model) {
+        addUserInfoToModel(model);
         List<Usuario> usuarios = usuarioService.obtenerTodos();
         List<Rol> roles = rolService.obtenerTodos();
         
