@@ -63,7 +63,7 @@ public class AuthController {
                     .findFirst()
                     .orElse("USUARIO");
             
-            // 🔐 Agregar token en cookie HTTP (24 horas)
+            // Agregar token en cookie HTTP (24 horas)
             response.addHeader("Set-Cookie", "jwt_token=" + token + "; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax");
             
             return ResponseEntity.ok(new AuthResponse(token, userDetails.getUsername(), rol, userDetails.getAuthorities().stream()

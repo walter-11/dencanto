@@ -216,7 +216,7 @@ function addProductToSale(productId, productName, price) {
   const cantidad = parseInt(card?.querySelector('.qty-input')?.value || 1);
 
   if (cantidad < 1) {
-    mostrarAlerta('warning', '⚠️ Ingresa una cantidad válida');
+    mostrarAlerta('warning', ' Ingresa una cantidad válida');
     return;
   }
 
@@ -234,7 +234,7 @@ function addProductToSale(productId, productName, price) {
     });
   }
 
-  mostrarAlerta('success', `✅ ${productName} agregado al carrito`);
+  mostrarAlerta('success', ` ${productName} agregado al carrito`);
   actualizarResumenVenta();
 }
 
@@ -443,7 +443,7 @@ function validarPaso(paso) {
   switch (paso) {
     case 1: // Validar selección de productos
       if (carritoVenta.length === 0) {
-        mostrarAlerta('warning', '⚠️ Debes agregar al menos un producto');
+        mostrarAlerta('warning', ' Debes agregar al menos un producto');
         return false;
       }
       return true;
@@ -494,7 +494,7 @@ function validarPaso(paso) {
       // Validar tipo de entrega
       const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked')?.value;
       if (!tipoEntrega) {
-        mostrarAlerta('warning', '⚠️ Selecciona tipo de entrega');
+        mostrarAlerta('warning', 'Selecciona tipo de entrega');
         valido = false;
       }
       
@@ -504,20 +504,20 @@ function validarPaso(paso) {
         if (!direccion || direccion.length < 10) {
           const dirInput = document.getElementById('direccion');
           if (dirInput) dirInput.classList.add('is-invalid');
-          mostrarAlerta('warning', '⚠️ Dirección debe tener al menos 10 caracteres');
+          mostrarAlerta('warning', 'Dirección debe tener al menos 10 caracteres');
           valido = false;
         }
       }
       
       if (!valido) {
-        mostrarAlerta('warning', '⚠️ Por favor, corrige los errores en rojo');
+        mostrarAlerta('warning', ' ');
       }
       return valido;
 
     case 3: // Validar método de pago
       const metodoPago = document.getElementById('paymentMethod')?.value;
       if (!metodoPago) {
-        mostrarAlerta('warning', '⚠️ Selecciona método de pago');
+        mostrarAlerta('warning', 'Selecciona método de pago');
         return false;
       }
       
@@ -525,14 +525,14 @@ function validarPaso(paso) {
         const monto = parseFloat(document.getElementById('amountReceived')?.value || 0);
         const total = parseFloat(document.getElementById('total')?.textContent || 0);
         if (monto < total) {
-          mostrarAlerta('warning', '⚠️ Monto recibido insuficiente');
+          mostrarAlerta('warning', ' Monto recibido insuficiente');
           return false;
         }
       }
 
       const fechaEntrega = document.getElementById('deliveryDate')?.value;
       if (!fechaEntrega) {
-        mostrarAlerta('warning', '⚠️ Selecciona fecha de entrega');
+        mostrarAlerta('warning', ' Selecciona fecha de entrega');
         return false;
       }
       return true;
@@ -612,7 +612,7 @@ function togglePaymentFields() {
 // CALCULAR CAMBIO
 // ============================================
 function calculateChange() {
-  const total = parseFloat(document.getElementById('total')?.textContent || 0);
+  const total = parseFloat(document.getElementById('resumen-total')?.textContent || 0);
   const amountReceived = parseFloat(document.getElementById('amountReceived')?.value || 0);
   const change = amountReceived - total;
 

@@ -11,22 +11,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Servicio para generar reportes en PDF
- */
 @Service
 public class ReportePdfService {
-
-    // Colores corporativos - Paleta: Negro, Dorado/Mostaza, Blanco
     private static final Color COLOR_PRIMARIO = new Color(212, 165, 40);    // Dorado principal #D4A528
     private static final Color COLOR_DORADO_OSCURO = new Color(184, 148, 31); // Dorado hover #B8941F
     private static final Color COLOR_NEGRO = new Color(26, 26, 26);         // Negro principal #1a1a1a
     private static final Color COLOR_HEADER = new Color(26, 26, 26);        // Negro para headers
     private static final Color COLOR_EXITO = new Color(40, 167, 69);        // Verde (para estados)
 
-    /**
-     * Genera el PDF completo del reporte de ventas
-     */
+    
     public byte[] generarReporteVentas(
             Map<String, Object> resumen,
             List<Map<String, Object>> topProductos,
@@ -39,28 +32,14 @@ public class ReportePdfService {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document document = new Document(PageSize.A4, 36, 36, 54, 36);
             PdfWriter writer = PdfWriter.getInstance(document, baos);
-            
-            // Agregar evento para encabezado/pie de página
             writer.setPageEvent(new HeaderFooterPageEvent());
             
             document.open();
-            
-            // Título principal
             agregarTitulo(document);
-            
-            // Filtros aplicados
             agregarFiltros(document, fechaInicio, fechaFin, categoria);
-            
-            // KPIs
             agregarKPIs(document, resumen);
-            
-            // Top 5 Productos
             agregarTopProductos(document, topProductos);
-            
-            // Tabla de productos vendidos
             agregarTablaProductosVendidos(document, productosVendidos);
-            
-            // Cotizaciones Cerradas
             agregarCotizacionesCerradas(document, cotizacionesCerradas);
             
             document.close();
@@ -83,8 +62,6 @@ public class ReportePdfService {
         subtitulo.setAlignment(Element.ALIGN_CENTER);
         subtitulo.setSpacingAfter(10);
         document.add(subtitulo);
-        
-        // Fecha de generación
         Font fontFecha = new Font(Font.HELVETICA, 10, Font.ITALIC, Color.GRAY);
         String fechaGeneracion = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         Paragraph fecha = new Paragraph("Generado el: " + fechaGeneracion, fontFecha);
@@ -124,32 +101,20 @@ public class ReportePdfService {
         tituloSeccion.setSpacingBefore(10);
         tituloSeccion.setSpacingAfter(10);
         document.add(tituloSeccion);
-        
-        // Tabla de KPIs (2x2)
         PdfPTable tablaKPIs = new PdfPTable(4);
         tablaKPIs.setWidthPercentage(100);
         tablaKPIs.setSpacingAfter(20);
-        
-        // Estilos
         Font fontKPILabel = new Font(Font.HELVETICA, 9, Font.NORMAL, Color.GRAY);
         Font fontKPIValor = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_PRIMARIO);
-        
-        // Ventas Totales
         agregarCeldaKPI(tablaKPIs, "Ventas Totales", 
                        "S/ " + formatearNumero(getDouble(resumen, "ventasTotales")), 
                        fontKPILabel, fontKPIValor);
-        
-        // Cotizaciones
         agregarCeldaKPI(tablaKPIs, "Cotizaciones", 
                        String.valueOf(resumen.getOrDefault("totalCotizaciones", 0)), 
                        fontKPILabel, new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_EXITO));
-        
-        // Tasa de Conversión
         agregarCeldaKPI(tablaKPIs, "Tasa de Conversión", 
                        resumen.getOrDefault("tasaConversion", 0) + "%", 
                        fontKPILabel, new Font(Font.HELVETICA, 14, Font.BOLD, new Color(13, 202, 240)));
-        
-        // Días Promedio Cierre
         agregarCeldaKPI(tablaKPIs, "Días Promedio Cierre", 
                        String.valueOf(resumen.getOrDefault("diasPromedioCierre", 0)), 
                        fontKPILabel, new Font(Font.HELVETICA, 14, Font.BOLD, new Color(255, 193, 7)));
@@ -192,14 +157,10 @@ public class ReportePdfService {
         tabla.setWidthPercentage(100);
         tabla.setWidths(new float[]{3, 2, 1.5f, 2});
         tabla.setSpacingAfter(20);
-        
-        // Encabezados
         agregarCeldaEncabezado(tabla, "Producto");
         agregarCeldaEncabezado(tabla, "Categoría");
         agregarCeldaEncabezado(tabla, "Unidades");
         agregarCeldaEncabezado(tabla, "Total Ventas");
-        
-        // Datos
         Font fontDato = new Font(Font.HELVETICA, 9, Font.NORMAL);
         for (Map<String, Object> producto : topProductos) {
             agregarCeldaDato(tabla, getString(producto, "nombre"), fontDato);
@@ -223,8 +184,6 @@ public class ReportePdfService {
             document.add(new Paragraph("No hay productos vendidos en el período seleccionado.", fontVacio));
             return;
         }
-        
-        // Mostrar total de productos
         Font fontTotal = new Font(Font.HELVETICA, 10, Font.BOLD, COLOR_EXITO);
         document.add(new Paragraph("Total: " + productos.size() + " productos", fontTotal));
         document.add(Chunk.NEWLINE);
@@ -232,15 +191,11 @@ public class ReportePdfService {
         PdfPTable tabla = new PdfPTable(5);
         tabla.setWidthPercentage(100);
         tabla.setWidths(new float[]{3, 2, 1.5f, 1.5f, 2});
-        
-        // Encabezados
         agregarCeldaEncabezado(tabla, "Producto");
         agregarCeldaEncabezado(tabla, "Categoría");
         agregarCeldaEncabezado(tabla, "Cantidad");
         agregarCeldaEncabezado(tabla, "Precio Unit.");
         agregarCeldaEncabezado(tabla, "Total");
-        
-        // Datos
         Font fontDato = new Font(Font.HELVETICA, 8, Font.NORMAL);
         double totalGeneral = 0;
         
@@ -260,8 +215,6 @@ public class ReportePdfService {
             totalGeneral += total;
             agregarCeldaDato(tabla, "S/ " + formatearNumero(total), fontDato);
         }
-        
-        // Fila de total
         PdfPCell celdaVacia = new PdfPCell(new Phrase(""));
         celdaVacia.setBorder(Rectangle.NO_BORDER);
         tabla.addCell(celdaVacia);
@@ -285,7 +238,6 @@ public class ReportePdfService {
     }
 
     private void agregarCotizacionesCerradas(Document document, List<Map<String, Object>> cotizaciones) throws DocumentException {
-        // Nueva página para cotizaciones
         document.newPage();
         
         Font fontSeccion = new Font(Font.HELVETICA, 14, Font.BOLD, COLOR_HEADER);
@@ -299,8 +251,6 @@ public class ReportePdfService {
             document.add(new Paragraph("No hay cotizaciones cerradas en el período seleccionado.", fontVacio));
             return;
         }
-        
-        // Mostrar total de cotizaciones cerradas
         Font fontTotal = new Font(Font.HELVETICA, 10, Font.BOLD, COLOR_EXITO);
         document.add(new Paragraph("Total: " + cotizaciones.size() + " cotizaciones cerradas", fontTotal));
         document.add(Chunk.NEWLINE);
@@ -308,16 +258,12 @@ public class ReportePdfService {
         PdfPTable tabla = new PdfPTable(6);
         tabla.setWidthPercentage(100);
         tabla.setWidths(new float[]{0.8f, 2.5f, 2f, 1.5f, 1.5f, 1.5f});
-        
-        // Encabezados
         agregarCeldaEncabezado(tabla, "ID");
         agregarCeldaEncabezado(tabla, "Cliente");
         agregarCeldaEncabezado(tabla, "Email");
         agregarCeldaEncabezado(tabla, "Total");
         agregarCeldaEncabezado(tabla, "Fecha Creación");
         agregarCeldaEncabezado(tabla, "Fecha Cierre");
-        
-        // Datos
         Font fontDato = new Font(Font.HELVETICA, 8, Font.NORMAL);
         double totalGeneral = 0;
         
@@ -335,8 +281,6 @@ public class ReportePdfService {
         }
         
         document.add(tabla);
-        
-        // Total de cotizaciones cerradas
         document.add(Chunk.NEWLINE);
         Font fontTotalValor = new Font(Font.HELVETICA, 12, Font.BOLD, COLOR_EXITO);
         Paragraph totalCotizaciones = new Paragraph("Total en Cotizaciones Cerradas: S/ " + formatearNumero(totalGeneral), fontTotalValor);
@@ -380,15 +324,11 @@ public class ReportePdfService {
         return value != null ? value.toString() : "";
     }
 
-    /**
-     * Clase interna para manejar encabezado y pie de página
-     */
+    
     private static class HeaderFooterPageEvent extends PdfPageEventHelper {
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
             PdfContentByte cb = writer.getDirectContent();
-            
-            // Pie de página
             Font fontPie = new Font(Font.HELVETICA, 8, Font.NORMAL, Color.GRAY);
             Phrase pie = new Phrase("Colchones D'Encanto - Sistema de Gestión | Página " + 
                                    writer.getPageNumber(), fontPie);
